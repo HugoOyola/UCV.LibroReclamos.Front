@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ModulosComponent } from './page/module/modulos.component';
 import { MainComponent } from './page/main/main.component';
 
 export const routes: Routes = [
@@ -10,19 +9,20 @@ export const routes: Routes = [
 		children: [
 			{
 				path: '',
-				redirectTo: 'modulo',
+				redirectTo: 'home',
 				pathMatch: 'full',
 			},
 			{
-				path: 'modulo',
-				component: ModulosComponent,
-				title: 'Modulo Datos - Principal',
+				path: 'home',
+				loadComponent: () =>
+					import('./page/main/components/datos-basicos/datos-basicos.component').then((m) => m.DatosBasicosComponent),
+				title: 'Datos Básicos',
 			},
 			{
 				path: 'uikit',
 				loadComponent: () =>
 					import('./page/ui-kit/ui-kit.component').then((m) => m.UiKitComponent),
-				title: 'Modulo Datos - Principal',
+				title: 'UI Kit',
 			},
 			{
 				path: '**',
@@ -33,4 +33,3 @@ export const routes: Routes = [
 		],
 	},
 ];
-
