@@ -9,14 +9,14 @@ export const routes: Routes = [
 		children: [
 			{
 				path: '',
-				redirectTo: 'home',
+				redirectTo: 'dashboard',
 				pathMatch: 'full',
 			},
 			{
 				path: 'home',
 				loadComponent: () =>
-					import('./page/main/components/datos-basicos/datos-basicos.component').then((m) => m.DatosBasicosComponent),
-				title: 'Datos Básicos',
+					import('./page/main/components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+				title: 'Libro de Reclamos - Dashboard',
 			},
 			{
 				path: 'uikit',

@@ -1,0 +1,166 @@
+<!-- Componente de Inicio/Dashboard -->
+<div class="">
+  <!-- Header del Dashboard -->
+  <div class="bg-[#243659] shadow-lg p-6 md:p-6">
+    <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+      <!-- Título y descripción -->
+      <div class="flex items-center gap-2">
+        <div class="items-center justify-center hidden sm:flex">
+          <span class="text-4xl text-white material-symbols-outlined">check_box</span>
+        </div>
+        <div class="leading-none">
+          <h1 class="text-xl font-bold text-white">
+            MODULO DE LIBRO DE RECLAMACIONES
+          </h1>
+          <p class="mt-1 text-sm text-gray-400">
+            Gestione y supervise todos los Libro de Reclamaciones desde un solo
+            lugar.
+          </p>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex flex-wrap justify-start w-full gap-3 md:w-auto md:justify-end">
+        <div class="flex gap-4">
+          <p-select [options]="periodos" [(ngModel)]="periodoSeleccionado" placeholder="30 días" class="w-32"
+            size="small" (onChange)="onPeriodoChange($event)" />
+          <p-button icon="pi pi-download" label="Exportar" severity="danger" size="small" (onClick)="onExportar()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full p-6">
+    <!-- Tarjetas de KPIs -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Total Reclamaciones -->
+      <p-card class="shadow-md border-l-4 border-l-blue-500">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-600 text-sm mb-1">Total Reclamaciones</p>
+            <h3 class="text-3xl font-bold text-gray-800">
+              {{ data.totalReclamaciones }}
+            </h3>
+            <p class="text-green-600 text-sm mt-1">
+              <i class="pi pi-arrow-up text-xs"></i>
+              +{{ data.variacionMensual }}% vs mes anterior
+            </p>
+          </div>
+          <i class="pi pi-file-edit text-2xl text-blue-500"></i>
+        </div>
+      </p-card>
+
+      <!-- Pendientes -->
+      <p-card class="shadow-md border-l-4 border-l-red-500">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-600 text-sm mb-1">Pendientes</p>
+            <h3 class="text-3xl font-bold text-gray-800">
+              {{ data.pendientes }}
+            </h3>
+            <p class="text-gray-500 text-sm mt-1">
+              {{ data.porcentajePendientes }}% del total
+            </p>
+          </div>
+          <i class="pi pi-clock text-2xl text-red-500"></i>
+        </div>
+      </p-card>
+
+      <!-- Resueltas -->
+      <p-card class="shadow-md border-l-4 border-l-green-500">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-600 text-sm mb-1">Resueltas</p>
+            <h3 class="text-3xl font-bold text-gray-800">
+              {{ data.resueltas }}
+            </h3>
+            <p class="text-gray-500 text-sm mt-1">
+              {{ data.porcentajeResueltas }}% del total
+            </p>
+          </div>
+          <i class="pi pi-check-circle text-2xl text-green-500"></i>
+        </div>
+      </p-card>
+
+      <!-- Tiempo Promedio -->
+      <p-card class="shadow-md border-l-4 border-l-purple-500">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-600 text-sm mb-1">Tiempo Promedio</p>
+            <h3 class="text-3xl font-bold text-gray-800">
+              {{ data.tiempoPromedio }} días
+            </h3>
+            <p class="text-gray-500 text-sm mt-1">Tiempo de resolución</p>
+          </div>
+          <i class="pi pi-chart-line text-2xl text-purple-500"></i>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Acciones del Dashboard -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 w-full">
+      <!-- Distribución por Tipo -->
+      <div class="bg-[#243659] text-white rounded-lg overflow-hidden shadow-md h-full flex flex-col min-h-[190px]">
+        <!-- Encabezado -->
+        <div class="flex items-center justify-between px-6 py-4">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-chart-pie text-white"></i>
+            <h3 class="text-md font-semibold uppercase">Distribución por Tipo</h3>
+          </div>
+        </div>
+        <!-- Lista con scroll -->
+        <div class="bg-white text-[#243659] flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+          <div *ngFor="let item of tiposData; let last = last"
+            class="border-solid border-0 border-b border-[#dfe6ee] px-6 py-3 hover:bg-gray-200 transition-colors duration-200"
+            [ngClass]="{ 'border-b-0': last }">
+            <div class="flex justify-between items-center text-lg font-medium">
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full" [ngStyle]="{ 'background-color': item.color }"></div>
+                <span>{{ item.tipo }}</span>
+              </div>
+              <div class="text-right">
+                <div class="font-semibold text-md">{{ item.cantidad }} solicitudes</div>
+                <div class="text-sm text-[#e30512]">{{ item.porcentaje }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reclamaciones por Campus -->
+      <div class="bg-[#243659] text-white rounded-lg overflow-hidden shadow-md h-full flex flex-col">
+        <!-- Encabezado -->
+        <div class="flex items-center justify-between px-6 py-4">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building text-white"></i>
+            <h3 class="text-md font-semibold uppercase">Reclamaciones por Campus</h3>
+          </div>
+          <a href="#" class="flex items-center text-sm text-gray-300 rounded-md hover:text-white">
+            Ver más
+            <span class="ml-1 text-sm material-symbols-outlined">chevron_right</span>
+          </a>
+        </div>
+
+        <!-- Lista con scroll limitado a 200px -->
+        <div
+          class="bg-white text-[#243659] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+          style="max-height: 190px;">
+          <div *ngFor="let campus of campusData; let last = last"
+            class="border-solid border-0 border-b border-[#dfe6ee] px-6 py-3 hover:bg-gray-100 transition-colors duration-200"
+            [ngClass]="{ 'border-b-0': last }">
+            <div class="flex justify-between items-center text-md font-medium mb-1">
+              <span class="truncate">{{ campus.nombre }}</span>
+              <span class="text-[12px] text-gray-500">{{ campus.cantidad }} ({{ campus.porcentaje }}%)</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-1.5">
+              <div
+                class="bg-blue-800 h-1.5 rounded-full transition-all duration-300"
+                [style.width.%]="campus.porcentaje">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
