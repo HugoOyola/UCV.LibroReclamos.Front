@@ -65,7 +65,6 @@ export class DashboardComponent {
     { codigo: 22286, tipo: 'RECLAMO', estado: 'Atendido', prioridad: 'Alta', campus: 'CHICLAYO', fecha: '14/07/2025' },
     { codigo: 22285, tipo: 'QUEJA', estado: 'Pendiente', prioridad: 'Media', campus: 'PIURA', fecha: '14/07/2025' },
     { codigo: 22284, tipo: 'RECLAMO', estado: 'En Proceso', prioridad: 'Media', campus: 'CALLAO', fecha: '14/07/2025' },
-    { codigo: 22283, tipo: 'CONSULTA', estado: 'Pendiente', prioridad: 'Baja', campus: 'LIMA NORTE', fecha: '14/07/2025' },
   ];
 
   accesosRapidos = [
@@ -82,6 +81,12 @@ export class DashboardComponent {
     { label: '6 meses', value: '180' },
     { label: '1 año', value: '365' }
   ];
+
+  indicadores = {
+    satisfaccion: 94.2,
+    resolucion: 92.8,
+    pendientes: 7.2
+  };
 
   periodoSeleccionado = '30';
 
