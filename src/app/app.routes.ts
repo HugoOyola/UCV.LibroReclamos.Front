@@ -13,7 +13,7 @@ export const routes: Routes = [
 				pathMatch: 'full',
 			},
 			{
-				path: 'home',
+				path: 'dashboard',
 				loadComponent: () =>
 					import('./page/main/components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
 				title: 'Libro de Reclamos - Dashboard',

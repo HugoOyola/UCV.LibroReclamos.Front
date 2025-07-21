@@ -38,8 +38,6 @@ export interface CampusData {
 export class DashboardComponent {
   @Output() periodoChanged = new EventEmitter<string>();
   @Output() exportar = new EventEmitter<void>();
-  @Output() notificaciones = new EventEmitter<void>();
-  @Output() configuracion = new EventEmitter<void>();
   @Input() data: KpiData = {
     totalReclamaciones: 2847,
     pendientes: 156,
@@ -63,7 +61,22 @@ export class DashboardComponent {
     { nombre: 'UCV CAMPUS MOYOBAMBA', cantidad: 27, porcentaje: 0.9 }
   ];
 
-  public periodos = [
+  reclamacionesRecientes = [
+    { codigo: 22286, tipo: 'RECLAMO', estado: 'Atendido', prioridad: 'Alta', campus: 'CHICLAYO', fecha: '14/07/2025' },
+    { codigo: 22285, tipo: 'QUEJA', estado: 'Pendiente', prioridad: 'Media', campus: 'PIURA', fecha: '14/07/2025' },
+    { codigo: 22284, tipo: 'RECLAMO', estado: 'En Proceso', prioridad: 'Media', campus: 'CALLAO', fecha: '14/07/2025' },
+    { codigo: 22283, tipo: 'CONSULTA', estado: 'Pendiente', prioridad: 'Baja', campus: 'LIMA NORTE', fecha: '14/07/2025' },
+  ];
+
+  accesosRapidos = [
+    { label: 'Monitoreo de Reclamaciones', icono: 'pi pi-search' },
+    { label: 'Filtros Avanzados', icono: 'pi pi-filter' },
+    { label: 'Reportes', icono: 'pi pi-chart-bar' },
+    { label: 'Gestión de Usuarios', icono: 'pi pi-users' },
+    { label: 'Configuración', icono: 'pi pi-cog' },
+  ];
+
+  periodos = [
     { label: '30 días', value: '30' },
     { label: '90 días', value: '90' },
     { label: '6 meses', value: '180' },
@@ -78,5 +91,31 @@ export class DashboardComponent {
 
   onExportar(): void {
     this.exportar.emit();
+  }
+
+  estadoClass(estado: string) {
+    switch (estado) {
+      case 'Atendido': return 'bg-green-100 text-green-800';
+      case 'Pendiente': return 'bg-yellow-100 text-yellow-800';
+      case 'En Proceso': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  }
+
+  prioridadClass(prioridad: string) {
+    switch (prioridad) {
+      case 'Alta': return 'bg-red-100 text-red-800';
+      case 'Media': return 'bg-yellow-100 text-yellow-800';
+      case 'Baja': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  }
+
+  get totalSolicitudesPorTipo(): number {
+    return this.tiposData?.reduce((acc, curr) => acc + curr.cantidad, 0) || 0;
+  }
+
+  get totalReclamacionesPorCampus(): number {
+    return this.campusData?.reduce((sum, campus) => sum + campus.cantidad, 0) ?? 0;
   }
 }
