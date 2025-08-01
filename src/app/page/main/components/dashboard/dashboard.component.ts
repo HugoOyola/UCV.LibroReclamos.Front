@@ -69,10 +69,10 @@ export class DashboardComponent {
 
   accesosRapidos = [
     { label: 'Monitoreo de Reclamaciones', icono: 'pi pi-search' },
-    { label: 'Filtros Avanzados', icono: 'pi pi-filter' },
     { label: 'Reportes', icono: 'pi pi-chart-bar' },
     { label: 'Gestión de Usuarios', icono: 'pi pi-users' },
     { label: 'Configuración', icono: 'pi pi-cog' },
+    { label: 'Reportar a Indecopi', icono: 'pi pi-check-circle' },
   ];
 
   periodos = [
