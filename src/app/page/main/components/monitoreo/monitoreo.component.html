@@ -1,0 +1,477 @@
+<!-- Header del Monitoreo -->
+<div class="bg-[#243659] shadow-lg p-6 md:p-6">
+  <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+    <!-- Título y descripción -->
+    <div class="flex items-center gap-2">
+      <div class="items-center justify-center hidden sm:flex">
+        <span class="text-4xl text-white material-symbols-outlined">chart_data</span>
+      </div>
+      <div class="leading-none">
+        <h1 class="text-xl font-bold text-white">
+          MONITOREO DE RECLAMACIONES
+        </h1>
+        <p class="mt-1 text-sm text-gray-400">
+          Busque y supervise reclamaciones con filtros avanzados y búsqueda inteligente.
+        </p>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap justify-start w-full gap-3 md:w-auto md:justify-end">
+      <div class="flex gap-4">
+        <p-button icon="pi pi-refresh" label="Actualizar" severity="secondary" size="small"
+          (onClick)="actualizarDatos()" />
+        <p-button icon="pi pi-download" label="Exportar" severity="danger" size="small"
+          (onClick)="exportarResultados()" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w-full p-6">
+  <!-- Tarjetas de Estadísticas -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Total Reclamaciones -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300 group-hover:text-blue-600">Total
+            Reclamaciones</p>
+          <h3 class="text-2xl font-bold text-gray-900 transition-colors duration-300">
+            {{ stats.total }}
+          </h3>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-blue-100 rounded-xl hover:bg-blue-200 hover:scale-110">
+          <i class="text-xl text-blue-600 transition-transform duration-300 pi pi-file-edit hover:rotate-12"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pendientes -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-orange-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">Pendientes</p>
+          <h3 class="text-2xl font-bold text-orange-500 transition-colors duration-300">
+            {{ stats.pendientes }}
+          </h3>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-orange-100 rounded-xl hover:bg-orange-200 hover:scale-110">
+          <i class="text-xl text-orange-500 transition-transform duration-300 pi pi-clock hover:rotate-12"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resueltas -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-green-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">Resueltas</p>
+          <h3 class="text-2xl font-bold text-green-500 transition-colors duration-300">
+            {{ stats.resueltas }}
+          </h3>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-green-100 rounded-xl hover:bg-green-200 hover:scale-110">
+          <i class="text-xl text-green-500 transition-transform duration-300 pi pi-check-circle hover:rotate-12"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- En Proceso -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-purple-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">En Proceso</p>
+          <h3 class="text-2xl font-bold text-purple-500 transition-colors duration-300">
+            {{ stats.enProceso }}
+          </h3>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-purple-100 rounded-xl hover:bg-purple-200 hover:scale-110">
+          <i class="text-xl text-purple-500 transition-transform duration-300 pi pi-chart-line hover:rotate-12"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centro de Búsqueda -->
+  <div class="mt-6 bg-white border border-gray-200 border-solid rounded-lg shadow-sm">
+    <!-- Header del Centro de Búsqueda -->
+    <div class="p-4 text-white rounded-t-lg bg-[#243659]">
+      <div class="flex items-center gap-3">
+        <i class="text-2xl pi pi-search"></i>
+        <div>
+          <h2 class="text-lg font-semibold">Centro de Búsqueda Inteligente</h2>
+          <p class="text-sm text-gray-400">Encuentre reclamaciones con filtros avanzados o búsqueda rápida</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs del Centro de Búsqueda -->
+    <div class="border-0 border-b border-gray-200 border-solid">
+      <nav class="flex w-full mb-px">
+        <button type="button" (click)="setActiveTab('advanced')" [class]="activeTab === 'advanced'
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          class="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-medium transition-colors border-0 border-b-2 border-solid text-md">
+          <i class="text-lg pi pi-sliders-h"></i>
+          Búsqueda Avanzada
+        </button>
+        <button type="button" (click)="setActiveTab('quick')" [class]="activeTab === 'quick'
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          class="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-medium transition-colors border-0 border-b-2 border-solid text-md">
+          <i class="text-lg pi pi-bolt"></i>
+          Búsqueda Rápida
+        </button>
+      </nav>
+    </div>
+
+    <!-- Contenido de las Tabs -->
+    <div class="p-6">
+      <!-- Búsqueda Avanzada -->
+      <div *ngIf="activeTab === 'advanced'" class="tab-content">
+        <form [formGroup]="searchForm">
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <!-- Filtros Básicos -->
+            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
+                  <i class="text-lg text-blue-600 pi pi-filter"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-blue-700 uppercase">Filtros Básicos</h3>
+              </div>
+
+              <!-- Campus Universitario -->
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Campus o Filial</label>
+                <p-select [options]="campusOptions" formControlName="campus" placeholder="Seleccionar Campus"
+                  class="w-full" size="small" />
+              </div>
+
+              <!-- Período de Tiempo -->
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Fecha de Inicio y Fin</label>
+                <p-datepicker formControlName="fechaRango" placeholder="Seleccionar rango de fechas" class="w-full"
+                  size="small" dateFormat="dd/mm/yy" selectionMode="range" />
+              </div>
+            </div>
+
+            <!-- Tipo de Reclamación -->
+            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg">
+                  <i class="text-lg text-red-600 pi pi-file-edit"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-red-700 uppercase">Tipo de Reclamo</h3>
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="tipoTodos" inputId="tipo_todos"
+                    (onChange)="onTipoReclamacionChange('todos')" />
+                  <label for="tipo_todos" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    TODOS LOS TIPOS
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="tipoReclamo" inputId="tipo_reclamo"
+                    (onChange)="onTipoReclamacionChange('reclamo')" />
+                  <label for="tipo_reclamo" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    RECLAMO
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="tipoQueja" inputId="tipo_queja"
+                    (onChange)="onTipoReclamacionChange('queja')" />
+                  <label for="tipo_queja" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    QUEJA
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="tipoConsulta" inputId="tipo_consulta"
+                    (onChange)="onTipoReclamacionChange('consulta')" />
+                  <label for="tipo_consulta" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    CONSULTA / SUGERENCIA
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estados de Proceso -->
+            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center justify-center w-8 h-8 bg-green-100 rounded-lg">
+                  <i class="text-lg text-green-600 pi pi-check-circle"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-green-700 uppercase">Estados de Proceso</h3>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoTodos" inputId="estado_todos"
+                    (onChange)="onEstadoProcesoChange('todos')" />
+                  <label for="estado_todos" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Todos
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoEnProceso" inputId="estado_en_proceso"
+                    (onChange)="onEstadoProcesoChange('en_proceso')" />
+                  <label for="estado_en_proceso" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    En Proceso
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoConforme" inputId="estado_conforme"
+                    (onChange)="onEstadoProcesoChange('conforme')" />
+                  <label for="estado_conforme" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Conforme
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoNoConforme" inputId="estado_no_conforme"
+                    (onChange)="onEstadoProcesoChange('no_conforme')" />
+                  <label for="estado_no_conforme" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    No-Conforme
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoPendiente" inputId="estado_pendiente"
+                    (onChange)="onEstadoProcesoChange('pendiente')" />
+                  <label for="estado_pendiente" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Pendiente
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoAtendido" inputId="estado_atendido"
+                    (onChange)="onEstadoProcesoChange('atendido')" />
+                  <label for="estado_atendido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Atendido
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoVencido" inputId="estado_vencido"
+                    (onChange)="onEstadoProcesoChange('vencido')" />
+                  <label for="estado_vencido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Vencido
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <p-checkbox [binary]="true" formControlName="estadoInvalido" inputId="estado_invalido"
+                    (onChange)="onEstadoProcesoChange('invalido')" />
+                  <label for="estado_invalido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    Inválido
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="flex flex-col justify-center gap-4 mt-8 border-t border-gray-200 sm:flex-row">
+            <p-button icon="pi pi-search" label="Buscar Reclamaciones" severity="info" size="small"
+              (onClick)="buscarReclamaciones()" />
+            <p-button icon="pi pi-times" label="Limpiar Filtros" severity="secondary" size="small"
+              (onClick)="limpiarFiltros()" />
+          </div>
+        </form>
+      </div>
+
+      <!-- Búsqueda Rápida -->
+      <div *ngIf="activeTab === 'quick'" class="tab-content">
+        <form [formGroup]="quickSearchForm">
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-10">
+
+            <!-- Panel Principal de Búsqueda -->
+            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm lg:col-span-7">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
+                  <i class="text-lg text-blue-600 pi pi-search"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-blue-700 uppercase">Búsqueda Rápida</h3>
+              </div>
+
+              <!-- Tipo de Búsqueda -->
+              <div class="space-y-4">
+                <label class="block text-sm font-medium text-gray-700">Tipo de Búsqueda</label>
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:gap-6">
+                  <div class="flex items-center">
+                    <p-radiobutton value="dni" formControlName="searchType" inputId="dni_search" />
+                    <label for="dni_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                      <i class="text-blue-600 pi pi-user"></i>
+                      DNI
+                    </label>
+                  </div>
+
+                  <div class="flex items-center">
+                    <p-radiobutton value="codigo" formControlName="searchType" inputId="codigo_search" />
+                    <label for="codigo_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                      <i class="text-green-600 pi pi-tag"></i>
+                      Código
+                    </label>
+                  </div>
+
+                  <div class="flex items-center">
+                    <p-radiobutton value="nombre" formControlName="searchType" inputId="nombre_search" />
+                    <label for="nombre_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                      <i class="text-purple-600 pi pi-users"></i>
+                      Nombre
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campo de Búsqueda -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">
+                  Ingrese el {{ getSearchLabel() }}
+                </label>
+                <div class="relative">
+                  <input
+                    pInputText
+                    formControlName="searchValue"
+                    [placeholder]="getPlaceholder()"
+                    class="w-full pl-10 pr-4"
+                    size="small"
+                  />
+                  <i
+                    [class]="getSearchIcon(quickSearchForm.get('searchType')?.value || 'dni')"
+                    class="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2">
+                  </i>
+                </div>
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row">
+                <p-button
+                  icon="pi pi-search"
+                  label="Buscar Ahora"
+                  severity="info"
+                  size="small"
+                  [disabled]="quickSearchForm.invalid"
+                  (onClick)="buscarAhora()"
+                />
+                <p-button
+                  icon="pi pi-times"
+                  label="Limpiar"
+                  severity="secondary"
+                  size="small"
+                  (onClick)="limpiar()"
+                />
+              </div>
+            </div>
+
+            <!-- Panel de Consejos -->
+            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm lg:col-span-3 bg-blue-50">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
+                  <i class="text-lg text-blue-600 pi pi-lightbulb"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-blue-700 uppercase">Consejos Útiles</h3>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Consejo por DNI -->
+                <div class="p-3 bg-white border border-blue-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'dni' || !quickSearchForm.get('searchType')?.value">
+                  <div class="flex items-start gap-2">
+                    <i class="text-blue-600 pi pi-user mt-0.5"></i>
+                    <div>
+                      <h4 class="text-sm font-semibold text-blue-800">Búsqueda por DNI</h4>
+                      <p class="mt-1 text-sm text-blue-700">Ingresa el número de DNI completo (8 dígitos) sin espacios ni guiones.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Consejo por Código -->
+                <div class="p-3 bg-white border border-green-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'codigo'">
+                  <div class="flex items-start gap-2">
+                    <i class="text-green-600 pi pi-tag mt-0.5"></i>
+                    <div>
+                      <h4 class="text-sm font-semibold text-green-800">Búsqueda por Código</h4>
+                      <p class="mt-1 text-sm text-green-700">El código de reclamación es único y ofrece resultados más precisos. Ejemplo: REC-2024-001234</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Consejo por Nombre -->
+                <div class="p-3 bg-white border border-purple-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'nombre'">
+                  <div class="flex items-start gap-2">
+                    <i class="text-purple-600 pi pi-users mt-0.5"></i>
+                    <div>
+                      <h4 class="text-sm font-semibold text-purple-800">Búsqueda por Nombre</h4>
+                      <p class="mt-1 text-sm text-purple-700">Puedes usar nombres parciales o completos. La búsqueda no distingue mayúsculas y minúsculas.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Consejos Generales -->
+                <div class="space-y-2">
+                  <h4 class="text-sm font-semibold text-gray-800">📋 Recomendaciones:</h4>
+                  <ul class="space-y-1 text-sm text-gray-600">
+                    <li class="flex items-start gap-2">
+                      <span class="flex-shrink-0 w-1 h-1 mt-2 bg-gray-400 rounded-full"></span>
+                      <span>Verifica que la información esté correcta antes de buscar</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="flex-shrink-0 w-1 h-1 mt-2 bg-gray-400 rounded-full"></span>
+                      <span>La búsqueda por código es la más rápida y precisa</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="flex-shrink-0 w-1 h-1 mt-2 bg-gray-400 rounded-full"></span>
+                      <span>Si no encuentras resultados, prueba con otro tipo de búsqueda</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados de Búsqueda (si existen) -->
+  <div *ngIf="showResults" class="mt-6">
+    <div class="bg-[#243659] text-white rounded-lg shadow-md">
+      <!-- Encabezado de Resultados -->
+      <div class="flex items-center justify-between px-6 py-4">
+        <div class="flex items-center gap-2">
+          <i class="text-white pi pi-list"></i>
+          <h3 class="font-semibold uppercase text-md">Resultados de Búsqueda</h3>
+        </div>
+        <span class="text-sm text-gray-400">{{ resultados.length }} registros encontrados</span>
+      </div>
+
+      <!-- Lista de Resultados -->
+      <div class="bg-white text-[#243659] rounded-b-lg">
+        <div *ngFor="let resultado of resultados; let last = last"
+          class="px-6 py-4 transition-colors duration-200 border-0 border-b border-gray-200 border-solid hover:bg-gray-50"
+          [ngClass]="{ 'border-b-0 rounded-b-lg': last }">
+          <div class="flex items-center justify-between">
+            <div class="flex flex-wrap gap-2 items-center text-sm font-semibold text-[#1e293b]">
+              <span>#{{ resultado.codigo }}</span>
+              <span class="text-sm px-2 py-0.5 rounded bg-gray-200 text-black font-medium">{{ resultado.tipo }}</span>
+              <span class="text-sm px-2 py-0.5 rounded" [ngClass]="estadoClass(resultado.estado)">{{ resultado.estado
+                }}</span>
+              <span class="text-sm px-2 py-0.5 rounded" [ngClass]="prioridadClass(resultado.prioridad)">{{
+                resultado.prioridad }}</span>
+            </div>
+            <div class="text-right text-gray-500 text-[12px]">
+              <div class="text-[#1e293b] font-semibold">{{ resultado.campus }}</div>
+              <div class="text-[#e30512] font-semibold">{{ resultado.fecha }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

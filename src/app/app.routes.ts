@@ -19,6 +19,12 @@ export const routes: Routes = [
 				title: 'Libro de Reclamos - Dashboard',
 			},
 			{
+				path: 'monitoreo',
+				loadComponent: () =>
+					import('./page/main/components/monitoreo/monitoreo.component').then((m) => m.MonitoreoComponent),
+				title: 'Libro de Reclamos - Monitoreo',
+			},
+			{
 				path: 'uikit',
 				loadComponent: () =>
 					import('./page/ui-kit/ui-kit.component').then((m) => m.UiKitComponent),
