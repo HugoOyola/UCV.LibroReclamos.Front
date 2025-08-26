@@ -1,7 +1,7 @@
-
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -29,9 +29,15 @@ export interface CampusData {
   porcentaje: number;
 }
 
+export interface AccesoRapido {
+  label: string;
+  icono: string;
+  ruta: string; // Ruta para navegación
+}
+
 @Component({
   selector: 'app-dashboard',
-  imports: [SelectModule, CommonModule, FormsModule, ButtonModule, CardModule],
+  imports: [SelectModule, CommonModule, FormsModule, ButtonModule, CardModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -67,12 +73,12 @@ export class DashboardComponent {
     { codigo: 22284, tipo: 'RECLAMO', estado: 'En Proceso', prioridad: 'Media', campus: 'CALLAO', fecha: '14/07/2025' },
   ];
 
-  accesosRapidos = [
-    { label: 'Monitoreo de Reclamaciones', icono: 'pi pi-search' },
-    { label: 'Reportes', icono: 'pi pi-chart-bar' },
-    { label: 'Gestión de Usuarios', icono: 'pi pi-users' },
-    { label: 'Configuración', icono: 'pi pi-cog' },
-    { label: 'Reportar a Indecopi', icono: 'pi pi-check-circle' },
+  accesosRapidos: AccesoRapido[] = [
+    { label: 'Monitoreo de Reclamaciones', icono: 'pi pi-search', ruta: '/monitoreo' },
+    { label: 'Reportes', icono: 'pi pi-chart-bar', ruta: '/reportes' },
+    { label: 'Gestión de Usuarios', icono: 'pi pi-users', ruta: '/usuarios' },
+    { label: 'Configuración', icono: 'pi pi-cog', ruta: '/configuracion' },
+    { label: 'Reportar a Indecopi', icono: 'pi pi-check-circle', ruta: '/indecopi' },
   ];
 
   periodos = [
@@ -90,12 +96,19 @@ export class DashboardComponent {
 
   periodoSeleccionado = '30';
 
+  constructor(private router: Router) {}
+
   onPeriodoChange(event: any): void {
     this.periodoChanged.emit(event.value);
   }
 
   onExportar(): void {
     this.exportar.emit();
+  }
+
+  onAccesoRapidoClick(acceso: AccesoRapido): void {
+    // Navegar a la ruta especificada
+    this.router.navigate([acceso.ruta]);
   }
 
   estadoClass(estado: string) {

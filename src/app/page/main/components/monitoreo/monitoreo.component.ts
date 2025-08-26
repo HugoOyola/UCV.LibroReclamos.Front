@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -71,7 +72,6 @@ interface ResultadoBusqueda {
     RadioButtonModule,
     InputTextModule,
     DatePickerModule,
-    // AGREGAR: Nuevos imports para la tabla
     TableModule,
     TooltipModule,
     DialogModule,
@@ -259,7 +259,7 @@ export class MonitoreoComponent implements OnInit {
     }
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     // MANTENER: Formularios existentes
     this.searchForm = this.fb.group({
       campus: ['todos'],
@@ -447,8 +447,14 @@ export class MonitoreoComponent implements OnInit {
     this.reclamaciones = [...this.reclamacionesCompletas];
   }
 
-  exportarResultados(): void {
-    console.log('Exportando resultados...');
+  volverAlInicio(): void {
+    this.router.navigate(['/dashboard'])
+      .then(() => {
+        console.log('Navegando al dashboard...');
+      })
+      .catch(error => {
+        console.error('Error al navegar:', error);
+      });
   }
 
   getPorcentaje(valor: number): number {

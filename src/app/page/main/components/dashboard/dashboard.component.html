@@ -109,8 +109,8 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <button *ngFor="let acceso of accesosRapidos"
-            class="flex items-center gap-2 px-4 py-2 text-sm transition-colors duration-200 border border-solid border-gray-200 rounded hover:bg-[#e30512] hover:text-white">
+          <button *ngFor="let acceso of accesosRapidos" (click)="onAccesoRapidoClick(acceso)"
+            class="flex items-center gap-2 px-4 py-2 text-sm transition-colors duration-200 border border-solid border-gray-200 rounded hover:bg-[#e30512] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#e30512] focus:ring-offset-1">
             <i [class]="acceso.icono"></i>
             <span>{{ acceso.label }}</span>
           </button>
