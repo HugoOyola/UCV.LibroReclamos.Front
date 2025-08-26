@@ -1,0 +1,77 @@
+
+/* Estilos CSS para agregar al componente */
+::ng-deep .custom-table .p-datatable-thead > tr > th {
+  padding: 1rem 0.75rem;
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+::ng-deep .custom-table .p-datatable-tbody > tr > td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+::ng-deep .custom-table .p-datatable-tbody > tr:hover {
+  background-color: #f8fafc;
+}
+
+::ng-deep .custom-table .p-paginator {
+  background: white;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+/* Anchos consistentes para las cabeceras */
+::ng-deep .header-id {
+  width: 8rem;
+  min-width: 8rem;
+}
+
+::ng-deep .header-usuario {
+  width: 12rem;
+  min-width: 12rem;
+}
+
+::ng-deep .header-dni {
+  width: 8rem;
+  min-width: 8rem;
+}
+
+::ng-deep .header-correo {
+  width: 14rem;
+  min-width: 14rem;
+}
+
+::ng-deep .header-tipo {
+  width: 8rem;
+  min-width: 8rem;
+}
+
+::ng-deep .header-estado {
+  width: 8rem;
+  min-width: 8rem;
+}
+
+::ng-deep .header-prioridad {
+  width: 8rem;
+  min-width: 8rem;
+}
+
+::ng-deep .header-campus {
+  width: 10rem;
+  min-width: 10rem;
+}
+
+::ng-deep .header-fecha {
+  width: 10rem;
+  min-width: 10rem;
+}
+
+::ng-deep .header-acciones {
+  width: 12rem;
+  min-width: 12rem;
+}

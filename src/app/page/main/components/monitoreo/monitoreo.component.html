@@ -276,8 +276,8 @@
           </div>
 
           <!-- Botones de Acción -->
-          <div class="flex flex-col justify-center gap-4 mt-8 border-t border-gray-200 sm:flex-row">
-            <p-button icon="pi pi-search" label="Buscar Reclamaciones" severity="info" size="small"
+          <div class="flex flex-col justify-end gap-4 mt-8 border-t border-gray-200 sm:flex-row">
+            <p-button icon="pi pi-search" label="Buscar" severity="info" size="small"
               (onClick)="buscarReclamaciones()" />
             <p-button icon="pi pi-times" label="Limpiar Filtros" severity="secondary" size="small"
               (onClick)="limpiarFiltros()" />
@@ -306,7 +306,8 @@
                 <div class="flex flex-col gap-3 sm:flex-row sm:gap-6">
                   <div class="flex items-center">
                     <p-radiobutton value="dni" formControlName="searchType" inputId="dni_search" />
-                    <label for="dni_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                    <label for="dni_search"
+                      class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-blue-600 pi pi-user"></i>
                       DNI
                     </label>
@@ -314,7 +315,8 @@
 
                   <div class="flex items-center">
                     <p-radiobutton value="codigo" formControlName="searchType" inputId="codigo_search" />
-                    <label for="codigo_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                    <label for="codigo_search"
+                      class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-green-600 pi pi-tag"></i>
                       Código
                     </label>
@@ -322,7 +324,8 @@
 
                   <div class="flex items-center">
                     <p-radiobutton value="nombre" formControlName="searchType" inputId="nombre_search" />
-                    <label for="nombre_search" class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                    <label for="nombre_search"
+                      class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-purple-600 pi pi-users"></i>
                       Nombre
                     </label>
@@ -336,15 +339,9 @@
                   Ingrese el {{ getSearchLabel() }}
                 </label>
                 <div class="relative">
-                  <input
-                    pInputText
-                    formControlName="searchValue"
-                    [placeholder]="getPlaceholder()"
-                    class="w-full pl-10 pr-4"
-                    size="small"
-                  />
-                  <i
-                    [class]="getSearchIcon(quickSearchForm.get('searchType')?.value || 'dni')"
+                  <input pInputText formControlName="searchValue" [placeholder]="getPlaceholder()"
+                    class="w-full pl-10 pr-4" size="small" />
+                  <i [class]="getSearchIcon(quickSearchForm.get('searchType')?.value || 'dni')"
                     class="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2">
                   </i>
                 </div>
@@ -352,26 +349,15 @@
 
               <!-- Botones de Acción -->
               <div class="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row">
-                <p-button
-                  icon="pi pi-search"
-                  label="Buscar Ahora"
-                  severity="info"
-                  size="small"
-                  [disabled]="quickSearchForm.invalid"
-                  (onClick)="buscarAhora()"
-                />
-                <p-button
-                  icon="pi pi-times"
-                  label="Limpiar"
-                  severity="secondary"
-                  size="small"
-                  (onClick)="limpiar()"
-                />
+                <p-button icon="pi pi-search" label="Buscar Ahora" severity="info" size="small"
+                  [disabled]="quickSearchForm.invalid" (onClick)="buscarAhora()" />
+                <p-button icon="pi pi-times" label="Limpiar" severity="secondary" size="small" (onClick)="limpiar()" />
               </div>
             </div>
 
             <!-- Panel de Consejos -->
-            <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm lg:col-span-3 bg-blue-50">
+            <div
+              class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm lg:col-span-3 bg-blue-50">
               <div class="flex items-center gap-2 mb-4">
                 <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
                   <i class="text-lg text-blue-600 pi pi-lightbulb"></i>
@@ -381,34 +367,40 @@
 
               <div class="space-y-4">
                 <!-- Consejo por DNI -->
-                <div class="p-3 bg-white border border-blue-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'dni' || !quickSearchForm.get('searchType')?.value">
+                <div class="p-3 bg-white border border-blue-200 rounded-lg"
+                  *ngIf="quickSearchForm.get('searchType')?.value === 'dni' || !quickSearchForm.get('searchType')?.value">
                   <div class="flex items-start gap-2">
                     <i class="text-blue-600 pi pi-user mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-blue-800">Búsqueda por DNI</h4>
-                      <p class="mt-1 text-sm text-blue-700">Ingresa el número de DNI completo (8 dígitos) sin espacios ni guiones.</p>
+                      <p class="mt-1 text-sm text-blue-700">Ingresa el número de DNI completo (8 dígitos) sin espacios
+                        ni guiones.</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Consejo por Código -->
-                <div class="p-3 bg-white border border-green-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'codigo'">
+                <div class="p-3 bg-white border border-green-200 rounded-lg"
+                  *ngIf="quickSearchForm.get('searchType')?.value === 'codigo'">
                   <div class="flex items-start gap-2">
                     <i class="text-green-600 pi pi-tag mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-green-800">Búsqueda por Código</h4>
-                      <p class="mt-1 text-sm text-green-700">El código de reclamación es único y ofrece resultados más precisos. Ejemplo: REC-2024-001234</p>
+                      <p class="mt-1 text-sm text-green-700">El código de reclamación es único y ofrece resultados más
+                        precisos. Ejemplo: REC-2024-001234</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Consejo por Nombre -->
-                <div class="p-3 bg-white border border-purple-200 rounded-lg" *ngIf="quickSearchForm.get('searchType')?.value === 'nombre'">
+                <div class="p-3 bg-white border border-purple-200 rounded-lg"
+                  *ngIf="quickSearchForm.get('searchType')?.value === 'nombre'">
                   <div class="flex items-start gap-2">
                     <i class="text-purple-600 pi pi-users mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-purple-800">Búsqueda por Nombre</h4>
-                      <p class="mt-1 text-sm text-purple-700">Puedes usar nombres parciales o completos. La búsqueda no distingue mayúsculas y minúsculas.</p>
+                      <p class="mt-1 text-sm text-purple-700">Puedes usar nombres parciales o completos. La búsqueda no
+                        distingue mayúsculas y minúsculas.</p>
                     </div>
                   </div>
                 </div>
@@ -443,18 +435,26 @@
   <div *ngIf="showResults" class="mt-6">
     <!-- Header de Resultados con botón Nueva Búsqueda -->
     <div class="bg-[#243659] text-white rounded-t-lg shadow-md">
-      <div class="flex items-center justify-between px-6 py-4">
-        <div class="flex items-center gap-2">
-          <i class="text-white pi pi-list"></i>
-          <h3 class="font-semibold uppercase text-md">Resultados de Búsqueda</h3>
-          <span class="px-2 py-1 text-xs bg-white rounded bg-opacity-20">{{ getFilteredReclamaciones().length }} registros encontrados</span>
+      <div class="flex flex-col gap-2 px-6 py-4 md:flex-row md:items-center md:justify-between">
+        <!-- Título y Subtítulo -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2">
+            <i class="text-white pi pi-list"></i>
+            <h3 class="font-semibold uppercase text-md">Resultados de Búsqueda</h3>
+            <span class="px-2 py-1 text-xs bg-white rounded bg-opacity-20">
+              {{ getFilteredReclamaciones().length }} registros encontrados
+            </span>
+          </div>
+          <p class="mt-1 text-sm text-gray-300">
+            Visualice, gestione y exporte reclamaciones de acuerdo a los filtros aplicados.
+          </p>
         </div>
-        <p-button
-          icon="pi pi-search"
-          label="Nueva Búsqueda"
-          severity="secondary"
-          size="small"
-          (onClick)="nuevaBusqueda()" />
+
+        <!-- Botón Nueva Búsqueda -->
+        <div>
+          <p-button icon="pi pi-search" label="Nueva Búsqueda" severity="secondary" size="small"
+            (onClick)="nuevaBusqueda()" />
+        </div>
       </div>
     </div>
 
@@ -463,8 +463,8 @@
       <div class="overflow-visible">
         <p-table [value]="getFilteredReclamaciones()" [paginator]="true" [rows]="10"
           [totalRecords]="getFilteredReclamaciones().length" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-          styleClass="p-datatable-sm" [tableStyle]="{'min-width': '60rem'}"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" styleClass="p-datatable-sm"
+          [tableStyle]="{'min-width': '60rem'}"
           [style]="{'position': 'relative', 'z-index': '1000', 'overflow': 'visible'}">
 
           <!-- Header de la tabla -->
@@ -586,7 +586,7 @@
           <ng-template pTemplate="emptymessage">
             <tr>
               <td colspan="10" class="py-8 text-center">
-                <div class="flex flex-col items-center justify-center space-y-3">
+                <div class="flex flex-col items-center justify-end space-y-3">
                   <!-- Mensaje cuando no hay resultados que coincidan -->
                   <div class="flex flex-col items-center">
                     <div class="flex items-center justify-center w-16 h-16 mb-3 bg-orange-100 rounded-full">
@@ -598,16 +598,12 @@
                       Intente modificar los filtros o realizar una nueva búsqueda.
                     </p>
                     <div class="flex gap-3">
-                      <button
-                        type="button"
-                        (click)="nuevaBusqueda()"
+                      <button type="button" (click)="nuevaBusqueda()"
                         class="px-4 py-2 text-sm font-medium text-blue-600 transition-colors duration-200 rounded-lg bg-blue-50 hover:bg-blue-100">
                         <i class="mr-2 pi pi-search"></i>
                         Nueva búsqueda
                       </button>
-                      <button
-                        type="button"
-                        (click)="limpiarFiltros()"
+                      <button type="button" (click)="limpiarFiltros()"
                         class="px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 rounded-lg bg-gray-50 hover:bg-gray-100">
                         <i class="mr-2 pi pi-times"></i>
                         Limpiar todo

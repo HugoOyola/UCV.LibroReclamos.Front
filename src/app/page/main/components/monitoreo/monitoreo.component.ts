@@ -604,29 +604,252 @@ export class MonitoreoComponent implements OnInit {
     }
   }
 
-  // AGREGAR: Métodos de acción para la tabla
+  // Métodos para obtener clases CSS con iconos mejorados
+  getTipoClass(tipo: string): string {
+    switch (tipo.toLowerCase()) {
+      case 'reclamo':
+        return 'bg-red-100 text-red-700';
+      case 'queja':
+        return 'bg-orange-100 text-orange-700';
+      case 'consulta':
+      case 'consulta / sugerencia':
+        return 'bg-blue-100 text-blue-700';
+      case 'académico':
+        return 'bg-purple-100 text-purple-700';
+      case 'administrativo':
+        return 'bg-green-100 text-green-700';
+      case 'infraestructura':
+        return 'bg-blue-100 text-blue-700';
+      case 'servicio':
+        return 'bg-orange-100 text-orange-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  }
+
+  // Iconos para estados
+  getEstadoIcon(estado: string): string {
+    switch (estado.toLowerCase()) {
+      case 'pendiente':
+        return 'pi pi-clock';
+      case 'en proceso':
+        return 'pi pi-spin pi-spinner';
+      case 'atendido':
+      case 'resuelto':
+      case 'conforme':
+        return 'pi pi-check';
+      case 'rechazado':
+      case 'no-conforme':
+      case 'vencido':
+        return 'pi pi-times';
+      case 'inválido':
+        return 'pi pi-ban';
+      default:
+        return 'pi pi-info-circle';
+    }
+  }
+
+  // Iconos para prioridades
+  getPrioridadIcon(prioridad: string): string {
+    switch (prioridad.toLowerCase()) {
+      case 'alta':
+      case 'urgente':
+        return 'pi pi-exclamation-triangle';
+      case 'media':
+      case 'normal':
+        return 'pi pi-info-circle';
+      case 'baja':
+        return 'pi pi-minus-circle';
+      default:
+        return 'pi pi-info-circle';
+    }
+  }
+
+  // Métodos para contar registros por filtros rápidos
+  getPendientesCount(): number {
+    return this.getFilteredReclamaciones().filter(r =>
+      r.estado.toLowerCase() === 'pendiente'
+    ).length;
+  }
+
+  getAltaPrioridadCount(): number {
+    return this.getFilteredReclamaciones().filter(r =>
+      r.prioridad.toLowerCase() === 'alta'
+    ).length;
+  }
+
+  getResueltosHoyCount(): number {
+    const hoy = new Date();
+    return this.getFilteredReclamaciones().filter(r =>
+      (r.estado.toLowerCase() === 'resuelto' ||
+       r.estado.toLowerCase() === 'atendido' ||
+       r.estado.toLowerCase() === 'conforme') &&
+      this.esHoy(r.fecha)
+    ).length;
+  }
+
+  // Método para calcular fecha relativa
+  getFechaRelativa(fecha: string): string {
+    try {
+      // Convertir fecha string a Date
+      const [dia, mes, año] = fecha.split('/');
+      const fechaReclamacion = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+      const hoy = new Date();
+
+      // Calcular diferencia en días
+      const diffTime = hoy.getTime() - fechaReclamacion.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) {
+        return 'Hoy';
+      } else if (diffDays === 1) {
+        return 'Ayer';
+      } else if (diffDays < 7) {
+        return `Hace ${diffDays} días`;
+      } else if (diffDays < 30) {
+        const semanas = Math.floor(diffDays / 7);
+        return `Hace ${semanas} semana${semanas > 1 ? 's' : ''}`;
+      } else if (diffDays < 365) {
+        const meses = Math.floor(diffDays / 30);
+        return `Hace ${meses} mes${meses > 1 ? 'es' : ''}`;
+      } else {
+        const años = Math.floor(diffDays / 365);
+        return `Hace ${años} año${años > 1 ? 's' : ''}`;
+      }
+    } catch (error) {
+      return 'Fecha inválida';
+    }
+  }
+
+  // Método auxiliar para verificar si es hoy
+  private esHoy(fecha: string): boolean {
+    try {
+      const [dia, mes, año] = fecha.split('/');
+      const fechaReclamacion = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+      const hoy = new Date();
+
+      return fechaReclamacion.toDateString() === hoy.toDateString();
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // Métodos adicionales para mejorar la funcionalidad de la tabla
+
+  // Método para obtener el color del avatar basado en el nivel
+  getAvatarClass(nivel: string): string {
+    return nivel === 'Alumno'
+      ? 'bg-gradient-to-br from-blue-100 to-blue-200'
+      : 'bg-gradient-to-br from-purple-100 to-purple-200';
+  }
+
+  // Método para obtener el icono del usuario basado en el nivel
+  getUserIcon(nivel: string): string {
+    return nivel === 'Alumno' ? 'pi pi-user text-blue-600' : 'pi pi-graduation-cap text-purple-600';
+  }
+
+  // Método para obtener el color del badge del nivel
+  getNivelClass(nivel: string): string {
+    return nivel === 'Alumno'
+      ? 'bg-blue-100 text-blue-700'
+      : 'bg-purple-100 text-purple-700';
+  }
+
+  // Método para formatear fechas de registro
+  formatearFechaRegistro(fechaRegistro: string): string {
+    try {
+      // Si la fecha ya viene formateada, la devolvemos tal como está
+      if (fechaRegistro.includes(':')) {
+        return fechaRegistro;
+      }
+
+      // Si necesita formateo adicional, aquí se puede implementar
+      return fechaRegistro;
+    } catch (error) {
+      return fechaRegistro;
+    }
+  }
+
+  // Método para obtener estadísticas actualizadas
+  actualizarEstadisticas(): void {
+    const reclamaciones = this.getFilteredReclamaciones();
+
+    this.stats = {
+      total: reclamaciones.length,
+      pendientes: reclamaciones.filter(r => r.estado.toLowerCase() === 'pendiente').length,
+      resueltas: reclamaciones.filter(r =>
+        r.estado.toLowerCase() === 'atendido' ||
+        r.estado.toLowerCase() === 'resuelto' ||
+        r.estado.toLowerCase() === 'conforme'
+      ).length,
+      enProceso: reclamaciones.filter(r => r.estado.toLowerCase() === 'en proceso').length
+    };
+  }
+
+  // Método para exportar datos (placeholder)
+  exportarDatos(): void {
+    console.log('Exportando datos...');
+    // Implementar lógica de exportación
+    const dataToExport = this.getFilteredReclamaciones();
+    // Aquí puedes agregar la lógica para exportar a Excel, PDF, etc.
+  }
+
+  // Método para configurar columnas (placeholder)
+  configurarColumnas(): void {
+    console.log('Configurando columnas...');
+    // Implementar lógica para mostrar/ocultar columnas
+  }
+
+  // Métodos mejorados para las acciones de la tabla
   verDetalles(reclamacion: ReclamacionCompleta): void {
-    console.log('Ver detalles:', reclamacion);
-    // Implementar lógica para mostrar modal con detalles
+    console.log('Ver detalles de reclamación:', reclamacion);
+    // Aquí puedes abrir un modal con los detalles completos
+    // Por ejemplo: this.mostrarModalDetalles = true; this.reclamacionSeleccionada = reclamacion;
   }
 
   editarEstado(reclamacion: ReclamacionCompleta): void {
-    console.log('Editar estado:', reclamacion);
+    console.log('Cambiar estado de:', reclamacion.codigo);
     // Implementar lógica para cambiar estado
+    // Por ejemplo: abrir un dropdown o modal para seleccionar nuevo estado
   }
 
   asignarResponsable(reclamacion: ReclamacionCompleta): void {
-    console.log('Asignar responsable:', reclamacion);
+    console.log('Asignar responsable a:', reclamacion.codigo);
     // Implementar lógica para asignar responsable
+    // Por ejemplo: abrir un modal con lista de responsables disponibles
   }
 
   generarReporte(reclamacion: ReclamacionCompleta): void {
-    console.log('Generar reporte:', reclamacion);
+    console.log('Generar reporte PDF para:', reclamacion.codigo);
     // Implementar lógica para generar reporte PDF
+    // Por ejemplo: llamar a un servicio que genere y descargue el PDF
   }
 
   mostrarOpciones(reclamacion: ReclamacionCompleta): void {
-    console.log('Mostrar opciones:', reclamacion);
-    // Implementar lógica para mostrar menú contextual
+    console.log('Mostrar menú de opciones para:', reclamacion.codigo);
+    // Implementar lógica para mostrar menú contextual con más opciones
+    // Por ejemplo: duplicar, archivar, derivar, etc.
+  }
+
+  // Método para manejar filtros rápidos
+  aplicarFiltroRapido(filtro: string): void {
+    switch (filtro) {
+      case 'pendientes':
+        this.selectedEstado = 'pendiente';
+        break;
+      case 'alta_prioridad':
+        this.selectedPrioridad = 'alta';
+        break;
+      case 'resueltos':
+        this.selectedEstado = 'atendido';
+        break;
+      default:
+        // Limpiar filtros
+        this.selectedEstado = 'todos';
+        this.selectedPrioridad = 'todos';
+    }
+
+    // Actualizar estadísticas después de aplicar filtros
+    this.actualizarEstadisticas();
   }
 }
