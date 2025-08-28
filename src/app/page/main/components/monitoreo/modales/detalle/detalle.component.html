@@ -1,0 +1,72 @@
+<p-dialog
+  [(visible)]="visible"
+  [dismissableMask]="true"
+  [modal]="true"
+  [style]="{width: '42rem'}"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="close.emit()"
+  header="Detalle de la Reclamación"
+>
+  <ng-container *ngIf="reclamacion">
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Código</p>
+          <p class="font-semibold">#{{reclamacion.codigo}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Estado</p>
+          <p class="font-semibold">{{reclamacion.estado}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Usuario</p>
+          <p class="font-semibold">{{reclamacion.usuario}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Nivel</p>
+          <p class="font-semibold">{{reclamacion.nivel}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">DNI</p>
+          <p class="font-semibold">{{reclamacion.dni}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Correo</p>
+          <p class="font-semibold break-all">{{reclamacion.correo}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Tipo</p>
+          <p class="font-semibold">{{reclamacion.tipo}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Prioridad</p>
+          <p class="font-semibold">{{reclamacion.prioridad}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Campus</p>
+          <p class="font-semibold">{{reclamacion.campus}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50">
+          <p class="text-xs text-slate-500">Fecha</p>
+          <p class="font-semibold">{{reclamacion.fecha}}</p>
+        </div>
+        <div class="p-3 border rounded-lg bg-slate-50 md:col-span-2">
+          <p class="text-xs text-slate-500">Fecha Registro</p>
+          <p class="font-semibold">{{reclamacion.fechaRegistro}}</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-white border shadow-sm rounded-xl">
+        <p class="mb-2 text-sm font-semibold text-slate-700">Descripción</p>
+        <p class="leading-relaxed whitespace-pre-line text-slate-700">
+          {{reclamacion.descripcion || 'Sin descripción'}}
+        </p>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button pButton type="button" label="Cerrar" class="p-button-text" (click)="close.emit()"></button>
+      </div>
+    </div>
+  </ng-container>
+</p-dialog>

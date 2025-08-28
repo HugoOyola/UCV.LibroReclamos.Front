@@ -1,0 +1,35 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '34rem'}"
+  [draggable]="false"
+  [resizable]="false"
+  header="Generar reporte"
+  (onHide)="close.emit()"
+>
+  <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="close.emit()">
+    <div class="p-3 text-sm border rounded-lg bg-slate-50">
+      Reclamación: <span class="font-semibold">#{{reclamacion?.codigo}}</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3">
+      <label *ngFor="let t of tipos" class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
+        <p-radioButton name="tipo" [value]="t.valor" [(ngModel)]="tipo"></p-radioButton>
+        <span>
+          <span class="block font-semibold"><i [class]="t.icono" class="mr-2"></i>{{t.label}}</span>
+          <span class="block text-xs text-slate-500">{{t.descripcion}}</span>
+        </span>
+      </label>
+    </div>
+
+    <div *ngIf="tipo" class="text-xs text-slate-600">
+      Tamaño estimado: <span class="font-semibold">{{tamanoEstimado()}} KB</span>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="close.emit()"></button>
+      <button pButton type="button" label="Generar" icon="pi pi-file-pdf"
+              [disabled]="!tipo" (click)="confirmIfValid()"></button>
+    </div>
+  </div>
+</p-dialog>

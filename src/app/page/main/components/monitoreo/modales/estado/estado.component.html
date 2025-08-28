@@ -1,0 +1,37 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '36rem'}"
+  [draggable]="false"
+  [resizable]="false"
+  header="Cambiar estado"
+  (onHide)="close.emit()"
+>
+  <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="close.emit()">
+    <div class="p-3 text-sm border rounded-lg bg-slate-50">
+      Reclamación: <span class="font-semibold">#{{reclamacion?.codigo}}</span>
+      <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-slate-200">{{reclamacion?.estado}}</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label *ngFor="let e of estados" class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
+        <p-radioButton name="estado" [value]="e.valor" [(ngModel)]="nuevoEstado"></p-radioButton>
+        <span>
+          <span class="block font-semibold">{{e.label}}</span>
+          <span class="block text-xs text-slate-500">{{e.descripcion}}</span>
+        </span>
+      </label>
+    </div>
+
+    <div>
+      <p class="mb-1 text-sm font-medium">Comentario (opcional)</p>
+      <textarea pInputTextarea [(ngModel)]="comentario" rows="4" class="w-full"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="close.emit()"></button>
+      <button pButton type="button" label="Cambiar estado" icon="pi pi-check"
+              [disabled]="!nuevoEstado" (click)="confirmIfValid()"></button>
+    </div>
+  </div>
+</p-dialog>
