@@ -29,22 +29,18 @@
 </div>
 
 <div class="w-full p-6">
-  <!-- Tarjetas de Estadísticas -->
+  <!-- Tarjetas de Estadísticas (basadas en los filtrados) -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Total Reclamaciones -->
     <div
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300 group-hover:text-blue-600">Total
-            Reclamaciones</p>
-          <h3 class="text-2xl font-bold text-gray-900 transition-colors duration-300">
-            {{ stats.total }}
-          </h3>
+          <p class="mb-1 text-sm text-gray-500">Total Reclamaciones</p>
+          <h3 class="text-2xl font-bold text-gray-900">{{ stats.total }}</h3>
         </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-blue-100 rounded-xl hover:bg-blue-200 hover:scale-110">
-          <i class="text-xl text-blue-600 transition-transform duration-300 pi pi-file-edit hover:rotate-12"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
+          <i class="text-xl text-blue-600 pi pi-file-edit"></i>
         </div>
       </div>
     </div>
@@ -54,14 +50,11 @@
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-orange-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">Pendientes</p>
-          <h3 class="text-2xl font-bold text-orange-500 transition-colors duration-300">
-            {{ stats.pendientes }}
-          </h3>
+          <p class="mb-1 text-sm text-gray-500">Pendientes</p>
+          <h3 class="text-2xl font-bold text-orange-500">{{ stats.pendientes }}</h3>
         </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-orange-100 rounded-xl hover:bg-orange-200 hover:scale-110">
-          <i class="text-xl text-orange-500 transition-transform duration-300 pi pi-clock hover:rotate-12"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
+          <i class="text-xl text-orange-500 pi pi-clock"></i>
         </div>
       </div>
     </div>
@@ -71,14 +64,11 @@
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-green-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">Resueltas</p>
-          <h3 class="text-2xl font-bold text-green-500 transition-colors duration-300">
-            {{ stats.resueltas }}
-          </h3>
+          <p class="mb-1 text-sm text-gray-500">Resueltas</p>
+          <h3 class="text-2xl font-bold text-green-500">{{ stats.resueltas }}</h3>
         </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-green-100 rounded-xl hover:bg-green-200 hover:scale-110">
-          <i class="text-xl text-green-500 transition-transform duration-300 pi pi-check-circle hover:rotate-12"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
+          <i class="text-xl text-green-500 pi pi-check-circle"></i>
         </div>
       </div>
     </div>
@@ -88,14 +78,11 @@
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-purple-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500 transition-colors duration-300">En Proceso</p>
-          <h3 class="text-2xl font-bold text-purple-500 transition-colors duration-300">
-            {{ stats.enProceso }}
-          </h3>
+          <p class="mb-1 text-sm text-gray-500">En Proceso</p>
+          <h3 class="text-2xl font-bold text-purple-500">{{ stats.enProceso }}</h3>
         </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-purple-100 rounded-xl hover:bg-purple-200 hover:scale-110">
-          <i class="text-xl text-purple-500 transition-transform duration-300 pi pi-chart-line hover:rotate-12"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
+          <i class="text-xl text-purple-500 pi pi-chart-line"></i>
         </div>
       </div>
     </div>
@@ -104,29 +91,29 @@
   <!-- Centro de Búsqueda - Solo se muestra cuando NO hay resultados -->
   <div *ngIf="!showResults" class="mt-6 bg-white border border-gray-200 border-solid rounded-lg shadow-sm">
     <!-- Header del Centro de Búsqueda -->
-    <div class="p-4 text-white rounded-t-lg bg-[#243659]">
-      <div class="flex items-center gap-3">
-        <i class="text-2xl pi pi-search"></i>
-        <div>
+    <div class="text-white rounded-t-lg bg-[#243659]">
+      <div class="items-center gap-4 p-4">
+        <div class="flex items-center gap-1 uppercase">
+          <i class="text-lg pi pi-search"></i>
           <h2 class="text-lg font-semibold">Centro de Búsqueda Inteligente</h2>
-          <p class="text-sm text-gray-400">Encuentre reclamaciones con filtros avanzados o búsqueda rápida</p>
         </div>
+        <p class="text-sm text-gray-400">
+          Encuentre reclamaciones con filtros avanzados o búsqueda rápida
+        </p>
       </div>
     </div>
 
-    <!-- Tabs del Centro de Búsqueda -->
+    <!-- Tabs -->
     <div class="border-0 border-b border-gray-200 border-solid">
       <nav class="flex w-full mb-px">
-        <button type="button" (click)="setActiveTab('advanced')" [class]="activeTab === 'advanced'
-              ? 'border-blue-500 text-blue-600 bg-blue-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+        <button type="button" (click)="setActiveTab('advanced')"
+          [class]="activeTab === 'advanced' ? 'border-blue-500 text-blue-600 bg-blue-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
           class="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-medium transition-colors border-0 border-b-2 border-solid text-md">
           <i class="text-lg pi pi-sliders-h"></i>
           Búsqueda Avanzada
         </button>
-        <button type="button" (click)="setActiveTab('quick')" [class]="activeTab === 'quick'
-              ? 'border-blue-500 text-blue-600 bg-blue-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+        <button type="button" (click)="setActiveTab('quick')"
+          [class]="activeTab === 'quick' ? 'border-blue-500 text-blue-600 bg-blue-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
           class="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-medium transition-colors border-0 border-b-2 border-solid text-md">
           <i class="text-lg pi pi-bolt"></i>
           Búsqueda Rápida
@@ -134,10 +121,10 @@
       </nav>
     </div>
 
-    <!-- Contenido de las Tabs -->
+    <!-- Contenido de Tabs -->
     <div class="p-6">
       <!-- Búsqueda Avanzada -->
-      <div *ngIf="activeTab === 'advanced'" class="tab-content">
+      <div *ngIf="activeTab === 'advanced'">
         <form [formGroup]="searchForm">
           <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <!-- Filtros Básicos -->
@@ -153,14 +140,14 @@
               <div>
                 <label class="block mb-2 text-sm font-medium text-gray-700">Campus o Filial</label>
                 <p-select [options]="campusOptions" formControlName="campus" placeholder="Seleccionar Campus"
-                  class="w-full" size="small" />
+                  class="w-full" size="small"></p-select>
               </div>
 
               <!-- Período de Tiempo -->
               <div>
                 <label class="block mb-2 text-sm font-medium text-gray-700">Fecha de Inicio y Fin</label>
                 <p-datepicker formControlName="fechaRango" placeholder="Seleccionar rango de fechas" class="w-full"
-                  size="small" dateFormat="dd/mm/yy" selectionMode="range" />
+                  size="small" dateFormat="dd/mm/yy" selectionMode="range"></p-datepicker>
               </div>
             </div>
 
@@ -176,28 +163,31 @@
               <div class="space-y-3">
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="tipoTodos" inputId="tipo_todos"
-                    (onChange)="onTipoReclamacionChange('todos')" />
+                    (onChange)="onTipoReclamacionChange('todos')"></p-checkbox>
                   <label for="tipo_todos" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     TODOS LOS TIPOS
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="tipoReclamo" inputId="tipo_reclamo"
-                    (onChange)="onTipoReclamacionChange('reclamo')" />
+                    (onChange)="onTipoReclamacionChange('reclamo')"></p-checkbox>
                   <label for="tipo_reclamo" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     RECLAMO
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="tipoQueja" inputId="tipo_queja"
-                    (onChange)="onTipoReclamacionChange('queja')" />
+                    (onChange)="onTipoReclamacionChange('queja')"></p-checkbox>
                   <label for="tipo_queja" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     QUEJA
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="tipoConsulta" inputId="tipo_consulta"
-                    (onChange)="onTipoReclamacionChange('consulta')" />
+                    (onChange)="onTipoReclamacionChange('consulta')"></p-checkbox>
                   <label for="tipo_consulta" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     CONSULTA / SUGERENCIA
                   </label>
@@ -217,56 +207,63 @@
               <div class="grid grid-cols-2 gap-2">
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoTodos" inputId="estado_todos"
-                    (onChange)="onEstadoProcesoChange('todos')" />
+                    (onChange)="onEstadoProcesoChange('todos')"></p-checkbox>
                   <label for="estado_todos" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Todos
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoEnProceso" inputId="estado_en_proceso"
-                    (onChange)="onEstadoProcesoChange('en_proceso')" />
+                    (onChange)="onEstadoProcesoChange('en_proceso')"></p-checkbox>
                   <label for="estado_en_proceso" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     En Proceso
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoConforme" inputId="estado_conforme"
-                    (onChange)="onEstadoProcesoChange('conforme')" />
+                    (onChange)="onEstadoProcesoChange('conforme')"></p-checkbox>
                   <label for="estado_conforme" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Conforme
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoNoConforme" inputId="estado_no_conforme"
-                    (onChange)="onEstadoProcesoChange('no_conforme')" />
+                    (onChange)="onEstadoProcesoChange('no_conforme')"></p-checkbox>
                   <label for="estado_no_conforme" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     No-Conforme
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoPendiente" inputId="estado_pendiente"
-                    (onChange)="onEstadoProcesoChange('pendiente')" />
+                    (onChange)="onEstadoProcesoChange('pendiente')"></p-checkbox>
                   <label for="estado_pendiente" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Pendiente
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoAtendido" inputId="estado_atendido"
-                    (onChange)="onEstadoProcesoChange('atendido')" />
+                    (onChange)="onEstadoProcesoChange('atendido')"></p-checkbox>
                   <label for="estado_atendido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Atendido
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoVencido" inputId="estado_vencido"
-                    (onChange)="onEstadoProcesoChange('vencido')" />
+                    (onChange)="onEstadoProcesoChange('vencido')"></p-checkbox>
                   <label for="estado_vencido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Vencido
                   </label>
                 </div>
+
                 <div class="flex items-center">
                   <p-checkbox [binary]="true" formControlName="estadoInvalido" inputId="estado_invalido"
-                    (onChange)="onEstadoProcesoChange('invalido')" />
+                    (onChange)="onEstadoProcesoChange('invalido')"></p-checkbox>
                   <label for="estado_invalido" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
                     Inválido
                   </label>
@@ -286,10 +283,9 @@
       </div>
 
       <!-- Búsqueda Rápida -->
-      <div *ngIf="activeTab === 'quick'" class="tab-content">
+      <div *ngIf="activeTab === 'quick'">
         <form [formGroup]="quickSearchForm">
           <div class="grid grid-cols-1 gap-6 lg:grid-cols-10">
-
             <!-- Panel Principal de Búsqueda -->
             <div class="p-6 space-y-4 border border-gray-200 border-solid rounded-lg shadow-sm lg:col-span-7">
               <div class="flex items-center gap-2 mb-4">
@@ -302,10 +298,9 @@
               <!-- Tipo de Búsqueda -->
               <div class="space-y-4">
                 <label class="block text-sm font-medium text-gray-700">Tipo de Búsqueda</label>
-
                 <div class="flex flex-col gap-3 sm:flex-row sm:gap-6">
                   <div class="flex items-center">
-                    <p-radiobutton value="dni" formControlName="searchType" inputId="dni_search" />
+                    <p-radiobutton value="dni" formControlName="searchType" inputId="dni_search"></p-radiobutton>
                     <label for="dni_search"
                       class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-blue-600 pi pi-user"></i>
@@ -314,7 +309,7 @@
                   </div>
 
                   <div class="flex items-center">
-                    <p-radiobutton value="codigo" formControlName="searchType" inputId="codigo_search" />
+                    <p-radiobutton value="codigo" formControlName="searchType" inputId="codigo_search"></p-radiobutton>
                     <label for="codigo_search"
                       class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-green-600 pi pi-tag"></i>
@@ -323,7 +318,7 @@
                   </div>
 
                   <div class="flex items-center">
-                    <p-radiobutton value="nombre" formControlName="searchType" inputId="nombre_search" />
+                    <p-radiobutton value="nombre" formControlName="searchType" inputId="nombre_search"></p-radiobutton>
                     <label for="nombre_search"
                       class="flex items-center gap-2 ml-3 text-sm font-medium text-gray-700 cursor-pointer">
                       <i class="text-purple-600 pi pi-users"></i>
@@ -373,8 +368,9 @@
                     <i class="text-blue-600 pi pi-user mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-blue-800">Búsqueda por DNI</h4>
-                      <p class="mt-1 text-sm text-blue-700">Ingresa el número de DNI completo (8 dígitos) sin espacios
-                        ni guiones.</p>
+                      <p class="mt-1 text-sm text-blue-700">
+                        Ingresa el número de DNI completo (8 dígitos) sin espacios ni guiones.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -386,8 +382,10 @@
                     <i class="text-green-600 pi pi-tag mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-green-800">Búsqueda por Código</h4>
-                      <p class="mt-1 text-sm text-green-700">El código de reclamación es único y ofrece resultados más
-                        precisos. Ejemplo: REC-2024-001234</p>
+                      <p class="mt-1 text-sm text-green-700">
+                        El código de reclamación es único y ofrece resultados más precisos.
+                        Ejemplo: REC-2024-001234
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -399,8 +397,10 @@
                     <i class="text-purple-600 pi pi-users mt-0.5"></i>
                     <div>
                       <h4 class="text-sm font-semibold text-purple-800">Búsqueda por Nombre</h4>
-                      <p class="mt-1 text-sm text-purple-700">Puedes usar nombres parciales o completos. La búsqueda no
-                        distingue mayúsculas y minúsculas.</p>
+                      <p class="mt-1 text-sm text-purple-700">
+                        Puedes usar nombres parciales o completos. La búsqueda no distingue
+                        mayúsculas y minúsculas.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -427,25 +427,25 @@
             </div>
           </div>
         </form>
-      </div>
+      </div> <!-- /quick -->
     </div>
   </div>
 
-  <!-- Resultados de Búsqueda - Solo se muestra cuando hay resultados -->
+  <!-- Resultados de Búsqueda -->
   <div *ngIf="showResults" class="mt-6">
     <!-- Header de Resultados con botón Nueva Búsqueda -->
-    <div class="bg-[#243659] text-white rounded-t-lg shadow-md">
-      <div class="flex flex-col gap-2 px-6 py-4 md:flex-row md:items-center md:justify-between">
+    <div class="text-white rounded-t-lg bg-[#243659]">
+      <div class="flex items-center justify-between gap-3 p-4">
         <!-- Título y Subtítulo -->
-        <div class="flex flex-col">
-          <div class="flex items-center gap-2">
-            <i class="text-white pi pi-list"></i>
-            <h3 class="font-semibold uppercase text-md">Resultados de Búsqueda</h3>
+        <div>
+          <div class="flex items-center gap-1 uppercase">
+            <i class="text-lg pi pi-list"></i>
+            <h2 class="text-lg font-semibold">Resultados de Búsqueda</h2>
             <span class="px-2 py-1 text-xs bg-white rounded bg-opacity-20">
-              {{ getFilteredReclamaciones().length }} registros encontrados
+              {{ filteredReclamaciones.length }} registros encontrados
             </span>
           </div>
-          <p class="mt-1 text-sm text-gray-300">
+          <p class="text-sm text-gray-400">
             Visualice, gestione y exporte reclamaciones de acuerdo a los filtros aplicados.
           </p>
         </div>
@@ -458,122 +458,274 @@
       </div>
     </div>
 
-    <!-- Tabla de Reclamaciones -->
-    <div class="relative z-10 bg-white border border-gray-200 border-solid rounded-b-lg shadow-sm">
-      <div class="overflow-visible">
-        <p-table [value]="getFilteredReclamaciones()" [paginator]="true" [rows]="10"
-          [totalRecords]="getFilteredReclamaciones().length" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" styleClass="p-datatable-sm"
-          [tableStyle]="{'min-width': '60rem'}"
-          [style]="{'position': 'relative', 'z-index': '1000', 'overflow': 'visible'}">
+    <!-- Tabla de Reclamaciones con barra de filtro -->
+    <div class="overflow-hidden bg-white border border-gray-100 shadow-lg rounded-xl">
+      <!-- Header con filtros -->
+      <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-gray-50">
+        <!-- Barra de filtros mejorada -->
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <!-- Controles -->
+          <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Búsqueda global -->
+            <label class="block">
+              <span class="block mb-1 text-xs font-medium text-gray-600">Búsqueda</span>
+              <span class="w-full p-input-icon-left">
+                <input pInputText type="text" [(ngModel)]="searchTerm" placeholder="Código, usuario, DNI o correo"
+                  class="w-full bg-white border border-gray-200 shadow-sm rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100" />
+              </span>
+            </label>
 
-          <!-- Header de la tabla -->
+            <!-- Estado -->
+            <label class="block">
+              <span class="block mb-1 text-xs font-medium text-gray-600">Estado</span>
+              <p-select [options]="estadoOptions" optionLabel="label" optionValue="value" [(ngModel)]="selectedEstado"
+                [showClear]="true" placeholder="Todos"
+                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
+            </label>
+
+            <!-- Prioridad -->
+            <label class="block">
+              <span class="block mb-1 text-xs font-medium text-gray-600">Prioridad</span>
+              <p-select [options]="prioridadOptions" optionLabel="label" optionValue="value"
+                [(ngModel)]="selectedPrioridad" [showClear]="true" placeholder="Todas"
+                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
+            </label>
+
+            <!-- Campus -->
+            <label class="block">
+              <span class="block mb-1 text-xs font-medium text-gray-600">Campus</span>
+              <p-select [options]="campusOptionsTabla" optionLabel="label" optionValue="value"
+                [(ngModel)]="selectedCampus" [showClear]="true" placeholder="Todos"
+                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
+            </label>
+          </div>
+
+          <!-- Acciones y contador -->
+          <div class="flex items-center justify-between gap-3 md:flex-col md:items-end md:justify-end">
+            <!-- Chips de filtros activos -->
+            <div class="flex flex-wrap items-center gap-2">
+              <ng-container *ngIf="searchTerm">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200">
+                  <i class="pi pi-search text-[11px]"></i> {{ searchTerm }}
+                  <button class="ml-1 text-blue-600 hover:text-blue-800" (click)="searchTerm=''">
+                    <i class="pi pi-times text-[10px]"></i>
+                  </button>
+                </span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedEstado !== 'todos'">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                  <i class="pi pi-check-circle text-[11px]"></i> {{ selectedEstado | titlecase }}
+                  <button class="ml-1 text-emerald-700 hover:text-emerald-900" (click)="selectedEstado='todos'">
+                    <i class="pi pi-times text-[10px]"></i>
+                  </button>
+                </span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedPrioridad !== 'todos'">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+                  <i class="pi pi-flag text-[11px]"></i> {{ selectedPrioridad | titlecase }}
+                  <button class="ml-1 text-amber-700 hover:text-amber-900" (click)="selectedPrioridad='todos'">
+                    <i class="pi pi-times text-[10px]"></i>
+                  </button>
+                </span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedCampus !== 'todos'">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-200">
+                  <i class="pi pi-map-marker text-[11px]"></i> {{ selectedCampus }}
+                  <button class="ml-1 text-purple-700 hover:text-purple-900" (click)="selectedCampus='todos'">
+                    <i class="pi pi-times text-[10px]"></i>
+                  </button>
+                </span>
+              </ng-container>
+            </div>
+
+            <!-- Contador + Limpiar -->
+            <div class="flex items-center gap-2">
+              <span
+                class="px-3 py-1 text-xs font-semibold text-blue-700 rounded-full bg-blue-600/10 ring-1 ring-inset ring-blue-200">
+                {{ filteredReclamaciones.length }} registros
+              </span>
+              <button type="button"
+                class="group inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                (click)="searchTerm=''; selectedEstado='todos'; selectedPrioridad='todos'; selectedCampus='todos'">
+                <i class="pi pi-filter-slash text-[11px] text-gray-500 group-hover:text-gray-700"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tabla -->
+      <div class="overflow-x-auto">
+        <p-table [value]="filteredReclamaciones" [paginator]="true" [rows]="10"
+          [totalRecords]="filteredReclamaciones.length" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+          [tableStyle]="{'min-width': '60rem'}">
+          <!-- Header -->
           <ng-template pTemplate="header">
-            <tr>
-              <th class="w-20 text-center">ID Reclamo</th>
-              <th class="text-center">Usuario</th>
-              <th class="text-center">DNI</th>
-              <th class="text-center">Correo</th>
-              <th class="w-24 text-center">Tipo</th>
-              <th class="w-24 text-center">Estado</th>
-              <th class="w-24 text-center">Prioridad</th>
-              <th class="text-center">Campus</th>
-              <th class="text-center w-28">Fecha</th>
-              <th class="w-32 text-center">Acciones</th>
+            <tr class="bg-gray-50/80">
+              <th class="w-20 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                ID Reclamo
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-left text-gray-700 uppercase">
+                Usuario
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                DNI
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-left text-gray-700 uppercase">
+                Correo
+              </th>
+              <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                Tipo
+              </th>
+              <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                Estado
+              </th>
+              <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                Prioridad
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+                Campus
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase w-28">
+                Fecha
+              </th>
+              <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase w-36">
+                Acciones
+              </th>
             </tr>
           </ng-template>
 
+          <!-- Body -->
           <ng-template pTemplate="body" let-reclamacion let-rowIndex="rowIndex">
-            <tr class="hover:bg-gray-50">
+            <tr class="transition-all duration-200 border-b border-gray-100 hover:bg-blue-50/30 group">
               <!-- ID Reclamo -->
-              <td class="text-center">
-                <div class="flex items-center justify-center">
-                  <span class="font-semibold text-[#243659] text-sm">#{{reclamacion.codigo}}</span>
-                </div>
+              <td class="px-4 py-4 text-center">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                  #{{reclamacion.codigo}}
+                </span>
               </td>
 
               <!-- Usuario -->
-              <td>
+              <td class="px-4 py-4">
                 <div class="flex items-center space-x-3">
-                  <div class="flex items-center justify-center w-8 h-8 rounded-full"
-                    [ngClass]="reclamacion.nivel === 'Alumno' ? 'bg-blue-100' : 'bg-purple-100'">
-                    <i class="text-sm"
-                      [ngClass]="reclamacion.nivel === 'Alumno' ? 'pi pi-user text-blue-600' : 'pi pi-graduation-cap text-purple-600'"></i>
+                  <div class="flex items-center justify-center w-10 h-10 rounded-full shadow-sm ring-2 ring-white"
+                    [ngClass]="reclamacion.nivel === 'Alumno' ? 'bg-gradient-to-br from-blue-400 to-blue-600' : 'bg-gradient-to-br from-purple-400 to-purple-600'">
+                    <i class="text-sm text-white"
+                      [ngClass]="reclamacion.nivel === 'Alumno' ? 'pi pi-user' : 'pi pi-graduation-cap'"></i>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900">{{reclamacion.usuario}}</p>
-                    <p class="text-xs text-gray-500">{{reclamacion.nivel}}</p>
+                    <p class="text-sm font-semibold text-gray-900">{{reclamacion.usuario}}</p>
+                    <p class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1">
+                      {{reclamacion.nivel}}
+                    </p>
                   </div>
                 </div>
               </td>
 
               <!-- DNI -->
-              <td class="text-center">
-                <span class="text-sm text-gray-700">{{reclamacion.dni}}</span>
+              <td class="px-4 py-4 text-center">
+                <span class="px-2 py-1 text-sm font-medium text-gray-700 border rounded bg-gray-50">
+                  {{reclamacion.dni}}
+                </span>
               </td>
 
               <!-- Correo -->
-              <td>
-                <span class="text-sm text-gray-600">{{reclamacion.correo}}</span>
+              <td class="px-4 py-4">
+                <div class="flex items-center space-x-2">
+                  <i class="text-xs text-gray-400 pi pi-envelope"></i>
+                  <span class="text-sm text-gray-600 truncate max-w-[200px]" [title]="reclamacion.correo">
+                    {{reclamacion.correo}}
+                  </span>
+                </div>
               </td>
 
               <!-- Tipo -->
-              <td class="text-center">
-                <span class="px-2 py-1 text-xs font-medium text-black bg-gray-200 rounded">
-                  {{reclamacion.tipo}}
+              <td class="px-4 py-4 text-center">
+                <span
+                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border border-gray-300 shadow-sm">
+                  <i class="mr-1 text-gray-600 pi pi-tag"></i> {{reclamacion.tipo}}
                 </span>
               </td>
 
               <!-- Estado -->
-              <td class="text-center">
-                <span [class]="getEstadoClass(reclamacion.estado)" class="px-2 py-1 text-xs font-medium rounded">
+              <td class="px-4 py-4 text-center">
+                <span [class]="getEstadoClass(reclamacion.estado)"
+                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold rounded-lg shadow-sm">
+                  <span class="w-1.5 h-1.5 rounded-full mr-2" [class]="getEstadoDotClass(reclamacion.estado)"></span>
                   {{reclamacion.estado}}
                 </span>
               </td>
 
               <!-- Prioridad -->
-              <td class="text-center">
-                <span [class]="getPrioridadClass(reclamacion.prioridad)" class="px-2 py-1 text-xs font-medium rounded">
+              <td class="px-4 py-4 text-center">
+                <span [class]="getPrioridadClass(reclamacion.prioridad)"
+                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-bold rounded-lg shadow-sm">
+                  <i [class]="getPrioridadIcon(reclamacion.prioridad)" class="mr-1"></i>
                   {{reclamacion.prioridad}}
                 </span>
               </td>
 
               <!-- Campus -->
-              <td class="text-center">
-                <div class="text-sm font-medium text-[#1e293b]">{{reclamacion.campus}}</div>
+              <td class="px-4 py-4 text-center">
+                <div class="flex items-center justify-center space-x-1">
+                  <i class="text-xs text-gray-500 pi pi-map-marker"></i>
+                  <span class="text-sm font-medium text-gray-700">{{reclamacion.campus}}</span>
+                </div>
               </td>
 
               <!-- Fecha -->
-              <td class="text-center">
-                <div class="text-xs text-gray-600">{{reclamacion.fechaRegistro}}</div>
-                <div class="text-xs font-medium text-[#e30512]">{{reclamacion.fecha}}</div>
+              <td class="px-4 py-4 text-center">
+                <div class="space-y-1">
+                  <div class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                    {{reclamacion.fechaRegistro}}
+                  </div>
+                  <div class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                    {{reclamacion.fecha}}
+                  </div>
+                </div>
               </td>
 
               <!-- Acciones -->
-              <td class="text-center">
-                <div class="flex items-center justify-center gap-1">
+              <td class="px-4 py-4 text-center">
+                <div
+                  class="flex items-center justify-center gap-1 transition-opacity opacity-70 group-hover:opacity-100">
                   <button (click)="verDetalles(reclamacion)"
-                    class="flex items-center p-2 text-gray-400 transition-colors rounded-lg hover:text-blue-500 hover:bg-blue-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-blue-600 hover:bg-blue-100"
                     title="Ver detalles">
                     <i class="text-sm pi pi-eye"></i>
                   </button>
+
                   <button (click)="editarEstado(reclamacion)"
-                    class="flex items-center p-2 text-gray-400 transition-colors rounded-lg hover:text-green-500 hover:bg-green-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-emerald-600 hover:bg-emerald-100"
                     title="Cambiar estado">
                     <i class="text-sm pi pi-check-circle"></i>
                   </button>
+
                   <button (click)="asignarResponsable(reclamacion)"
-                    class="flex items-center p-2 text-gray-400 transition-colors rounded-lg hover:text-purple-500 hover:bg-purple-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-purple-600 hover:bg-purple-100"
                     title="Asignar responsable">
                     <i class="text-sm pi pi-user-plus"></i>
                   </button>
+
                   <button (click)="generarReporte(reclamacion)"
-                    class="flex items-center p-2 text-gray-400 transition-colors rounded-lg hover:text-yellow-500 hover:bg-yellow-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-amber-600 hover:bg-amber-100"
                     title="Generar reporte">
                     <i class="text-sm pi pi-file-pdf"></i>
                   </button>
+
                   <button (click)="mostrarOpciones(reclamacion)"
-                    class="flex items-center p-2 text-gray-400 transition-colors rounded-lg hover:text-gray-600 hover:bg-gray-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-gray-800 hover:bg-gray-100"
                     title="Más opciones">
                     <i class="text-sm pi pi-ellipsis-v"></i>
                   </button>
@@ -582,33 +734,39 @@
             </tr>
           </ng-template>
 
-          <!-- Template para mensaje vacío -->
+          <!-- Empty message -->
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="10" class="py-8 text-center">
-                <div class="flex flex-col items-center justify-end space-y-3">
-                  <!-- Mensaje cuando no hay resultados que coincidan -->
-                  <div class="flex flex-col items-center">
-                    <div class="flex items-center justify-center w-16 h-16 mb-3 bg-orange-100 rounded-full">
-                      <i class="text-2xl text-orange-500 pi pi-search-minus"></i>
+              <td colspan="10" class="py-16">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                  <div class="relative">
+                    <div
+                      class="flex items-center justify-center w-20 h-20 rounded-full shadow-lg bg-gradient-to-br from-orange-100 to-orange-200">
+                      <i class="text-3xl text-orange-500 pi pi-search-minus"></i>
                     </div>
-                    <h3 class="mb-2 text-lg font-medium text-gray-900">No se encontraron coincidencias</h3>
-                    <p class="max-w-sm mb-4 text-sm text-center text-gray-500">
+                  </div>
+
+                  <div class="max-w-md text-center">
+                    <h3 class="mb-2 text-xl font-semibold text-gray-900">
+                      No se encontraron reclamaciones
+                    </h3>
+                    <p class="mb-6 text-sm leading-relaxed text-gray-600">
                       No hay reclamaciones que coincidan con los criterios de búsqueda aplicados.
-                      Intente modificar los filtros o realizar una nueva búsqueda.
                     </p>
-                    <div class="flex gap-3">
-                      <button type="button" (click)="nuevaBusqueda()"
-                        class="px-4 py-2 text-sm font-medium text-blue-600 transition-colors duration-200 rounded-lg bg-blue-50 hover:bg-blue-100">
-                        <i class="mr-2 pi pi-search"></i>
-                        Nueva búsqueda
-                      </button>
-                      <button type="button" (click)="limpiarFiltros()"
-                        class="px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 rounded-lg bg-gray-50 hover:bg-gray-100">
-                        <i class="mr-2 pi pi-times"></i>
-                        Limpiar todo
-                      </button>
-                    </div>
+                  </div>
+
+                  <div class="flex flex-col gap-3 sm:flex-row">
+                    <button type="button" (click)="nuevaBusqueda()"
+                      class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-lg">
+                      <i class="mr-2 pi pi-search"></i>
+                      Nueva búsqueda
+                    </button>
+
+                    <button type="button" (click)="limpiarFiltros()
+" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                      <i class="mr-2 pi pi-refresh"></i>
+                      Limpiar filtros
+                    </button>
                   </div>
                 </div>
               </td>
@@ -619,3 +777,19 @@
     </div>
   </div>
 </div>
+
+<!-- Modales -->
+<app-detalle [visible]="mostrarModalDetalles" [reclamacion]="reclamacionSeleccionada" (close)="cerrarModalDetalles()">
+</app-detalle>
+
+<app-estado [visible]="mostrarModalEstado" [reclamacion]="reclamacionSeleccionada" [estados]="estadosDisponibles"
+  (close)="cerrarModalEstado()" (confirm)="onEstadoConfirm($event)">
+</app-estado>
+
+<app-responsable [visible]="mostrarModalResponsable" [reclamacion]="reclamacionSeleccionada"
+  [responsables]="responsablesDisponibles" (close)="cerrarModalResponsable()" (confirm)="onAsignacionConfirm($event)">
+</app-responsable>
+
+<app-reporte [visible]="mostrarModalReporte" [reclamacion]="reclamacionSeleccionada" [tipos]="tiposReporte"
+  (close)="cerrarModalReporte()" (confirm)="onReporteConfirm($event)">
+</app-reporte>

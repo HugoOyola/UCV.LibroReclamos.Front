@@ -2,17 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
-// AGREGAR: Importes necesarios para la tabla PrimeNG
 import { TableModule } from 'primeng/table';
-import { TooltipModule } from 'primeng/tooltip';
-import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
+
+import { DetalleComponent } from './modales/detalle/detalle.component';
+import { EstadoComponent } from './modales/estado/estado.component';
+import { ResponsableComponent } from './modales/responsable/responsable.component';
+import { ReporteComponent } from './modales/reporte/reporte.component';
 
 interface ReclamacionStats {
   total: number;
@@ -21,13 +26,6 @@ interface ReclamacionStats {
   enProceso: number;
 }
 
-interface FilterOption {
-  label: string;
-  value: string;
-  checked: boolean;
-}
-
-// MODIFICAR: Interface más completa para la tabla
 interface ReclamacionCompleta {
   codigo: string;
   usuario: string;
@@ -40,22 +38,31 @@ interface ReclamacionCompleta {
   campus: string;
   fecha: string;
   fechaRegistro: string;
-  // AGREGAR: Campos adicionales para la gestión
   responsable?: string;
   descripcion?: string;
   categoria?: string;
   subcategoria?: string;
 }
 
-// MANTENER: Interface original para compatibilidad
-interface ResultadoBusqueda {
-  codigo: string;
-  tipo: string;
-  estado: string;
-  prioridad: string;
-  campus: string;
-  fecha: string;
-  reclamante?: string;
+interface EstadoOption {
+  valor: string;
+  label: string;
+  descripcion: string;
+}
+
+interface ResponsableOption {
+  id: string;
+  nombre: string;
+  cargo: string;
+  departamento: string;
+  casosActivos?: number;
+}
+
+interface TipoReporte {
+  valor: string;
+  label: string;
+  descripcion: string;
+  icono: string;
 }
 
 @Component({
@@ -67,105 +74,32 @@ interface ResultadoBusqueda {
     FormsModule,
     SelectModule,
     ButtonModule,
-    CardModule,
     CheckboxModule,
     RadioButtonModule,
     InputTextModule,
     DatePickerModule,
     TableModule,
-    TooltipModule,
-    DialogModule,
+    ToastModule,
+    ConfirmDialogModule,
+    DetalleComponent,
+    EstadoComponent,
+    ResponsableComponent,
+    ReporteComponent
   ],
   templateUrl: './monitoreo.component.html',
-  styleUrl: './monitoreo.component.scss'
+  styleUrl: './monitoreo.component.scss',
+  providers: [MessageService, ConfirmationService]
 })
 export class MonitoreoComponent implements OnInit {
-  activeTab: string = 'advanced';
+  // Tabs y formularios
+  activeTab: 'advanced' | 'quick' = 'advanced';
   searchForm: FormGroup;
   quickSearchForm: FormGroup;
-  showResults: boolean = false;
+  showResults = false;
 
-  // AGREGAR: Variables para la tabla
+  // Datos
   reclamaciones: ReclamacionCompleta[] = [];
-  searchTerm: string = '';
-  selectedFilter: string = 'todos';
-  selectedEstado: string = 'todos';
-  selectedPrioridad: string = 'todos';
-
-  stats: ReclamacionStats = {
-    total: 2847,
-    pendientes: 156,
-    resueltas: 2691,
-    enProceso: 89
-  };
-
-  campusOptions = [
-    { label: 'Todos los Campus', value: 'todos' },
-    { label: 'UCV CAMPUS LIMA NORTE', value: 'lima_norte' },
-    { label: 'UCV CAMPUS TRUJILLO', value: 'trujillo' },
-    { label: 'UCV CAMPUS CHICLAYO', value: 'chiclayo' },
-    { label: 'UCV CAMPUS PIURA', value: 'piura' },
-    { label: 'UCV CAMPUS CHEPEN', value: 'chepen' },
-    { label: 'UCV CAMPUS MOYOBAMBA', value: 'moyobamba' }
-  ];
-
-  tipoReclamacionOptions: FilterOption[] = [
-    { label: 'Todos los tipos', value: 'todos', checked: true },
-    { label: 'RECLAMO', value: 'reclamo', checked: false },
-    { label: 'QUEJA', value: 'queja', checked: false },
-    { label: 'CONSULTA / SUGERENCIA', value: 'consulta', checked: false }
-  ];
-
-  estadosProcesoOptions: FilterOption[] = [
-    { label: 'Todos', value: 'todos', checked: true },
-    { label: 'En Proceso', value: 'en_proceso', checked: false },
-    { label: 'Conforme', value: 'conforme', checked: false },
-    { label: 'No-Conforme', value: 'no_conforme', checked: false },
-    { label: 'Pendiente', value: 'pendiente', checked: false },
-    { label: 'Atendido', value: 'atendido', checked: false },
-    { label: 'Vencido', value: 'vencido', checked: false },
-    { label: 'Inválido', value: 'invalido', checked: false }
-  ];
-
-  searchTypeOptions = [
-    { label: 'DNI del Reclamante', value: 'dni' },
-    { label: 'Código de Reclamación', value: 'codigo' },
-    { label: 'Nombre del Reclamante', value: 'nombre' }
-  ];
-
-  // MANTENER: Resultados originales para compatibilidad
-  resultados: ResultadoBusqueda[] = [
-    {
-      codigo: '22286',
-      tipo: 'RECLAMO',
-      estado: 'Atendido',
-      prioridad: 'Alta',
-      campus: 'CHICLAYO',
-      fecha: '14/07/2025',
-      reclamante: 'Juan Pérez García'
-    },
-    {
-      codigo: '22285',
-      tipo: 'QUEJA',
-      estado: 'Pendiente',
-      prioridad: 'Media',
-      campus: 'PIURA',
-      fecha: '14/07/2025',
-      reclamante: 'María Rodríguez López'
-    },
-    {
-      codigo: '22284',
-      tipo: 'RECLAMO',
-      estado: 'En Proceso',
-      prioridad: 'Media',
-      campus: 'LIMA NORTE',
-      fecha: '13/07/2025',
-      reclamante: 'Carlos Mendoza Silva'
-    }
-  ];
-
-  // AGREGAR: Datos completos para la tabla (basados en tu imagen)
-  reclamacionesCompletas: ReclamacionCompleta[] = [
+  private reclamacionesCompletas: ReclamacionCompleta[] = [
     {
       codigo: '22189',
       usuario: 'NUNEZ GUIZADO VIANCA MAHILI',
@@ -177,7 +111,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Media',
       campus: 'LIMA NORTE',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 23:15:33'
+      fechaRegistro: '04/07/2025 23:15:33',
+      descripcion: 'Problema con la plataforma virtual, no puede acceder al aula virtual para entregar trabajos.'
     },
     {
       codigo: '22188',
@@ -190,7 +125,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Media',
       campus: 'LIMA NORTE',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 21:10:56'
+      fechaRegistro: '04/07/2025 21:10:56',
+      descripcion: 'Solicita revisión de calificación en el curso de matemática básica.'
     },
     {
       codigo: '22187',
@@ -203,7 +139,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Alta',
       campus: 'TARAPOTO',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 18:46:59'
+      fechaRegistro: '04/07/2025 18:46:59',
+      descripcion: 'Reclamo sobre horarios de clase que se superponen entre cursos.'
     },
     {
       codigo: '22186',
@@ -216,7 +153,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Baja',
       campus: 'LIMA ESTE',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 17:15:15'
+      fechaRegistro: '04/07/2025 17:15:15',
+      descripcion: 'Queja sobre la atención en ventanilla de pagos, demora excesiva.'
     },
     {
       codigo: '22185',
@@ -229,7 +167,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Media',
       campus: 'LIMA NORTE',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 13:33:58'
+      fechaRegistro: '04/07/2025 13:33:58',
+      descripcion: 'Problema con el sistema de matrícula online, no permite seleccionar cursos.'
     },
     {
       codigo: '22184',
@@ -242,7 +181,8 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Alta',
       campus: 'TRUJILLO',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 11:32:39'
+      fechaRegistro: '04/07/2025 11:32:39',
+      descripcion: 'Solicitud de duplicado de diploma, proceso demorado más de lo establecido.'
     },
     {
       codigo: '22183',
@@ -255,12 +195,102 @@ export class MonitoreoComponent implements OnInit {
       prioridad: 'Media',
       campus: 'LIMA NORTE',
       fecha: '04/07/2025',
-      fechaRegistro: '04/07/2025 10:21:49'
+      fechaRegistro: '04/07/2025 10:21:49',
+      descripcion: 'Queja sobre las condiciones de la biblioteca, falta de espacios para estudio.'
     }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    // MANTENER: Formularios existentes
+  // Barra de filtros en tabla
+  searchTerm = '';
+  selectedEstado: string = 'todos';
+  selectedPrioridad: string = 'todos';
+  selectedCampus: string = 'todos';
+
+  // Catálogos
+  estadosDisponibles: EstadoOption[] = [
+    { valor: 'Pendiente', label: 'Pendiente', descripcion: 'Reclamación pendiente de revisión' },
+    { valor: 'En Proceso', label: 'En Proceso', descripcion: 'Se está trabajando en la solución' },
+    { valor: 'Atendido', label: 'Atendido', descripcion: 'Reclamación atendida' },
+    { valor: 'Conforme', label: 'Conforme', descripcion: 'Cliente conforme con la solución' },
+    { valor: 'No-Conforme', label: 'No-Conforme', descripcion: 'Cliente no conforme' },
+    { valor: 'Cerrado', label: 'Cerrado', descripcion: 'Caso cerrado definitivamente' }
+  ];
+
+  responsablesDisponibles: ResponsableOption[] = [
+    { id: '1', nombre: 'Ana García Martínez', cargo: 'Coordinadora', departamento: 'Servicios Estudiantiles', casosActivos: 12 },
+    { id: '2', nombre: 'Carlos Rodriguez López', cargo: 'Especialista', departamento: 'Gestión Académica', casosActivos: 8 },
+    { id: '3', nombre: 'María Elena Vásquez', cargo: 'Supervisora', departamento: 'Control de Calidad', casosActivos: 5 },
+    { id: '4', nombre: 'Jorge Luis Mendoza', cargo: 'Analista Senior', departamento: 'Soporte Técnico', casosActivos: 15 }
+  ];
+
+  tiposReporte: TipoReporte[] = [
+    { valor: 'completo', label: 'Reporte Completo', descripcion: 'Incluye todos los detalles y historial', icono: 'pi pi-file-o' },
+    { valor: 'resumen', label: 'Resumen Ejecutivo', descripcion: 'Información resumida para revisión rápida', icono: 'pi pi-list' },
+    { valor: 'seguimiento', label: 'Seguimiento', descripcion: 'Historial de acciones y cambios', icono: 'pi pi-clock' }
+  ];
+
+  // Opciones selects en barra de filtros
+  estadoOptions = [
+    { label: 'Todos', value: 'todos' },
+    { label: 'Pendiente', value: 'pendiente' },
+    { label: 'En Proceso', value: 'en proceso' },
+    { label: 'Atendido', value: 'atendido' },
+    { label: 'Conforme', value: 'conforme' },
+    { label: 'No-Conforme', value: 'no-conforme' },
+    { label: 'Vencido', value: 'vencido' },
+    { label: 'Cerrado', value: 'cerrado' },
+    { label: 'Inválido', value: 'inválido' },
+  ];
+
+  prioridadOptions = [
+    { label: 'Todas', value: 'todos' },
+    { label: 'Alta', value: 'alta' },
+    { label: 'Media', value: 'media' },
+    { label: 'Baja', value: 'baja' },
+  ];
+
+  campusOptionsTabla = [
+    { label: 'Todos', value: 'todos' },
+    { label: 'LIMA NORTE', value: 'LIMA NORTE' },
+    { label: 'TRUJILLO', value: 'TRUJILLO' },
+    { label: 'CHICLAYO', value: 'CHICLAYO' },
+    { label: 'PIURA', value: 'PIURA' },
+    { label: 'CHEPEN', value: 'CHEPEN' },
+    { label: 'MOYOBAMBA', value: 'MOYOBAMBA' },
+    { label: 'TARAPOTO', value: 'TARAPOTO' },
+  ];
+
+  campusOptions = [
+    { label: 'Todos los Campus', value: 'todos' },
+    { label: 'UCV CAMPUS LIMA NORTE', value: 'lima_norte' },
+    { label: 'UCV CAMPUS TRUJILLO', value: 'trujillo' },
+    { label: 'UCV CAMPUS CHICLAYO', value: 'chiclayo' },
+    { label: 'UCV CAMPUS PIURA', value: 'piura' },
+    { label: 'UCV CAMPUS CHEPEN', value: 'chepen' },
+    { label: 'UCV CAMPUS MOYOBAMBA', value: 'moyobamba' }
+  ];
+
+  // Modales
+  mostrarModalDetalles = false;
+  mostrarModalEstado = false;
+  mostrarModalResponsable = false;
+  mostrarModalReporte = false;
+  reclamacionSeleccionada: ReclamacionCompleta | null = null;
+
+  // Estado / Responsable / Reporte
+  nuevoEstado = '';
+  comentarioEstado = '';
+  responsableSeleccionado = '';
+  comentarioAsignacion = '';
+  tipoReporteSeleccionado = '';
+  generandoReporte = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {
     this.searchForm = this.fb.group({
       campus: ['todos'],
       fechaRango: [null],
@@ -285,113 +315,69 @@ export class MonitoreoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // MANTENER: Configuración inicial
     const today = new Date();
     const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-
-    this.searchForm.patchValue({
-      fechaRango: [thirtyDaysAgo, today]
-    });
-
-    // AGREGAR: Cargar datos iniciales para la tabla
+    this.searchForm.patchValue({ fechaRango: [thirtyDaysAgo, today] });
     this.reclamaciones = [...this.reclamacionesCompletas];
   }
 
-  // MANTENER: Métodos existentes
-  setActiveTab(tab: string): void {
+  // Tabs
+  setActiveTab(tab: 'advanced' | 'quick'): void {
     this.activeTab = tab;
     this.showResults = false;
   }
 
-  onCampusChange(event: any): void {
-    // El valor ya se actualiza automáticamente por formControlName
-  }
-
+  // Filtros (checkbox grupos)
   onTipoReclamacionChange(tipo: string): void {
     if (tipo === 'todos') {
       this.searchForm.patchValue({
-        tipoTodos: true,
-        tipoReclamo: false,
-        tipoQueja: false,
-        tipoConsulta: false
+        tipoTodos: true, tipoReclamo: false, tipoQueja: false, tipoConsulta: false
       });
-    } else {
-      this.searchForm.patchValue({
-        tipoTodos: false
-      });
-
-      const tiposSeleccionados = [
-        this.searchForm.get('tipoReclamo')?.value,
-        this.searchForm.get('tipoQueja')?.value,
-        this.searchForm.get('tipoConsulta')?.value
-      ].filter(Boolean);
-
-      if (tiposSeleccionados.length === 0) {
-        this.searchForm.patchValue({ tipoTodos: true });
-      }
+      return;
     }
+    this.searchForm.patchValue({ tipoTodos: false });
+    const seleccionados = [
+      this.searchForm.get('tipoReclamo')?.value,
+      this.searchForm.get('tipoQueja')?.value,
+      this.searchForm.get('tipoConsulta')?.value
+    ].filter(Boolean);
+    if (seleccionados.length === 0) this.searchForm.patchValue({ tipoTodos: true });
   }
 
   onEstadoProcesoChange(estado: string): void {
     if (estado === 'todos') {
       this.searchForm.patchValue({
         estadoTodos: true,
-        estadoEnProceso: false,
-        estadoConforme: false,
-        estadoNoConforme: false,
-        estadoPendiente: false,
-        estadoAtendido: false,
-        estadoVencido: false,
-        estadoInvalido: false
+        estadoEnProceso: false, estadoConforme: false, estadoNoConforme: false,
+        estadoPendiente: false, estadoAtendido: false, estadoVencido: false, estadoInvalido: false
       });
-    } else {
-      this.searchForm.patchValue({
-        estadoTodos: false
-      });
-
-      const estadosSeleccionados = [
-        this.searchForm.get('estadoEnProceso')?.value,
-        this.searchForm.get('estadoConforme')?.value,
-        this.searchForm.get('estadoNoConforme')?.value,
-        this.searchForm.get('estadoPendiente')?.value,
-        this.searchForm.get('estadoAtendido')?.value,
-        this.searchForm.get('estadoVencido')?.value,
-        this.searchForm.get('estadoInvalido')?.value
-      ].filter(Boolean);
-
-      if (estadosSeleccionados.length === 0) {
-        this.searchForm.patchValue({ estadoTodos: true });
-      }
+      return;
     }
+    this.searchForm.patchValue({ estadoTodos: false });
+    const seleccionados = [
+      this.searchForm.get('estadoEnProceso')?.value,
+      this.searchForm.get('estadoConforme')?.value,
+      this.searchForm.get('estadoNoConforme')?.value,
+      this.searchForm.get('estadoPendiente')?.value,
+      this.searchForm.get('estadoAtendido')?.value,
+      this.searchForm.get('estadoVencido')?.value,
+      this.searchForm.get('estadoInvalido')?.value
+    ].filter(Boolean);
+    if (seleccionados.length === 0) this.searchForm.patchValue({ estadoTodos: true });
   }
 
+  // Búsqueda
   buscarReclamaciones(): void {
-    if (this.activeTab === 'advanced') {
-      const formData = this.searchForm.value;
-      console.log('Búsqueda Avanzada:', formData);
-      this.realizarBusqueda(formData);
-    } else {
-      if (this.quickSearchForm.valid) {
-        const quickSearchData = this.quickSearchForm.value;
-        console.log('Búsqueda Rápida:', quickSearchData);
-        this.realizarBusqueda(quickSearchData);
-      }
-    }
-  }
-
-  realizarBusqueda(criterios: any): void {
-    setTimeout(() => {
-      // MODIFICADO: Cargar datos de ejemplo y mostrar resultados
-      this.reclamaciones = [...this.reclamacionesCompletas];
-      this.showResults = true;
-    }, 500);
+    // Aquí podrías aplicar los filtros avanzados a tu fuente real de datos.
+    // Para demo, solo mostramos resultados simulados.
+    this.reclamaciones = [...this.reclamacionesCompletas];
+    this.showResults = true;
   }
 
   limpiarFiltros(): void {
     if (this.activeTab === 'advanced') {
       const today = new Date();
       const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-
       this.searchForm.reset({
         campus: 'todos',
         fechaRango: [thirtyDaysAgo, today],
@@ -409,141 +395,126 @@ export class MonitoreoComponent implements OnInit {
         estadoInvalido: false
       });
     } else {
-      this.quickSearchForm.reset({
-        searchType: 'dni',
-        searchValue: ''
-      });
+      this.quickSearchForm.reset({ searchType: 'dni', searchValue: '' });
     }
-
-    // MODIFICADO: Ocultar resultados y limpiar filtros
     this.showResults = false;
+
+    // Resetea filtros de barra de tabla
     this.searchTerm = '';
-    this.selectedFilter = 'todos';
     this.selectedEstado = 'todos';
     this.selectedPrioridad = 'todos';
-    // Limpiar los datos de la tabla
+    this.selectedCampus = 'todos';
+
     this.reclamaciones = [];
   }
 
-  // AGREGAR: Nuevo método para mostrar búsqueda inteligente
-  nuevaBusqueda(): void {
-    this.showResults = false;
-    // Mantener los datos pero ocultar resultados para permitir nueva búsqueda
-  }
-
-  buscarAhora(): void {
-    if (this.quickSearchForm.valid) {
-      this.buscarReclamaciones();
-    }
-  }
-
-  limpiar(): void {
-    this.limpiarFiltros();
-  }
+  nuevaBusqueda(): void { this.showResults = false; }
+  buscarAhora(): void { if (this.quickSearchForm.valid) this.buscarReclamaciones(); }
+  limpiar(): void { this.limpiarFiltros(); }
 
   actualizarDatos(): void {
-    console.log('Actualizando datos...');
-    // MODIFICAR: Recargar datos de la tabla
+    // Aquí podrías reconsultar al backend
     this.reclamaciones = [...this.reclamacionesCompletas];
   }
 
   volverAlInicio(): void {
     this.router.navigate(['/dashboard'])
-      .then(() => {
-        console.log('Navegando al dashboard...');
-      })
-      .catch(error => {
-        console.error('Error al navegar:', error);
-      });
+      .catch(error => console.error('Error al navegar:', error));
   }
 
-  getPorcentaje(valor: number): number {
-    return this.stats.total > 0 ? Math.round((valor / this.stats.total) * 100) : 0;
-  }
-
+  // Placeholders/labels/icons búsqueda rápida
   getPlaceholder(): string {
-    const searchType = this.quickSearchForm.get('searchType')?.value;
-    switch (searchType) {
-      case 'dni':
-        return 'Ej: 41630253';
-      case 'codigo':
-        return 'Ej: REC-2025-001';
-      case 'nombre':
-        return 'Ej: Juan Pérez';
-      default:
-        return '';
-    }
+    const t = this.quickSearchForm.get('searchType')?.value;
+    if (t === 'dni') return 'Ej: 41630253';
+    if (t === 'codigo') return 'Ej: REC-2025-001';
+    if (t === 'nombre') return 'Ej: Juan Pérez';
+    return '';
   }
-
   getSearchLabel(): string {
-    const searchType = this.quickSearchForm.get('searchType')?.value;
-    switch (searchType) {
-      case 'dni':
-        return 'DNI';
-      case 'codigo':
-        return 'Código';
-      case 'nombre':
-        return 'Nombre';
-      default:
-        return '';
-    }
+    const t = this.quickSearchForm.get('searchType')?.value;
+    if (t === 'dni') return 'DNI';
+    if (t === 'codigo') return 'Código';
+    if (t === 'nombre') return 'Nombre';
+    return '';
   }
-
   getSearchIcon(searchType: string): string {
-    switch (searchType) {
-      case 'dni':
-      case 'nombre':
-        return 'pi pi-user';
-      case 'codigo':
-        return 'pi pi-tag';
+    if (searchType === 'dni' || searchType === 'nombre') return 'pi pi-user';
+    if (searchType === 'codigo') return 'pi pi-tag';
+    return 'pi pi-search';
+  }
+
+  // Clases / íconos (únicas versiones)
+  getEstadoClass(estado: string): string {
+    switch (estado.toLowerCase()) {
+      case 'atendido':
+      case 'conforme':
+        return 'text-green-700 bg-green-50 ring-1 ring-green-600/20';
+      case 'pendiente':
+        return 'text-yellow-700 bg-yellow-50 ring-1 ring-yellow-600/20';
+      case 'en proceso':
+        return 'text-blue-700 bg-blue-50 ring-1 ring-blue-600/20';
+      case 'rechazado':
+      case 'no-conforme':
+      case 'vencido':
+        return 'text-red-700 bg-red-50 ring-1 ring-red-600/20';
+      case 'cerrado':
+      case 'inválido':
+        return 'text-gray-700 bg-gray-50 ring-1 ring-gray-600/20';
       default:
-        return 'pi pi-search';
+        return 'text-gray-700 bg-gray-50 ring-1 ring-gray-600/20';
     }
   }
 
-  // MANTENER: Métodos de clases CSS originales
-  estadoClass(estado: string): string {
-    switch (estado) {
-      case 'Atendido':
-        return 'bg-green-100 text-green-800';
-      case 'Pendiente':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'En Proceso':
-        return 'bg-blue-100 text-blue-800';
-      case 'Conforme':
-        return 'bg-green-100 text-green-800';
-      case 'No-Conforme':
-        return 'bg-red-100 text-red-800';
-      case 'Vencido':
-        return 'bg-red-100 text-red-800';
-      case 'Inválido':
-        return 'bg-gray-100 text-gray-800';
+  getEstadoDotClass(estado: string): string {
+    const clases: Record<string, string> = {
+      'Pendiente': 'bg-yellow-400',
+      'En Proceso': 'bg-blue-400',
+      'Atendido': 'bg-green-400',
+      'Conforme': 'bg-green-400',
+      'Cerrado': 'bg-gray-400',
+      'No-Conforme': 'bg-red-400',
+      'Vencido': 'bg-red-400'
+    };
+    return clases[estado] || 'bg-gray-400';
+  }
+
+  getPrioridadClass(prioridad: string): string {
+    switch (prioridad.toLowerCase()) {
+      case 'alta':
+      case 'urgente':
+        return 'text-red-700 bg-red-100';
+      case 'media':
+        return 'text-yellow-700 bg-yellow-100';
+      case 'baja':
+        return 'text-green-700 bg-green-100';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'text-gray-700 bg-gray-100';
     }
   }
 
-  prioridadClass(prioridad: string): string {
-    switch (prioridad) {
-      case 'Alta':
-        return 'bg-red-100 text-red-800';
-      case 'Media':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Baja':
-        return 'bg-green-100 text-green-800';
+  getPrioridadIcon(prioridad: string): string {
+    switch (prioridad.toLowerCase()) {
+      case 'alta':
+      case 'urgente':
+        return 'pi pi-exclamation-triangle text-red-600';
+      case 'media':
+      case 'normal':
+        return 'pi pi-minus text-yellow-600';
+      case 'baja':
+        return 'pi pi-arrow-down text-green-600';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'pi pi-minus text-gray-600';
     }
   }
 
-  // AGREGAR: Métodos necesarios para la tabla PrimeNG
-  getFilteredReclamaciones(): ReclamacionCompleta[] {
-    let filtered = [...this.reclamaciones];
+  // Filtro centralizado para la tabla
+  get filteredReclamaciones(): ReclamacionCompleta[] {
+    let data = [...this.reclamaciones];
 
-    // Filtrar por término de búsqueda
-    if (this.searchTerm.trim()) {
-      const term = this.searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(rec =>
+    // Búsqueda global
+    const term = this.searchTerm?.toLowerCase().trim();
+    if (term) {
+      data = data.filter(rec =>
         rec.codigo.toLowerCase().includes(term) ||
         rec.usuario.toLowerCase().includes(term) ||
         rec.dni.includes(term) ||
@@ -551,305 +522,152 @@ export class MonitoreoComponent implements OnInit {
       );
     }
 
-    // Filtrar por tipo
-    if (this.selectedFilter !== 'todos') {
-      filtered = filtered.filter(rec => rec.tipo.toLowerCase() === this.selectedFilter.toLowerCase());
-    }
-
-    // Filtrar por estado
+    // Estado
     if (this.selectedEstado !== 'todos') {
-      filtered = filtered.filter(rec => rec.estado.toLowerCase() === this.selectedEstado.toLowerCase());
+      data = data.filter(r => r.estado.toLowerCase() === this.selectedEstado);
     }
 
-    // Filtrar por prioridad
+    // Prioridad
     if (this.selectedPrioridad !== 'todos') {
-      filtered = filtered.filter(rec => rec.prioridad.toLowerCase() === this.selectedPrioridad.toLowerCase());
+      data = data.filter(r => r.prioridad.toLowerCase() === this.selectedPrioridad);
     }
 
-    return filtered;
-  }
-
-  // Métodos para las clases CSS de la tabla (similares pero optimizados)
-  getEstadoClass(estado: string): string {
-    switch (estado.toLowerCase()) {
-      case 'atendido':
-      case 'conforme':
-        return 'bg-green-100 text-green-800';
-      case 'pendiente':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'en proceso':
-        return 'bg-blue-100 text-blue-800';
-      case 'rechazado':
-      case 'no-conforme':
-      case 'vencido':
-        return 'bg-red-100 text-red-800';
-      case 'inválido':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+    // Campus (en datos viene en MAYÚSCULAS)
+    if (this.selectedCampus !== 'todos') {
+      data = data.filter(r => (r.campus || '').toUpperCase() === this.selectedCampus.toUpperCase());
     }
+
+    return data;
   }
 
-  getPrioridadClass(prioridad: string): string {
-    switch (prioridad.toLowerCase()) {
-      case 'alta':
-      case 'urgente':
-        return 'bg-red-100 text-red-800';
-      case 'media':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'baja':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  // Métodos para obtener clases CSS con iconos mejorados
-  getTipoClass(tipo: string): string {
-    switch (tipo.toLowerCase()) {
-      case 'reclamo':
-        return 'bg-red-100 text-red-700';
-      case 'queja':
-        return 'bg-orange-100 text-orange-700';
-      case 'consulta':
-      case 'consulta / sugerencia':
-        return 'bg-blue-100 text-blue-700';
-      case 'académico':
-        return 'bg-purple-100 text-purple-700';
-      case 'administrativo':
-        return 'bg-green-100 text-green-700';
-      case 'infraestructura':
-        return 'bg-blue-100 text-blue-700';
-      case 'servicio':
-        return 'bg-orange-100 text-orange-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  }
-
-  // Iconos para estados
-  getEstadoIcon(estado: string): string {
-    switch (estado.toLowerCase()) {
-      case 'pendiente':
-        return 'pi pi-clock';
-      case 'en proceso':
-        return 'pi pi-spin pi-spinner';
-      case 'atendido':
-      case 'resuelto':
-      case 'conforme':
-        return 'pi pi-check';
-      case 'rechazado':
-      case 'no-conforme':
-      case 'vencido':
-        return 'pi pi-times';
-      case 'inválido':
-        return 'pi pi-ban';
-      default:
-        return 'pi pi-info-circle';
-    }
-  }
-
-  // Iconos para prioridades
-  getPrioridadIcon(prioridad: string): string {
-    switch (prioridad.toLowerCase()) {
-      case 'alta':
-      case 'urgente':
-        return 'pi pi-exclamation-triangle';
-      case 'media':
-      case 'normal':
-        return 'pi pi-info-circle';
-      case 'baja':
-        return 'pi pi-minus-circle';
-      default:
-        return 'pi pi-info-circle';
-    }
-  }
-
-  // Métodos para contar registros por filtros rápidos
-  getPendientesCount(): number {
-    return this.getFilteredReclamaciones().filter(r =>
-      r.estado.toLowerCase() === 'pendiente'
-    ).length;
-  }
-
-  getAltaPrioridadCount(): number {
-    return this.getFilteredReclamaciones().filter(r =>
-      r.prioridad.toLowerCase() === 'alta'
-    ).length;
-  }
-
-  getResueltosHoyCount(): number {
-    const hoy = new Date();
-    return this.getFilteredReclamaciones().filter(r =>
-      (r.estado.toLowerCase() === 'resuelto' ||
-       r.estado.toLowerCase() === 'atendido' ||
-       r.estado.toLowerCase() === 'conforme') &&
-      this.esHoy(r.fecha)
-    ).length;
-  }
-
-  // Método para calcular fecha relativa
-  getFechaRelativa(fecha: string): string {
-    try {
-      // Convertir fecha string a Date
-      const [dia, mes, año] = fecha.split('/');
-      const fechaReclamacion = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
-      const hoy = new Date();
-
-      // Calcular diferencia en días
-      const diffTime = hoy.getTime() - fechaReclamacion.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays === 0) {
-        return 'Hoy';
-      } else if (diffDays === 1) {
-        return 'Ayer';
-      } else if (diffDays < 7) {
-        return `Hace ${diffDays} días`;
-      } else if (diffDays < 30) {
-        const semanas = Math.floor(diffDays / 7);
-        return `Hace ${semanas} semana${semanas > 1 ? 's' : ''}`;
-      } else if (diffDays < 365) {
-        const meses = Math.floor(diffDays / 30);
-        return `Hace ${meses} mes${meses > 1 ? 'es' : ''}`;
-      } else {
-        const años = Math.floor(diffDays / 365);
-        return `Hace ${años} año${años > 1 ? 's' : ''}`;
-      }
-    } catch (error) {
-      return 'Fecha inválida';
-    }
-  }
-
-  // Método auxiliar para verificar si es hoy
-  private esHoy(fecha: string): boolean {
-    try {
-      const [dia, mes, año] = fecha.split('/');
-      const fechaReclamacion = new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
-      const hoy = new Date();
-
-      return fechaReclamacion.toDateString() === hoy.toDateString();
-    } catch (error) {
-      return false;
-    }
-  }
-
-  // Métodos adicionales para mejorar la funcionalidad de la tabla
-
-  // Método para obtener el color del avatar basado en el nivel
-  getAvatarClass(nivel: string): string {
-    return nivel === 'Alumno'
-      ? 'bg-gradient-to-br from-blue-100 to-blue-200'
-      : 'bg-gradient-to-br from-purple-100 to-purple-200';
-  }
-
-  // Método para obtener el icono del usuario basado en el nivel
-  getUserIcon(nivel: string): string {
-    return nivel === 'Alumno' ? 'pi pi-user text-blue-600' : 'pi pi-graduation-cap text-purple-600';
-  }
-
-  // Método para obtener el color del badge del nivel
-  getNivelClass(nivel: string): string {
-    return nivel === 'Alumno'
-      ? 'bg-blue-100 text-blue-700'
-      : 'bg-purple-100 text-purple-700';
-  }
-
-  // Método para formatear fechas de registro
-  formatearFechaRegistro(fechaRegistro: string): string {
-    try {
-      // Si la fecha ya viene formateada, la devolvemos tal como está
-      if (fechaRegistro.includes(':')) {
-        return fechaRegistro;
-      }
-
-      // Si necesita formateo adicional, aquí se puede implementar
-      return fechaRegistro;
-    } catch (error) {
-      return fechaRegistro;
-    }
-  }
-
-  // Método para obtener estadísticas actualizadas
-  actualizarEstadisticas(): void {
-    const reclamaciones = this.getFilteredReclamaciones();
-
-    this.stats = {
-      total: reclamaciones.length,
-      pendientes: reclamaciones.filter(r => r.estado.toLowerCase() === 'pendiente').length,
-      resueltas: reclamaciones.filter(r =>
-        r.estado.toLowerCase() === 'atendido' ||
-        r.estado.toLowerCase() === 'resuelto' ||
-        r.estado.toLowerCase() === 'conforme'
-      ).length,
-      enProceso: reclamaciones.filter(r => r.estado.toLowerCase() === 'en proceso').length
+  // Stats calculados en base a los filtrados (para no depender de llamadas manuales)
+  get stats(): ReclamacionStats {
+    const data = this.filteredReclamaciones;
+    return {
+      total: data.length,
+      pendientes: data.filter(r => r.estado.toLowerCase() === 'pendiente').length,
+      resueltas: data.filter(r => ['atendido', 'resuelto', 'conforme'].includes(r.estado.toLowerCase())).length,
+      enProceso: data.filter(r => r.estado.toLowerCase() === 'en proceso').length
     };
   }
 
-  // Método para exportar datos (placeholder)
-  exportarDatos(): void {
-    console.log('Exportando datos...');
-    // Implementar lógica de exportación
-    const dataToExport = this.getFilteredReclamaciones();
-    // Aquí puedes agregar la lógica para exportar a Excel, PDF, etc.
-  }
-
-  // Método para configurar columnas (placeholder)
-  configurarColumnas(): void {
-    console.log('Configurando columnas...');
-    // Implementar lógica para mostrar/ocultar columnas
-  }
-
-  // Métodos mejorados para las acciones de la tabla
-  verDetalles(reclamacion: ReclamacionCompleta): void {
-    console.log('Ver detalles de reclamación:', reclamacion);
-    // Aquí puedes abrir un modal con los detalles completos
-    // Por ejemplo: this.mostrarModalDetalles = true; this.reclamacionSeleccionada = reclamacion;
-  }
-
-  editarEstado(reclamacion: ReclamacionCompleta): void {
-    console.log('Cambiar estado de:', reclamacion.codigo);
-    // Implementar lógica para cambiar estado
-    // Por ejemplo: abrir un dropdown o modal para seleccionar nuevo estado
-  }
-
-  asignarResponsable(reclamacion: ReclamacionCompleta): void {
-    console.log('Asignar responsable a:', reclamacion.codigo);
-    // Implementar lógica para asignar responsable
-    // Por ejemplo: abrir un modal con lista de responsables disponibles
-  }
-
-  generarReporte(reclamacion: ReclamacionCompleta): void {
-    console.log('Generar reporte PDF para:', reclamacion.codigo);
-    // Implementar lógica para generar reporte PDF
-    // Por ejemplo: llamar a un servicio que genere y descargue el PDF
-  }
-
+  // Acciones
   mostrarOpciones(reclamacion: ReclamacionCompleta): void {
-    console.log('Mostrar menú de opciones para:', reclamacion.codigo);
-    // Implementar lógica para mostrar menú contextual con más opciones
-    // Por ejemplo: duplicar, archivar, derivar, etc.
+    console.log('Mostrar opciones para:', reclamacion.codigo);
   }
 
-  // Método para manejar filtros rápidos
-  aplicarFiltroRapido(filtro: string): void {
-    switch (filtro) {
-      case 'pendientes':
-        this.selectedEstado = 'pendiente';
-        break;
-      case 'alta_prioridad':
-        this.selectedPrioridad = 'alta';
-        break;
-      case 'resueltos':
-        this.selectedEstado = 'atendido';
-        break;
-      default:
-        // Limpiar filtros
-        this.selectedEstado = 'todos';
-        this.selectedPrioridad = 'todos';
+  // Modales (abrir/cerrar)
+  verDetalles(r: ReclamacionCompleta): void {
+    this.reclamacionSeleccionada = r;
+    this.mostrarModalDetalles = true;
+  }
+
+  editarEstado(r: ReclamacionCompleta): void {
+    this.reclamacionSeleccionada = r;
+    this.nuevoEstado = '';
+    this.comentarioEstado = '';
+    this.mostrarModalEstado = true;
+  }
+
+  asignarResponsable(r: ReclamacionCompleta): void {
+    this.reclamacionSeleccionada = r;
+    this.responsableSeleccionado = '';
+    this.comentarioAsignacion = '';
+    this.mostrarModalResponsable = true;
+  }
+
+  generarReporte(r: ReclamacionCompleta): void {
+    this.reclamacionSeleccionada = r;
+    this.tipoReporteSeleccionado = '';
+    this.generandoReporte = false;
+    this.mostrarModalReporte = true;
+  }
+
+  cerrarModalDetalles(): void { this.mostrarModalDetalles = false; this.reclamacionSeleccionada = null; }
+  cerrarModalEstado(): void { this.mostrarModalEstado = false; this.nuevoEstado = ''; this.comentarioEstado = ''; }
+  cerrarModalResponsable(): void { this.mostrarModalResponsable = false; this.responsableSeleccionado = ''; this.comentarioAsignacion = ''; }
+  cerrarModalReporte(): void { this.mostrarModalReporte = false; this.tipoReporteSeleccionado = ''; this.generandoReporte = false; }
+
+  // Confirmaciones
+  confirmarCambioEstado(): void {
+    if (!this.nuevoEstado || !this.reclamacionSeleccionada) return;
+    this.confirmationService.confirm({
+      message: `¿Está seguro de cambiar el estado a "${this.nuevoEstado}"?`,
+      header: 'Confirmar Cambio de Estado',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const code = this.reclamacionSeleccionada!.codigo;
+        const i1 = this.reclamaciones.findIndex(r => r.codigo === code);
+        const i2 = this.reclamacionesCompletas.findIndex(r => r.codigo === code);
+        if (i1 !== -1) this.reclamaciones[i1].estado = this.nuevoEstado;
+        if (i2 !== -1) this.reclamacionesCompletas[i2].estado = this.nuevoEstado;
+
+        this.messageService.add({ severity: 'success', summary: 'Estado Actualizado', detail: `El estado ha sido cambiado a "${this.nuevoEstado}".` });
+        this.agregarAlHistorial(code, 'Cambio de estado', `A "${this.nuevoEstado}". ${this.comentarioEstado || ''}`);
+        this.cerrarModalEstado();
+      }
+    });
+  }
+
+  confirmarAsignacion(): void {
+    if (!this.responsableSeleccionado || !this.reclamacionSeleccionada) return;
+    const responsable = this.responsablesDisponibles.find(r => r.id === this.responsableSeleccionado);
+    this.confirmationService.confirm({
+      message: `¿Desea asignar la reclamación a ${responsable?.nombre}?`,
+      header: 'Confirmar Asignación',
+      icon: 'pi pi-user-plus',
+      accept: () => {
+        const code = this.reclamacionSeleccionada!.codigo;
+        const nombre = responsable?.nombre || 'No asignado';
+        const i1 = this.reclamaciones.findIndex(r => r.codigo === code);
+        const i2 = this.reclamacionesCompletas.findIndex(r => r.codigo === code);
+        if (i1 !== -1) this.reclamaciones[i1].responsable = nombre;
+        if (i2 !== -1) this.reclamacionesCompletas[i2].responsable = nombre;
+
+        this.messageService.add({ severity: 'success', summary: 'Responsable Asignado', detail: `La reclamación ha sido asignada a ${nombre}.` });
+        this.agregarAlHistorial(code, 'Asignación', `Asignado a ${nombre}. ${this.comentarioAsignacion || ''}`);
+        this.cerrarModalResponsable();
+      }
+    });
+  }
+
+  confirmarGenerarReporte(): void {
+    if (!this.tipoReporteSeleccionado || !this.reclamacionSeleccionada) return;
+    this.generandoReporte = true;
+    setTimeout(() => {
+      this.generandoReporte = false;
+      this.messageService.add({ severity: 'success', summary: 'Reporte Generado', detail: 'El reporte ha sido generado y descargado exitosamente.' });
+      this.agregarAlHistorial(this.reclamacionSeleccionada!.codigo, 'Reporte', `Generado: ${this.tipoReporteSeleccionado}`);
+      this.cerrarModalReporte();
+    }, 800);
+  }
+
+  // Auxiliares modales
+  getResponsableInfo(id: string): ResponsableOption | undefined {
+    return this.responsablesDisponibles.find(r => r.id === id);
+  }
+  obtenerNombreResponsable(id: string): string { return this.getResponsableInfo(id)?.nombre || 'No asignado'; }
+  validarCambioEstado(): boolean { return !!this.nuevoEstado; }
+  validarAsignacion(): boolean { return !!this.responsableSeleccionado; }
+  validarReporte(): boolean { return !!this.tipoReporteSeleccionado; }
+
+  agregarAlHistorial(reclamacionId: string, accion: string, detalle: string): void {
+    const entrada = {
+      fecha: new Date().toLocaleString('es-ES'),
+      accion,
+      detalle,
+      usuario: 'Usuario Actual'
+    };
+    console.log('Historial:', reclamacionId, entrada);
+  }
+
+  // Eventos desde modales (ejemplos mínimos)
+  onEstadoConfirm(event: any): void {
+    if (event && this.reclamacionSeleccionada) {
+      this.reclamacionSeleccionada.estado = event.nuevoEstado;
+      this.cerrarModalEstado();
     }
-
-    // Actualizar estadísticas después de aplicar filtros
-    this.actualizarEstadisticas();
   }
+  onReporteConfirm(_event: any): void { this.cerrarModalReporte(); }
+  onAsignacionConfirm(_event: any): void { this.cerrarModalResponsable(); }
 }
