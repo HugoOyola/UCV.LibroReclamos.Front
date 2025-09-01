@@ -28,7 +28,7 @@
   </div>
 </div>
 
-<div class="w-full p-6">
+<div class="w-full px-4 pt-6 pb-10 mx-auto">
   <!-- Tarjetas de Estadísticas (basadas en los filtrados) -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Total Reclamaciones -->
@@ -441,9 +441,6 @@
           <div class="flex items-center gap-1 uppercase">
             <i class="text-lg pi pi-list"></i>
             <h2 class="text-lg font-semibold">Resultados de Búsqueda</h2>
-            <span class="px-2 py-1 text-xs bg-white rounded bg-opacity-20">
-              {{ filteredReclamaciones.length }} registros encontrados
-            </span>
           </div>
           <p class="text-sm text-gray-400">
             Visualice, gestione y exporte reclamaciones de acuerdo a los filtros aplicados.
@@ -462,105 +459,141 @@
     <div class="overflow-hidden bg-white border border-gray-100 shadow-lg rounded-xl">
       <!-- Header con filtros -->
       <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-gray-50">
-        <!-- Barra de filtros mejorada -->
-        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <!-- Controles -->
-          <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <!-- Búsqueda global -->
-            <label class="block">
-              <span class="block mb-1 text-xs font-medium text-gray-600">Búsqueda</span>
-              <span class="w-full p-input-icon-left">
-                <input pInputText type="text" [(ngModel)]="searchTerm" placeholder="Código, usuario, DNI o correo"
-                  class="w-full bg-white border border-gray-200 shadow-sm rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100" />
-              </span>
-            </label>
+        <!-- Contenedor -->
+        <div class="flex flex-col gap-4">
+          <!-- Fila principal: Controles (izq) + Acciones (der) -->
+          <div class="flex flex-row items-center justify-between gap-4">
 
-            <!-- Estado -->
-            <label class="block">
-              <span class="block mb-1 text-xs font-medium text-gray-600">Estado</span>
-              <p-select [options]="estadoOptions" optionLabel="label" optionValue="value" [(ngModel)]="selectedEstado"
-                [showClear]="true" placeholder="Todos"
-                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
-            </label>
+            <!-- Columna izquierda: Input + Selects -->
+            <div class="w-full md:max-w-5xl">
+              <!-- Controles -->
+              <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Búsqueda global -->
+                <label class="block">
+                  <span class="block mb-1 text-xs font-medium text-gray-600">Búsqueda</span>
+                  <span class="w-full p-input-icon-left">
+                    <input
+                      pInputText
+                      pSize="small"
+                      type="text"
+                      [(ngModel)]="searchTerm"
+                      placeholder="Código, usuario, DNI o correo"
+                      class="w-full bg-white border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100" />
+                  </span>
+                </label>
 
-            <!-- Prioridad -->
-            <label class="block">
-              <span class="block mb-1 text-xs font-medium text-gray-600">Prioridad</span>
-              <p-select [options]="prioridadOptions" optionLabel="label" optionValue="value"
-                [(ngModel)]="selectedPrioridad" [showClear]="true" placeholder="Todas"
-                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
-            </label>
+                <!-- Estado -->
+                <label class="block">
+                  <span class="block mb-1 text-xs font-medium text-gray-600">Estado</span>
+                  <p-select
+                    [options]="estadoOptions"
+                    size="small"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="selectedEstado"
+                    [showClear]="true"
+                    placeholder="Todos"
+                    class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                  </p-select>
+                </label>
 
-            <!-- Campus -->
-            <label class="block">
-              <span class="block mb-1 text-xs font-medium text-gray-600">Campus</span>
-              <p-select [options]="campusOptionsTabla" optionLabel="label" optionValue="value"
-                [(ngModel)]="selectedCampus" [showClear]="true" placeholder="Todos"
-                styleClass="w-full rounded-xl shadow-sm border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></p-select>
-            </label>
-          </div>
+                <!-- Prioridad -->
+                <label class="block">
+                  <span class="block mb-1 text-xs font-medium text-gray-600">Prioridad</span>
+                  <p-select
+                    [options]="prioridadOptions"
+                    size="small"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="selectedPrioridad"
+                    [showClear]="true"
+                    placeholder="Todas"
+                    class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                  </p-select>
+                </label>
 
-          <!-- Acciones y contador -->
-          <div class="flex items-center justify-between gap-3 md:flex-col md:items-end md:justify-end">
-            <!-- Chips de filtros activos -->
-            <div class="flex flex-wrap items-center gap-2">
-              <ng-container *ngIf="searchTerm">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200">
-                  <i class="pi pi-search text-[11px]"></i> {{ searchTerm }}
-                  <button class="ml-1 text-blue-600 hover:text-blue-800" (click)="searchTerm=''">
-                    <i class="pi pi-times text-[10px]"></i>
-                  </button>
-                </span>
-              </ng-container>
+                <!-- Campus -->
+                <label class="block">
+                  <span class="block mb-1 text-xs font-medium text-gray-600">Campus</span>
+                  <p-select
+                    [options]="campusOptionsTabla"
+                    size="small"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="selectedCampus"
+                    [showClear]="true"
+                    placeholder="Todos"
+                    class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                  </p-select>
+                </label>
+              </div>
 
-              <ng-container *ngIf="selectedEstado !== 'todos'">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
-                  <i class="pi pi-check-circle text-[11px]"></i> {{ selectedEstado | titlecase }}
-                  <button class="ml-1 text-emerald-700 hover:text-emerald-900" (click)="selectedEstado='todos'">
-                    <i class="pi pi-times text-[10px]"></i>
-                  </button>
-                </span>
-              </ng-container>
+              <!-- Chips de filtros activos (debajo de los controles) -->
+              <div
+                class="flex flex-wrap items-center gap-2 pt-2"
+                *ngIf="searchTerm || selectedEstado !== 'todos' || selectedPrioridad !== 'todos' || selectedCampus !== 'todos'">
 
-              <ng-container *ngIf="selectedPrioridad !== 'todos'">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
-                  <i class="pi pi-flag text-[11px]"></i> {{ selectedPrioridad | titlecase }}
-                  <button class="ml-1 text-amber-700 hover:text-amber-900" (click)="selectedPrioridad='todos'">
-                    <i class="pi pi-times text-[10px]"></i>
-                  </button>
-                </span>
-              </ng-container>
+                <ng-container *ngIf="searchTerm">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200">
+                    <i class="pi pi-search text-[11px]"></i> {{ searchTerm }}
+                    <button class="ml-1 text-blue-600 hover:text-blue-800" (click)="searchTerm=''">
+                      <i class="pi pi-times text-[10px]"></i>
+                    </button>
+                  </span>
+                </ng-container>
 
-              <ng-container *ngIf="selectedCampus !== 'todos'">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-200">
-                  <i class="pi pi-map-marker text-[11px]"></i> {{ selectedCampus }}
-                  <button class="ml-1 text-purple-700 hover:text-purple-900" (click)="selectedCampus='todos'">
-                    <i class="pi pi-times text-[10px]"></i>
-                  </button>
-                </span>
-              </ng-container>
+                <ng-container *ngIf="selectedEstado !== 'todos'">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                    <i class="pi pi-check-circle text-[11px]"></i> {{ selectedEstado | titlecase }}
+                    <button class="ml-1 text-emerald-700 hover:text-emerald-900" (click)="selectedEstado='todos'">
+                      <i class="pi pi-times text-[10px]"></i>
+                    </button>
+                  </span>
+                </ng-container>
+
+                <ng-container *ngIf="selectedPrioridad !== 'todos'">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+                    <i class="pi pi-flag text-[11px]"></i> {{ selectedPrioridad | titlecase }}
+                    <button class="ml-1 text-amber-700 hover:text-amber-900" (click)="selectedPrioridad='todos'">
+                      <i class="pi pi-times text-[10px]"></i>
+                    </button>
+                  </span>
+                </ng-container>
+
+                <ng-container *ngIf="selectedCampus !== 'todos'">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-200">
+                    <i class="pi pi-map-marker text-[11px]"></i> {{ selectedCampus }}
+                    <button class="ml-1 text-purple-700 hover:text-purple-900" (click)="selectedCampus='todos'">
+                      <i class="pi pi-times text-[10px]"></i>
+                    </button>
+                  </span>
+                </ng-container>
+              </div>
             </div>
 
-            <!-- Contador + Limpiar -->
-            <div class="flex items-center gap-2">
+            <!-- Columna derecha: Número de registros + Limpiar -->
+            <div class="flex gap-3">
+              <!-- Total filtrado (opcional) -->
               <span
-                class="px-3 py-1 text-xs font-semibold text-blue-700 rounded-full bg-blue-600/10 ring-1 ring-inset ring-blue-200">
+                class="hidden md:inline-flex w-[110px] items-center justify-center px-3 py-1 text-sm font-semibold text-blue-700 rounded-full bg-blue-600/10 ring-1 ring-inset ring-blue-200">
                 {{ filteredReclamaciones.length }} registros
               </span>
-              <button type="button"
-                class="group inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+
+              <!-- Botón Limpiar -->
+              <button
+                type="button"
+                class="group inline-flex items-center gap-1 rounded-lg border-solid border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 (click)="searchTerm=''; selectedEstado='todos'; selectedPrioridad='todos'; selectedCampus='todos'">
-                <i class="pi pi-filter-slash text-[11px] text-gray-500 group-hover:text-gray-700"></i>
+                <i class="text-sm text-gray-500 pi pi-filter-slash group-hover:text-gray-700"></i>
                 Limpiar
               </button>
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- Tabla -->
@@ -571,8 +604,8 @@
           [tableStyle]="{'min-width': '60rem'}">
           <!-- Header -->
           <ng-template pTemplate="header">
-            <tr class="bg-gray-50/80">
-              <th class="w-20 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+            <tr class="text-sm bg-gray-50/80">
+              <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
                 ID Reclamo
               </th>
               <th class="px-4 py-4 font-semibold tracking-wider text-left text-gray-700 uppercase">
@@ -611,7 +644,7 @@
               <!-- ID Reclamo -->
               <td class="px-4 py-4 text-center">
                 <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800 border-solid border border-indigo-200">
                   #{{reclamacion.codigo}}
                 </span>
               </td>
@@ -626,7 +659,7 @@
                   </div>
                   <div>
                     <p class="text-sm font-semibold text-gray-900">{{reclamacion.usuario}}</p>
-                    <p class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1">
+                    <p class="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1 border-solid border border-gray-300">
                       {{reclamacion.nivel}}
                     </p>
                   </div>
@@ -653,7 +686,7 @@
               <!-- Tipo -->
               <td class="px-4 py-4 text-center">
                 <span
-                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border border-gray-300 shadow-sm">
+                  class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border border-gray-300 shadow-sm">
                   <i class="mr-1 text-gray-600 pi pi-tag"></i> {{reclamacion.tipo}}
                 </span>
               </td>
@@ -661,7 +694,7 @@
               <!-- Estado -->
               <td class="px-4 py-4 text-center">
                 <span [class]="getEstadoClass(reclamacion.estado)"
-                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold rounded-lg shadow-sm">
+                  class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm">
                   <span class="w-1.5 h-1.5 rounded-full mr-2" [class]="getEstadoDotClass(reclamacion.estado)"></span>
                   {{reclamacion.estado}}
                 </span>
@@ -670,7 +703,7 @@
               <!-- Prioridad -->
               <td class="px-4 py-4 text-center">
                 <span [class]="getPrioridadClass(reclamacion.prioridad)"
-                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-bold rounded-lg shadow-sm">
+                  class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm">
                   <i [class]="getPrioridadIcon(reclamacion.prioridad)" class="mr-1"></i>
                   {{reclamacion.prioridad}}
                 </span>

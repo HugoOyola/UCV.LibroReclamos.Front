@@ -191,7 +191,7 @@ export class MonitoreoComponent implements OnInit {
       dni: '76801592',
       correo: 'ddamianhu28@ucvvirtual.edu.pe',
       tipo: 'QUEJA',
-      estado: 'Atendido',
+      estado: 'Pendiente',
       prioridad: 'Media',
       campus: 'LIMA NORTE',
       fecha: '04/07/2025',
@@ -499,11 +499,11 @@ export class MonitoreoComponent implements OnInit {
         return 'pi pi-exclamation-triangle text-red-600';
       case 'media':
       case 'normal':
-        return 'pi pi-minus text-yellow-600';
+        return 'pi pi-exclamation-circle text-yellow-600';
       case 'baja':
-        return 'pi pi-arrow-down text-green-600';
+        return 'pi pi-minus-circle  text-green-600';
       default:
-        return 'pi pi-minus text-gray-600';
+        return 'pi pi-info text-gray-600';
     }
   }
 
