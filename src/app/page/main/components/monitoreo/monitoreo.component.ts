@@ -19,6 +19,12 @@ import { EstadoComponent } from './modales/estado/estado.component';
 import { ResponsableComponent } from './modales/responsable/responsable.component';
 import { ReporteComponent } from './modales/reporte/reporte.component';
 
+// imports de tu componente/feature
+import { PopoverModule } from 'primeng/popover';
+import { ViewChild } from '@angular/core';
+import { Popover } from 'primeng/popover';
+
+
 interface ReclamacionStats {
   total: number;
   pendientes: number;
@@ -36,7 +42,6 @@ interface ReclamacionCompleta {
   estado: string;
   prioridad: string;
   campus: string;
-  fecha: string;
   fechaRegistro: string;
   responsable?: string;
   descripcion?: string;
@@ -84,7 +89,8 @@ interface TipoReporte {
     DetalleComponent,
     EstadoComponent,
     ResponsableComponent,
-    ReporteComponent
+    ReporteComponent,
+    PopoverModule
   ],
   templateUrl: './monitoreo.component.html',
   styleUrl: './monitoreo.component.scss',
@@ -96,6 +102,8 @@ export class MonitoreoComponent implements OnInit {
   searchForm: FormGroup;
   quickSearchForm: FormGroup;
   showResults = false;
+
+  @ViewChild('op') op!: Popover;
 
   // Datos
   reclamaciones: ReclamacionCompleta[] = [];
@@ -110,21 +118,19 @@ export class MonitoreoComponent implements OnInit {
       estado: 'Atendido',
       prioridad: 'Media',
       campus: 'LIMA NORTE',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 23:15:33',
       descripcion: 'Problema con la plataforma virtual, no puede acceder al aula virtual para entregar trabajos.'
     },
     {
       codigo: '22188',
       usuario: 'VALDIVIA SALVADOR VALERIA NICOLE',
-      nivel: 'Alumno',
+      nivel: 'Apoderado',
       dni: '73138113',
       correo: 'vvaldiviasa@ucvvirtual.edu.pe',
       tipo: 'RECLAMO',
       estado: 'Atendido',
       prioridad: 'Media',
       campus: 'LIMA NORTE',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 21:10:56',
       descripcion: 'Solicita revisión de calificación en el curso de matemática básica.'
     },
@@ -138,7 +144,6 @@ export class MonitoreoComponent implements OnInit {
       estado: 'Conforme',
       prioridad: 'Alta',
       campus: 'TARAPOTO',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 18:46:59',
       descripcion: 'Reclamo sobre horarios de clase que se superponen entre cursos.'
     },
@@ -152,21 +157,19 @@ export class MonitoreoComponent implements OnInit {
       estado: 'Atendido',
       prioridad: 'Baja',
       campus: 'LIMA ESTE',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 17:15:15',
       descripcion: 'Queja sobre la atención en ventanilla de pagos, demora excesiva.'
     },
     {
       codigo: '22185',
       usuario: 'SOLIS CARDENAS KATHERIN YANINA',
-      nivel: 'Alumno',
+      nivel: 'Externo',
       dni: '45476405',
       correo: 'soliskaty29@gmail.com',
       tipo: 'RECLAMO',
       estado: 'Atendido',
       prioridad: 'Media',
       campus: 'LIMA NORTE',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 13:33:58',
       descripcion: 'Problema con el sistema de matrícula online, no permite seleccionar cursos.'
     },
@@ -180,7 +183,6 @@ export class MonitoreoComponent implements OnInit {
       estado: 'Atendido',
       prioridad: 'Alta',
       campus: 'TRUJILLO',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 11:32:39',
       descripcion: 'Solicitud de duplicado de diploma, proceso demorado más de lo establecido.'
     },
@@ -194,7 +196,6 @@ export class MonitoreoComponent implements OnInit {
       estado: 'Pendiente',
       prioridad: 'Media',
       campus: 'LIMA NORTE',
-      fecha: '04/07/2025',
       fechaRegistro: '04/07/2025 10:21:49',
       descripcion: 'Queja sobre las condiciones de la biblioteca, falta de espacios para estudio.'
     }
@@ -244,9 +245,10 @@ export class MonitoreoComponent implements OnInit {
 
   prioridadOptions = [
     { label: 'Todas', value: 'todos' },
-    { label: 'Alta', value: 'alta' },
-    { label: 'Media', value: 'media' },
-    { label: 'Baja', value: 'baja' },
+    { label: 'A Tiempo', value: 'alta' },
+    { label: 'Por Vencer', value: 'media' },
+    { label: 'Vencido', value: 'baja' },
+    { label: 'Atendido Fuera de fecha', value: 'baja' },
   ];
 
   campusOptionsTabla = [
@@ -670,4 +672,21 @@ export class MonitoreoComponent implements OnInit {
   }
   onReporteConfirm(_event: any): void { this.cerrarModalReporte(); }
   onAsignacionConfirm(_event: any): void { this.cerrarModalResponsable(); }
+
+  selectedReclamo: any | null = null;
+  tempEstatus: 'Conforme' | 'Inválido' | 'No-Conforme' | null = null;
+
+  openPopover(event: Event, reclamo: any) {
+    this.selectedReclamo = reclamo;
+    this.tempEstatus = reclamo?.estatus ?? null;
+    this.op.toggle(event);
+  }
+
+  setEstatus(valor: 'Conforme' | 'Inválido' | 'No-Conforme') {
+    this.tempEstatus = valor;
+    if (this.selectedReclamo) {
+      this.selectedReclamo.estatus = valor;
+      this.op.hide();
+    }
+  }
 }

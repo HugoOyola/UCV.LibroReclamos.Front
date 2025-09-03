@@ -5,33 +5,117 @@
   [draggable]="false"
   [resizable]="false"
   header="Cambiar estado"
-  (onHide)="close.emit()"
+  (onHide)="onHide()"
 >
-  <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="close.emit()">
-    <div class="p-3 text-sm border rounded-lg bg-slate-50">
-      Reclamación: <span class="font-semibold">#{{reclamacion?.codigo}}</span>
-      <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-slate-200">{{reclamacion?.estado}}</span>
+  <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="onHide()">
+
+    <!-- Información del servicio -->
+    <div class="mb-4">
+      <div class="flex items-start gap-2">
+        <label class="text-sm font-medium text-gray-700 min-w-fit">SERVICIO :</label>
+        <div class="flex-1 p-2 text-sm text-gray-800 border border-gray-200 rounded bg-gray-50">
+          {{reclamacion?.servicio || 'Convalidación de inglés'}}
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <label *ngFor="let e of estados" class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
-        <p-radioButton name="estado" [value]="e.valor" [(ngModel)]="nuevoEstado"></p-radioButton>
-        <span>
-          <span class="block font-semibold">{{e.label}}</span>
-          <span class="block text-xs text-slate-500">{{e.descripcion}}</span>
-        </span>
-      </label>
+    <!-- Fecha de registro -->
+    <div class="mb-4">
+      <div class="flex items-start gap-2">
+        <label class="text-sm font-medium text-gray-700 min-w-fit">FECHA DE REGISTRO :</label>
+        <div class="flex-1">
+          <p-datepicker
+            [(ngModel)]="fechaRegistro"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            placeholder="Selecciona una fecha"
+            class="w-full"
+            inputStyleClass="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
     </div>
 
-    <div>
-      <p class="mb-1 text-sm font-medium">Comentario (opcional)</p>
-      <textarea pInputTextarea [(ngModel)]="comentario" rows="4" class="w-full"></textarea>
+    <!-- Nuevo Estado -->
+    <div class="mb-4">
+      <label class="block mb-3 text-sm font-medium text-gray-700">NUEVO ESTADO :</label>
+      <div class="space-y-2">
+        <div *ngFor="let estado of estados" class="flex items-center">
+          <p-radiobutton
+            [(ngModel)]="nuevoEstado"
+            [value]="estado.valor"
+            [inputId]="estado.valor"
+          />
+          <label [for]="estado.valor" class="ml-2 text-sm text-gray-700 cursor-pointer">
+            {{estado.label}}
+          </label>
+        </div>
+      </div>
+      <div class="mt-1 text-xs text-red-500" *ngIf="mostrarErrorEstado">
+        Debe seleccionar un estado
+      </div>
     </div>
 
-    <div class="flex justify-end gap-2">
-      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="close.emit()"></button>
-      <button pButton type="button" label="Cambiar estado" icon="pi pi-check"
-              [disabled]="!nuevoEstado" (click)="confirmIfValid()"></button>
+    <!-- Acción de respuesta -->
+    <div class="mb-6">
+      <label class="block mb-3 text-sm font-medium text-gray-700">ACCIÓN DE RESPUESTA :</label>
+
+      <!-- Editor de texto -->
+      <div class="border border-gray-200 rounded-md">
+        <!-- Toolbar del editor -->
+        <div class="flex items-center justify-between px-3 py-2 border-b border-gray-200 bg-gray-50">
+          <span class="text-xs text-gray-600">Editor de Texto</span>
+          <button
+            type="button"
+            class="text-gray-500 transition-colors hover:text-red-600"
+            title="Eliminar contenido"
+            (click)="limpiarComentario()"
+          >
+            <i class="text-xs pi pi-trash"></i>
+          </button>
+        </div>
+
+        <!-- Área de texto -->
+        <textarea
+          pTextarea
+          [(ngModel)]="comentario"
+          placeholder="Escribe aquí..."
+          class="w-full min-h-[120px] p-3 border-0 resize-none focus:outline-none focus:ring-0"
+          rows="5"
+        ></textarea>
+      </div>
+
+      <!-- Vista previa -->
+      <div class="mt-2" *ngIf="comentario?.trim()">
+        <div class="mb-1 text-xs text-gray-600">Vista previa:</div>
+        <div class="p-2 text-sm text-gray-700 border rounded bg-gray-50">
+          {{comentario}}
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay contenido -->
+      <div class="mt-2" *ngIf="!comentario?.trim()">
+        <div class="mb-1 text-xs text-gray-600">Vista previa:</div>
+        <div class="text-xs italic text-gray-400">
+          No hay contenido para mostrar
+        </div>
+      </div>
     </div>
+
+    <!-- Botones de acción -->
+    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+      <p-button
+        label="Confirmar"
+        severity="primary"
+        (onClick)="confirmIfValid()"
+      />
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onHide()"
+      />
+    </div>
+
   </div>
 </p-dialog>

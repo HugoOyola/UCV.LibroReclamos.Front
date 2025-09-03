@@ -448,9 +448,13 @@
         </div>
 
         <!-- Botón Nueva Búsqueda -->
-        <div>
+        <div class="flex gap-3">
           <p-button icon="pi pi-search" label="Nueva Búsqueda" severity="secondary" size="small"
             (onClick)="nuevaBusqueda()" />
+
+          <!-- Botón Generar Reporte -->
+          <p-button icon="pi pi-file-pdf" label="Generar Reporte" severity="info" size="small"
+            (onClick)="generarReporte(reclamacionSeleccionada || filteredReclamaciones[0])" />
         </div>
       </div>
     </div>
@@ -472,11 +476,7 @@
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Búsqueda</span>
                   <span class="w-full p-input-icon-left">
-                    <input
-                      pInputText
-                      pSize="small"
-                      type="text"
-                      [(ngModel)]="searchTerm"
+                    <input pInputText pSize="small" type="text" [(ngModel)]="searchTerm"
                       placeholder="Código, usuario, DNI o correo"
                       class="w-full bg-white border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100" />
                   </span>
@@ -485,29 +485,17 @@
                 <!-- Estado -->
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Estado</span>
-                  <p-select
-                    [options]="estadoOptions"
-                    size="small"
-                    optionLabel="label"
-                    optionValue="value"
-                    [(ngModel)]="selectedEstado"
-                    [showClear]="true"
-                    placeholder="Todos"
+                  <p-select [options]="estadoOptions" size="small" optionLabel="label" optionValue="value"
+                    [(ngModel)]="selectedEstado" [showClear]="true" placeholder="Todos"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
 
                 <!-- Prioridad -->
                 <label class="block">
-                  <span class="block mb-1 text-xs font-medium text-gray-600">Prioridad</span>
-                  <p-select
-                    [options]="prioridadOptions"
-                    size="small"
-                    optionLabel="label"
-                    optionValue="value"
-                    [(ngModel)]="selectedPrioridad"
-                    [showClear]="true"
-                    placeholder="Todas"
+                  <span class="block mb-1 text-xs font-medium text-gray-600">Nivel</span>
+                  <p-select [options]="prioridadOptions" size="small" optionLabel="label" optionValue="value"
+                    [(ngModel)]="selectedPrioridad" [showClear]="true" placeholder="Todas"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
@@ -515,22 +503,15 @@
                 <!-- Campus -->
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Campus</span>
-                  <p-select
-                    [options]="campusOptionsTabla"
-                    size="small"
-                    optionLabel="label"
-                    optionValue="value"
-                    [(ngModel)]="selectedCampus"
-                    [showClear]="true"
-                    placeholder="Todos"
+                  <p-select [options]="campusOptionsTabla" size="small" optionLabel="label" optionValue="value"
+                    [(ngModel)]="selectedCampus" [showClear]="true" placeholder="Todos"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
               </div>
 
               <!-- Chips de filtros activos (debajo de los controles) -->
-              <div
-                class="flex flex-wrap items-center gap-2 pt-2"
+              <div class="flex flex-wrap items-center gap-2 pt-2"
                 *ngIf="searchTerm || selectedEstado !== 'todos' || selectedPrioridad !== 'todos' || selectedCampus !== 'todos'">
 
                 <ng-container *ngIf="searchTerm">
@@ -584,8 +565,7 @@
               </span>
 
               <!-- Botón Limpiar -->
-              <button
-                type="button"
+              <button type="button"
                 class="group inline-flex items-center gap-1 rounded-lg border-solid border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 (click)="searchTerm=''; selectedEstado='todos'; selectedPrioridad='todos'; selectedCampus='todos'">
                 <i class="text-sm text-gray-500 pi pi-filter-slash group-hover:text-gray-700"></i>
@@ -624,7 +604,7 @@
                 Estado
               </th>
               <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
-                Prioridad
+                Nivel
               </th>
               <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
                 Campus
@@ -645,7 +625,7 @@
               <td class="px-4 py-4 text-center">
                 <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800 border-solid border border-indigo-200">
-                  #{{reclamacion.codigo}}
+                  {{reclamacion.codigo}}
                 </span>
               </td>
 
@@ -659,7 +639,8 @@
                   </div>
                   <div>
                     <p class="text-sm font-semibold text-gray-900">{{reclamacion.usuario}}</p>
-                    <p class="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1 border-solid border border-gray-300">
+                    <p
+                      class="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1 border-solid border border-gray-300">
                       {{reclamacion.nivel}}
                     </p>
                   </div>
@@ -720,11 +701,8 @@
               <!-- Fecha -->
               <td class="px-4 py-4 text-center">
                 <div class="space-y-1">
-                  <div class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                  <div class="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                     {{reclamacion.fechaRegistro}}
-                  </div>
-                  <div class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">
-                    {{reclamacion.fecha}}
                   </div>
                 </div>
               </td>
@@ -733,35 +711,42 @@
               <td class="px-4 py-4 text-center">
                 <div
                   class="flex items-center justify-center gap-1 transition-opacity opacity-70 group-hover:opacity-100">
+                  <button
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-emerald-600 hover:bg-emerald-200"
+                    title="Ver detalles">
+                    <i class="text-sm pi pi-download"></i>
+                  </button>
+
                   <button (click)="verDetalles(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-blue-600 hover:bg-blue-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-blue-600 hover:bg-blue-200"
                     title="Ver detalles">
                     <i class="text-sm pi pi-eye"></i>
                   </button>
 
                   <button (click)="editarEstado(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-emerald-600 hover:bg-emerald-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-rose-600 hover:bg-rose-200"
                     title="Cambiar estado">
                     <i class="text-sm pi pi-check-circle"></i>
                   </button>
 
                   <button (click)="asignarResponsable(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-purple-600 hover:bg-purple-100"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-purple-600 hover:bg-purple-200"
                     title="Asignar responsable">
                     <i class="text-sm pi pi-user-plus"></i>
                   </button>
 
-                  <button (click)="generarReporte(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-amber-600 hover:bg-amber-100"
-                    title="Generar reporte">
-                    <i class="text-sm pi pi-file-pdf"></i>
-                  </button>
-
-                  <button (click)="mostrarOpciones(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-gray-800 hover:bg-gray-100"
+                  <button type="button" (click)="openPopover($event, reclamacion)"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-gray-800 hover:bg-gray-200"
                     title="Más opciones">
                     <i class="text-sm pi pi-ellipsis-v"></i>
                   </button>
+
+                  <!-- Modal de Reporte -->
+                  <!-- <button (click)="generarReporte(reclamacion)"
+                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-amber-600 hover:bg-amber-200"
+                    title="Generar reporte">
+                    <i class="text-sm pi pi-file-pdf"></i>
+                  </button> -->
                 </div>
               </td>
             </tr>
@@ -795,8 +780,8 @@
                       Nueva búsqueda
                     </button>
 
-                    <button type="button" (click)="limpiarFiltros()
-" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button type="button" (click)="limpiarFiltros()"
+                      class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                       <i class="mr-2 pi pi-refresh"></i>
                       Limpiar filtros
                     </button>
@@ -826,3 +811,27 @@
 <app-reporte [visible]="mostrarModalReporte" [reclamacion]="reclamacionSeleccionada" [tipos]="tiposReporte"
   (close)="cerrarModalReporte()" (confirm)="onReporteConfirm($event)">
 </app-reporte>
+
+<p-popover #op appendTo="body" [baseZIndex]="10000" styleClass="estatus-popover">
+  <ng-template #content>
+    <div class="w-64">
+      <!-- Conforme -->
+      <button type="button" class="item-popover" (click)="setEstatus('Conforme')">
+        <p-radiobutton name="estatus" [value]="'Conforme'" [(ngModel)]="tempEstatus" inputId="estatus-conforme" />
+        <label for="estatus-conforme" class="label-popover">Conforme</label>
+      </button>
+
+      <!-- Inválido -->
+      <button type="button" class="item-popover" (click)="setEstatus('Inválido')">
+        <p-radiobutton name="estatus" [value]="'Inválido'" [(ngModel)]="tempEstatus" inputId="estatus-invalido" />
+        <label for="estatus-invalido" class="label-popover">Inválido</label>
+      </button>
+
+      <!-- No-Conforme -->
+      <button type="button" class="item-popover" (click)="setEstatus('No-Conforme')">
+        <p-radiobutton name="estatus" [value]="'No-Conforme'" [(ngModel)]="tempEstatus" inputId="estatus-noconforme" />
+        <label for="estatus-noconforme" class="label-popover">No-Conforme</label>
+      </button>
+    </div>
+  </ng-template>
+</p-popover>
