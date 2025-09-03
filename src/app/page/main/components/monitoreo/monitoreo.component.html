@@ -633,14 +633,14 @@
               <td class="px-4 py-4">
                 <div class="flex items-center space-x-3">
                   <div class="flex items-center justify-center w-10 h-10 rounded-full shadow-sm ring-2 ring-white"
-                    [ngClass]="reclamacion.nivel === 'Alumno' ? 'bg-gradient-to-br from-blue-400 to-blue-600' : 'bg-gradient-to-br from-purple-400 to-purple-600'">
+                    [ngClass]="getUserAvatarClass(reclamacion.nivel)">
                     <i class="text-sm text-white"
-                      [ngClass]="reclamacion.nivel === 'Alumno' ? 'pi pi-user' : 'pi pi-graduation-cap'"></i>
+                      [ngClass]="getUserIcon(reclamacion.nivel)"></i>
                   </div>
                   <div>
                     <p class="text-sm font-semibold text-gray-900">{{reclamacion.usuario}}</p>
-                    <p
-                      class="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mt-1 border-solid border border-gray-300">
+                    <p class="text-[10px] text-center font-medium rounded-full inline-block mt-1 px-2 py-0.5 border-solid border"
+                       [ngClass]="getUserBadgeClass(reclamacion.nivel)">
                       {{reclamacion.nivel}}
                     </p>
                   </div>
@@ -657,7 +657,7 @@
               <!-- Correo -->
               <td class="px-4 py-4">
                 <div class="flex items-center space-x-2">
-                  <i class="text-xs text-gray-400 pi pi-envelope"></i>
+                  <i class="text-sm text-gray-400 pi pi-envelope"></i>
                   <span class="text-sm text-gray-600 truncate max-w-[200px]" [title]="reclamacion.correo">
                     {{reclamacion.correo}}
                   </span>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,19 +12,16 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PopoverModule } from 'primeng/popover';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { Popover } from 'primeng/popover';
 
 import { DetalleComponent } from './modales/detalle/detalle.component';
 import { EstadoComponent } from './modales/estado/estado.component';
 import { ResponsableComponent } from './modales/responsable/responsable.component';
 import { ReporteComponent } from './modales/reporte/reporte.component';
 
-// imports de tu componente/feature
-import { PopoverModule } from 'primeng/popover';
-import { ViewChild } from '@angular/core';
-import { Popover } from 'primeng/popover';
-
-
+// ============= INTERFACES =============
 interface ReclamacionStats {
   total: number;
   pendientes: number;
@@ -35,7 +32,7 @@ interface ReclamacionStats {
 interface ReclamacionCompleta {
   codigo: string;
   usuario: string;
-  nivel: string; // 'Alumno' | 'Egresado'
+  nivel: string;
   dni: string;
   correo: string;
   tipo: string;
@@ -97,16 +94,35 @@ interface TipoReporte {
   providers: [MessageService, ConfirmationService]
 })
 export class MonitoreoComponent implements OnInit {
-  // Tabs y formularios
+
+  // ============= VIEWCHILD =============
+  @ViewChild('op') op!: Popover;
+
+  // ============= PROPIEDADES DE FORMULARIOS Y ESTADO =============
   activeTab: 'advanced' | 'quick' = 'advanced';
   searchForm: FormGroup;
   quickSearchForm: FormGroup;
   showResults = false;
 
-  @ViewChild('op') op!: Popover;
-
-  // Datos
+  // ============= DATOS Y FILTROS =============
   reclamaciones: ReclamacionCompleta[] = [];
+  searchTerm = '';
+  selectedEstado: string = 'todos';
+  selectedPrioridad: string = 'todos';
+  selectedCampus: string = 'todos';
+
+  // ============= MODALES =============
+  mostrarModalDetalles = false;
+  mostrarModalEstado = false;
+  mostrarModalResponsable = false;
+  mostrarModalReporte = false;
+  reclamacionSeleccionada: ReclamacionCompleta | null = null;
+
+  // ============= POPOVER =============
+  selectedReclamo: any | null = null;
+  tempEstatus: 'Conforme' | 'Inválido' | 'No-Conforme' | null = null;
+
+  // ============= DATOS MOCK =============
   private reclamacionesCompletas: ReclamacionCompleta[] = [
     {
       codigo: '22189',
@@ -201,13 +217,7 @@ export class MonitoreoComponent implements OnInit {
     }
   ];
 
-  // Barra de filtros en tabla
-  searchTerm = '';
-  selectedEstado: string = 'todos';
-  selectedPrioridad: string = 'todos';
-  selectedCampus: string = 'todos';
-
-  // Catálogos
+  // ============= CATÁLOGOS =============
   estadosDisponibles: EstadoOption[] = [
     { valor: 'Pendiente', label: 'Pendiente', descripcion: 'Reclamación pendiente de revisión' },
     { valor: 'En Proceso', label: 'En Proceso', descripcion: 'Se está trabajando en la solución' },
@@ -230,7 +240,7 @@ export class MonitoreoComponent implements OnInit {
     { valor: 'seguimiento', label: 'Seguimiento', descripcion: 'Historial de acciones y cambios', icono: 'pi pi-clock' }
   ];
 
-  // Opciones selects en barra de filtros
+  // ============= OPCIONES DE SELECTS =============
   estadoOptions = [
     { label: 'Todos', value: 'todos' },
     { label: 'Pendiente', value: 'pendiente' },
@@ -240,7 +250,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'No-Conforme', value: 'no-conforme' },
     { label: 'Vencido', value: 'vencido' },
     { label: 'Cerrado', value: 'cerrado' },
-    { label: 'Inválido', value: 'inválido' },
+    { label: 'Inválido', value: 'inválido' }
   ];
 
   prioridadOptions = [
@@ -248,7 +258,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'A Tiempo', value: 'alta' },
     { label: 'Por Vencer', value: 'media' },
     { label: 'Vencido', value: 'baja' },
-    { label: 'Atendido Fuera de fecha', value: 'baja' },
+    { label: 'Atendido Fuera de fecha', value: 'baja' }
   ];
 
   campusOptionsTabla = [
@@ -259,7 +269,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'PIURA', value: 'PIURA' },
     { label: 'CHEPEN', value: 'CHEPEN' },
     { label: 'MOYOBAMBA', value: 'MOYOBAMBA' },
-    { label: 'TARAPOTO', value: 'TARAPOTO' },
+    { label: 'TARAPOTO', value: 'TARAPOTO' }
   ];
 
   campusOptions = [
@@ -272,21 +282,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'UCV CAMPUS MOYOBAMBA', value: 'moyobamba' }
   ];
 
-  // Modales
-  mostrarModalDetalles = false;
-  mostrarModalEstado = false;
-  mostrarModalResponsable = false;
-  mostrarModalReporte = false;
-  reclamacionSeleccionada: ReclamacionCompleta | null = null;
-
-  // Estado / Responsable / Reporte
-  nuevoEstado = '';
-  comentarioEstado = '';
-  responsableSeleccionado = '';
-  comentarioAsignacion = '';
-  tipoReporteSeleccionado = '';
-  generandoReporte = false;
-
+  // ============= CONSTRUCTOR =============
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -316,6 +312,7 @@ export class MonitoreoComponent implements OnInit {
     });
   }
 
+  // ============= LIFECYCLE =============
   ngOnInit(): void {
     const today = new Date();
     const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
@@ -323,13 +320,18 @@ export class MonitoreoComponent implements OnInit {
     this.reclamaciones = [...this.reclamacionesCompletas];
   }
 
-  // Tabs
+  // ============= NAVEGACIÓN Y TABS =============
   setActiveTab(tab: 'advanced' | 'quick'): void {
     this.activeTab = tab;
     this.showResults = false;
   }
 
-  // Filtros (checkbox grupos)
+  volverAlInicio(): void {
+    this.router.navigate(['/dashboard'])
+      .catch(error => console.error('Error al navegar:', error));
+  }
+
+  // ============= FILTROS DE FORMULARIO =============
   onTipoReclamacionChange(tipo: string): void {
     if (tipo === 'todos') {
       this.searchForm.patchValue({
@@ -368,12 +370,22 @@ export class MonitoreoComponent implements OnInit {
     if (seleccionados.length === 0) this.searchForm.patchValue({ estadoTodos: true });
   }
 
-  // Búsqueda
+  // ============= BÚSQUEDA =============
   buscarReclamaciones(): void {
-    // Aquí podrías aplicar los filtros avanzados a tu fuente real de datos.
-    // Para demo, solo mostramos resultados simulados.
     this.reclamaciones = [...this.reclamacionesCompletas];
     this.showResults = true;
+  }
+
+  buscarAhora(): void {
+    if (this.quickSearchForm.valid) this.buscarReclamaciones();
+  }
+
+  nuevaBusqueda(): void {
+    this.showResults = false;
+  }
+
+  limpiar(): void {
+    this.limpiarFiltros();
   }
 
   limpiarFiltros(): void {
@@ -400,31 +412,18 @@ export class MonitoreoComponent implements OnInit {
       this.quickSearchForm.reset({ searchType: 'dni', searchValue: '' });
     }
     this.showResults = false;
-
-    // Resetea filtros de barra de tabla
     this.searchTerm = '';
     this.selectedEstado = 'todos';
     this.selectedPrioridad = 'todos';
     this.selectedCampus = 'todos';
-
     this.reclamaciones = [];
   }
 
-  nuevaBusqueda(): void { this.showResults = false; }
-  buscarAhora(): void { if (this.quickSearchForm.valid) this.buscarReclamaciones(); }
-  limpiar(): void { this.limpiarFiltros(); }
-
   actualizarDatos(): void {
-    // Aquí podrías reconsultar al backend
     this.reclamaciones = [...this.reclamacionesCompletas];
   }
 
-  volverAlInicio(): void {
-    this.router.navigate(['/dashboard'])
-      .catch(error => console.error('Error al navegar:', error));
-  }
-
-  // Placeholders/labels/icons búsqueda rápida
+  // ============= HELPERS PARA BÚSQUEDA RÁPIDA =============
   getPlaceholder(): string {
     const t = this.quickSearchForm.get('searchType')?.value;
     if (t === 'dni') return 'Ej: 41630253';
@@ -432,6 +431,7 @@ export class MonitoreoComponent implements OnInit {
     if (t === 'nombre') return 'Ej: Juan Pérez';
     return '';
   }
+
   getSearchLabel(): string {
     const t = this.quickSearchForm.get('searchType')?.value;
     if (t === 'dni') return 'DNI';
@@ -439,13 +439,53 @@ export class MonitoreoComponent implements OnInit {
     if (t === 'nombre') return 'Nombre';
     return '';
   }
+
   getSearchIcon(searchType: string): string {
     if (searchType === 'dni' || searchType === 'nombre') return 'pi pi-user';
     if (searchType === 'codigo') return 'pi pi-tag';
     return 'pi pi-search';
   }
 
-  // Clases / íconos (únicas versiones)
+  // ============= GETTERS CALCULADOS =============
+  get filteredReclamaciones(): ReclamacionCompleta[] {
+    let data = [...this.reclamaciones];
+
+    const term = this.searchTerm?.toLowerCase().trim();
+    if (term) {
+      data = data.filter(rec =>
+        rec.codigo.toLowerCase().includes(term) ||
+        rec.usuario.toLowerCase().includes(term) ||
+        rec.dni.includes(term) ||
+        rec.correo.toLowerCase().includes(term)
+      );
+    }
+
+    if (this.selectedEstado !== 'todos') {
+      data = data.filter(r => r.estado.toLowerCase() === this.selectedEstado);
+    }
+
+    if (this.selectedPrioridad !== 'todos') {
+      data = data.filter(r => r.prioridad.toLowerCase() === this.selectedPrioridad);
+    }
+
+    if (this.selectedCampus !== 'todos') {
+      data = data.filter(r => (r.campus || '').toUpperCase() === this.selectedCampus.toUpperCase());
+    }
+
+    return data;
+  }
+
+  get stats(): ReclamacionStats {
+    const data = this.filteredReclamaciones;
+    return {
+      total: data.length,
+      pendientes: data.filter(r => r.estado.toLowerCase() === 'pendiente').length,
+      resueltas: data.filter(r => ['atendido', 'resuelto', 'conforme'].includes(r.estado.toLowerCase())).length,
+      enProceso: data.filter(r => r.estado.toLowerCase() === 'en proceso').length
+    };
+  }
+
+  // ============= CLASES CSS Y ESTILOS =============
   getEstadoClass(estado: string): string {
     switch (estado.toLowerCase()) {
       case 'atendido':
@@ -503,62 +543,59 @@ export class MonitoreoComponent implements OnInit {
       case 'normal':
         return 'pi pi-exclamation-circle text-yellow-600';
       case 'baja':
-        return 'pi pi-minus-circle  text-green-600';
+        return 'pi pi-minus-circle text-green-600';
       default:
         return 'pi pi-info text-gray-600';
     }
   }
 
-  // Filtro centralizado para la tabla
-  get filteredReclamaciones(): ReclamacionCompleta[] {
-    let data = [...this.reclamaciones];
-
-    // Búsqueda global
-    const term = this.searchTerm?.toLowerCase().trim();
-    if (term) {
-      data = data.filter(rec =>
-        rec.codigo.toLowerCase().includes(term) ||
-        rec.usuario.toLowerCase().includes(term) ||
-        rec.dni.includes(term) ||
-        rec.correo.toLowerCase().includes(term)
-      );
+  // ============= ESTILOS PARA TIPOS DE USUARIO =============
+  getUserIcon(nivel: string): string {
+    switch (nivel) {
+      case 'Alumno':
+        return 'pi pi-user';
+      case 'Egresado':
+        return 'pi pi-graduation-cap';
+      case 'Apoderado':
+        return 'pi pi-users';
+      case 'Externo':
+        return 'pi pi-globe';
+      default:
+        return 'pi pi-user';
     }
-
-    // Estado
-    if (this.selectedEstado !== 'todos') {
-      data = data.filter(r => r.estado.toLowerCase() === this.selectedEstado);
-    }
-
-    // Prioridad
-    if (this.selectedPrioridad !== 'todos') {
-      data = data.filter(r => r.prioridad.toLowerCase() === this.selectedPrioridad);
-    }
-
-    // Campus (en datos viene en MAYÚSCULAS)
-    if (this.selectedCampus !== 'todos') {
-      data = data.filter(r => (r.campus || '').toUpperCase() === this.selectedCampus.toUpperCase());
-    }
-
-    return data;
   }
 
-  // Stats calculados en base a los filtrados (para no depender de llamadas manuales)
-  get stats(): ReclamacionStats {
-    const data = this.filteredReclamaciones;
-    return {
-      total: data.length,
-      pendientes: data.filter(r => r.estado.toLowerCase() === 'pendiente').length,
-      resueltas: data.filter(r => ['atendido', 'resuelto', 'conforme'].includes(r.estado.toLowerCase())).length,
-      enProceso: data.filter(r => r.estado.toLowerCase() === 'en proceso').length
-    };
+  getUserAvatarClass(nivel: string): string {
+    switch (nivel) {
+      case 'Alumno':
+        return 'bg-gradient-to-br from-blue-400 to-blue-600';
+      case 'Egresado':
+        return 'bg-gradient-to-br from-green-400 to-green-600';
+      case 'Apoderado':
+        return 'bg-gradient-to-br from-purple-400 to-purple-600';
+      case 'Externo':
+        return 'bg-gradient-to-br from-orange-400 to-orange-600';
+      default:
+        return 'bg-gradient-to-br from-gray-400 to-gray-600';
+    }
   }
 
-  // Acciones
-  mostrarOpciones(reclamacion: ReclamacionCompleta): void {
-    console.log('Mostrar opciones para:', reclamacion.codigo);
+  getUserBadgeClass(nivel: string): string {
+    switch (nivel) {
+      case 'Alumno':
+        return 'bg-blue-100 text-blue-700 border-blue-300';
+      case 'Egresado':
+        return 'bg-green-100 text-green-700 border-green-300';
+      case 'Apoderado':
+        return 'bg-purple-100 text-purple-700 border-purple-300';
+      case 'Externo':
+        return 'bg-orange-100 text-orange-700 border-orange-300';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-300';
+    }
   }
 
-  // Modales (abrir/cerrar)
+  // ============= MODALES =============
   verDetalles(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
     this.mostrarModalDetalles = true;
@@ -566,123 +603,60 @@ export class MonitoreoComponent implements OnInit {
 
   editarEstado(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
-    this.nuevoEstado = '';
-    this.comentarioEstado = '';
     this.mostrarModalEstado = true;
   }
 
   asignarResponsable(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
-    this.responsableSeleccionado = '';
-    this.comentarioAsignacion = '';
     this.mostrarModalResponsable = true;
   }
 
   generarReporte(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
-    this.tipoReporteSeleccionado = '';
-    this.generandoReporte = false;
     this.mostrarModalReporte = true;
   }
 
-  cerrarModalDetalles(): void { this.mostrarModalDetalles = false; this.reclamacionSeleccionada = null; }
-  cerrarModalEstado(): void { this.mostrarModalEstado = false; this.nuevoEstado = ''; this.comentarioEstado = ''; }
-  cerrarModalResponsable(): void { this.mostrarModalResponsable = false; this.responsableSeleccionado = ''; this.comentarioAsignacion = ''; }
-  cerrarModalReporte(): void { this.mostrarModalReporte = false; this.tipoReporteSeleccionado = ''; this.generandoReporte = false; }
-
-  // Confirmaciones
-  confirmarCambioEstado(): void {
-    if (!this.nuevoEstado || !this.reclamacionSeleccionada) return;
-    this.confirmationService.confirm({
-      message: `¿Está seguro de cambiar el estado a "${this.nuevoEstado}"?`,
-      header: 'Confirmar Cambio de Estado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        const code = this.reclamacionSeleccionada!.codigo;
-        const i1 = this.reclamaciones.findIndex(r => r.codigo === code);
-        const i2 = this.reclamacionesCompletas.findIndex(r => r.codigo === code);
-        if (i1 !== -1) this.reclamaciones[i1].estado = this.nuevoEstado;
-        if (i2 !== -1) this.reclamacionesCompletas[i2].estado = this.nuevoEstado;
-
-        this.messageService.add({ severity: 'success', summary: 'Estado Actualizado', detail: `El estado ha sido cambiado a "${this.nuevoEstado}".` });
-        this.agregarAlHistorial(code, 'Cambio de estado', `A "${this.nuevoEstado}". ${this.comentarioEstado || ''}`);
-        this.cerrarModalEstado();
-      }
-    });
+  cerrarModalDetalles(): void {
+    this.mostrarModalDetalles = false;
+    this.reclamacionSeleccionada = null;
   }
 
-  confirmarAsignacion(): void {
-    if (!this.responsableSeleccionado || !this.reclamacionSeleccionada) return;
-    const responsable = this.responsablesDisponibles.find(r => r.id === this.responsableSeleccionado);
-    this.confirmationService.confirm({
-      message: `¿Desea asignar la reclamación a ${responsable?.nombre}?`,
-      header: 'Confirmar Asignación',
-      icon: 'pi pi-user-plus',
-      accept: () => {
-        const code = this.reclamacionSeleccionada!.codigo;
-        const nombre = responsable?.nombre || 'No asignado';
-        const i1 = this.reclamaciones.findIndex(r => r.codigo === code);
-        const i2 = this.reclamacionesCompletas.findIndex(r => r.codigo === code);
-        if (i1 !== -1) this.reclamaciones[i1].responsable = nombre;
-        if (i2 !== -1) this.reclamacionesCompletas[i2].responsable = nombre;
-
-        this.messageService.add({ severity: 'success', summary: 'Responsable Asignado', detail: `La reclamación ha sido asignada a ${nombre}.` });
-        this.agregarAlHistorial(code, 'Asignación', `Asignado a ${nombre}. ${this.comentarioAsignacion || ''}`);
-        this.cerrarModalResponsable();
-      }
-    });
+  cerrarModalEstado(): void {
+    this.mostrarModalEstado = false;
   }
 
-  confirmarGenerarReporte(): void {
-    if (!this.tipoReporteSeleccionado || !this.reclamacionSeleccionada) return;
-    this.generandoReporte = true;
-    setTimeout(() => {
-      this.generandoReporte = false;
-      this.messageService.add({ severity: 'success', summary: 'Reporte Generado', detail: 'El reporte ha sido generado y descargado exitosamente.' });
-      this.agregarAlHistorial(this.reclamacionSeleccionada!.codigo, 'Reporte', `Generado: ${this.tipoReporteSeleccionado}`);
-      this.cerrarModalReporte();
-    }, 800);
+  cerrarModalResponsable(): void {
+    this.mostrarModalResponsable = false;
   }
 
-  // Auxiliares modales
-  getResponsableInfo(id: string): ResponsableOption | undefined {
-    return this.responsablesDisponibles.find(r => r.id === id);
-  }
-  obtenerNombreResponsable(id: string): string { return this.getResponsableInfo(id)?.nombre || 'No asignado'; }
-  validarCambioEstado(): boolean { return !!this.nuevoEstado; }
-  validarAsignacion(): boolean { return !!this.responsableSeleccionado; }
-  validarReporte(): boolean { return !!this.tipoReporteSeleccionado; }
-
-  agregarAlHistorial(reclamacionId: string, accion: string, detalle: string): void {
-    const entrada = {
-      fecha: new Date().toLocaleString('es-ES'),
-      accion,
-      detalle,
-      usuario: 'Usuario Actual'
-    };
-    console.log('Historial:', reclamacionId, entrada);
+  cerrarModalReporte(): void {
+    this.mostrarModalReporte = false;
   }
 
-  // Eventos desde modales (ejemplos mínimos)
+  // ============= EVENTOS DE MODALES =============
   onEstadoConfirm(event: any): void {
     if (event && this.reclamacionSeleccionada) {
       this.reclamacionSeleccionada.estado = event.nuevoEstado;
       this.cerrarModalEstado();
     }
   }
-  onReporteConfirm(_event: any): void { this.cerrarModalReporte(); }
-  onAsignacionConfirm(_event: any): void { this.cerrarModalResponsable(); }
 
-  selectedReclamo: any | null = null;
-  tempEstatus: 'Conforme' | 'Inválido' | 'No-Conforme' | null = null;
+  onReporteConfirm(_event: any): void {
+    this.cerrarModalReporte();
+  }
 
-  openPopover(event: Event, reclamo: any) {
+  onAsignacionConfirm(_event: any): void {
+    this.cerrarModalResponsable();
+  }
+
+  // ============= POPOVER =============
+  openPopover(event: Event, reclamo: any): void {
     this.selectedReclamo = reclamo;
     this.tempEstatus = reclamo?.estatus ?? null;
     this.op.toggle(event);
   }
 
-  setEstatus(valor: 'Conforme' | 'Inválido' | 'No-Conforme') {
+  setEstatus(valor: 'Conforme' | 'Inválido' | 'No-Conforme'): void {
     this.tempEstatus = valor;
     if (this.selectedReclamo) {
       this.selectedReclamo.estatus = valor;
