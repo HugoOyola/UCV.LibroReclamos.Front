@@ -512,9 +512,9 @@
 
               <!-- Chips de filtros activos (debajo de los controles) -->
               <div class="flex flex-wrap items-center gap-2 pt-2"
-                *ngIf="searchTerm || selectedEstado !== 'todos' || selectedPrioridad !== 'todos' || selectedCampus !== 'todos'">
+                *ngIf="searchTerm?.trim() || (selectedEstado && selectedEstado !== 'todos') || (selectedPrioridad && selectedPrioridad !== 'todos') || (selectedCampus && selectedCampus !== 'todos')">
 
-                <ng-container *ngIf="searchTerm">
+                <ng-container *ngIf="searchTerm?.trim()">
                   <span
                     class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200">
                     <i class="pi pi-search text-[11px]"></i> {{ searchTerm }}
@@ -524,30 +524,30 @@
                   </span>
                 </ng-container>
 
-                <ng-container *ngIf="selectedEstado !== 'todos'">
+                <ng-container *ngIf="selectedEstado && selectedEstado !== 'todos'">
                   <span
                     class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
-                    <i class="pi pi-check-circle text-[11px]"></i> {{ selectedEstado | titlecase }}
+                    <i class="pi pi-check-circle text-[11px]"></i> {{ formatearEstadoParaTabla(selectedEstado) }}
                     <button class="ml-1 text-emerald-700 hover:text-emerald-900" (click)="selectedEstado='todos'">
                       <i class="pi pi-times text-[10px]"></i>
                     </button>
                   </span>
                 </ng-container>
 
-                <ng-container *ngIf="selectedPrioridad !== 'todos'">
+                <ng-container *ngIf="selectedPrioridad && selectedPrioridad !== 'todos'">
                   <span
                     class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
-                    <i class="pi pi-flag text-[11px]"></i> {{ selectedPrioridad | titlecase }}
+                    <i class="pi pi-flag text-[11px]"></i> {{ formatearPrioridadParaDisplay(selectedPrioridad) }}
                     <button class="ml-1 text-amber-700 hover:text-amber-900" (click)="selectedPrioridad='todos'">
                       <i class="pi pi-times text-[10px]"></i>
                     </button>
                   </span>
                 </ng-container>
 
-                <ng-container *ngIf="selectedCampus !== 'todos'">
+                <ng-container *ngIf="selectedCampus && selectedCampus !== 'todos'">
                   <span
                     class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-200">
-                    <i class="pi pi-map-marker text-[11px]"></i> {{ selectedCampus }}
+                    <i class="pi pi-map-marker text-[11px]"></i> {{ getCampusDisplayName(selectedCampus) }}
                     <button class="ml-1 text-purple-700 hover:text-purple-900" (click)="selectedCampus='todos'">
                       <i class="pi pi-times text-[10px]"></i>
                     </button>

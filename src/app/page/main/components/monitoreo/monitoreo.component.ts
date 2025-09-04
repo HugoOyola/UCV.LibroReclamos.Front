@@ -1070,6 +1070,24 @@ export class MonitoreoComponent implements OnInit {
     }
   }
 
+  // Formatea prioridad para mostrar en chips y otros elementos
+  formatearPrioridadParaDisplay(prioridad: string): string {
+    switch (prioridad.toLowerCase()) {
+      case 'a-tiempo':
+        return 'A Tiempo';
+      case 'por-vencer':
+        return 'Por Vencer';
+      case 'vencido':
+        return 'Vencido';
+      case 'atendido-fuera-fecha':
+        return 'Atendido Tarde';
+      case 'todos':
+        return 'Todas';
+      default:
+        return prioridad.charAt(0).toUpperCase() + prioridad.slice(1);
+    }
+  }
+
   // ============= GESTIÓN DE MODALES =============
 
   // Abre modal de detalles para una reclamación específica
