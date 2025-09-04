@@ -29,8 +29,8 @@
 </div>
 
 <div class="w-full px-4 pt-6 pb-10 mx-auto">
-  <!-- Tarjetas de Estadísticas (basadas en los filtrados) -->
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <!-- Tarjetas de Estadísticas (solo se muestran cuando hay búsqueda realizada) -->
+  <div *ngIf="showResults && searchPerformed" class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Total Reclamaciones -->
     <div
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
@@ -45,44 +45,44 @@
       </div>
     </div>
 
-    <!-- Pendientes -->
-    <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-orange-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="mb-1 text-sm text-gray-500">Pendientes</p>
-          <h3 class="text-2xl font-bold text-orange-500">{{ stats.pendientes }}</h3>
-        </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
-          <i class="text-xl text-orange-500 pi pi-clock"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Resueltas -->
+    <!-- A Tiempo -->
     <div
       class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-green-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500">Resueltas</p>
-          <h3 class="text-2xl font-bold text-green-500">{{ stats.resueltas }}</h3>
+          <p class="mb-1 text-sm text-gray-500">A Tiempo</p>
+          <h3 class="text-2xl font-bold text-green-600">{{ stats.aTiempo }}</h3>
         </div>
         <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
-          <i class="text-xl text-green-500 pi pi-check-circle"></i>
+          <i class="text-xl text-green-600 pi pi-check-circle"></i>
         </div>
       </div>
     </div>
 
-    <!-- En Proceso -->
+    <!-- Por Vencer -->
     <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-purple-200">
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-yellow-200">
       <div class="flex items-center justify-between">
         <div>
-          <p class="mb-1 text-sm text-gray-500">En Proceso</p>
-          <h3 class="text-2xl font-bold text-purple-500">{{ stats.enProceso }}</h3>
+          <p class="mb-1 text-sm text-gray-500">Por Vencer</p>
+          <h3 class="text-2xl font-bold text-yellow-600">{{ stats.porVencer }}</h3>
         </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
-          <i class="text-xl text-purple-500 pi pi-chart-line"></i>
+        <div class="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-xl">
+          <i class="text-xl text-yellow-600 pi pi-clock"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vencidos -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-red-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-500">Vencidos</p>
+          <h3 class="text-2xl font-bold text-red-600">{{ stats.vencidos }}</h3>
+        </div>
+        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-xl">
+          <i class="text-xl text-red-600 pi pi-exclamation-triangle"></i>
         </div>
       </div>
     </div>
@@ -578,10 +578,14 @@
 
       <!-- Tabla -->
       <div class="overflow-x-auto">
-        <p-table [value]="filteredReclamaciones" [paginator]="true" [rows]="10"
-          [totalRecords]="filteredReclamaciones.length" [showCurrentPageReport]="true"
+        <p-table
+          [value]="filteredReclamaciones"
+          [paginator]="true"
+          [rows]="10"
+          [showCurrentPageReport]="true"
           currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
           [tableStyle]="{'min-width': '60rem'}">
+
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr class="text-sm bg-gray-50/80">
@@ -600,10 +604,10 @@
               <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
                 Tipo
               </th>
-              <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+              <th class="w-36 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
                 Estado
               </th>
-              <th class="w-24 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
+              <th class="w-32 px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
                 Nivel
               </th>
               <th class="px-4 py-4 font-semibold tracking-wider text-center text-gray-700 uppercase">
@@ -634,13 +638,12 @@
                 <div class="flex items-center space-x-3">
                   <div class="flex items-center justify-center w-10 h-10 rounded-full shadow-sm ring-2 ring-white"
                     [ngClass]="getUserAvatarClass(reclamacion.nivel)">
-                    <i class="text-sm text-white"
-                      [ngClass]="getUserIcon(reclamacion.nivel)"></i>
+                    <i class="text-sm text-white" [ngClass]="getUserIcon(reclamacion.nivel)"></i>
                   </div>
                   <div>
                     <p class="text-sm font-semibold text-gray-900">{{reclamacion.usuario}}</p>
                     <p class="text-[10px] text-center font-medium rounded-full inline-block mt-1 px-2 py-0.5 border-solid border"
-                       [ngClass]="getUserBadgeClass(reclamacion.nivel)">
+                      [ngClass]="getUserBadgeClass(reclamacion.nivel)">
                       {{reclamacion.nivel}}
                     </p>
                   </div>
@@ -667,7 +670,7 @@
               <!-- Tipo -->
               <td class="px-4 py-4 text-center">
                 <span
-                  class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border border-gray-300 shadow-sm">
+                  class="inline-flex items-center px-2.5 py-1.5 text-xs font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border border-gray-300 shadow-sm">
                   <i class="mr-1 text-gray-600 pi pi-tag"></i> {{reclamacion.tipo}}
                 </span>
               </td>
@@ -683,18 +686,35 @@
 
               <!-- Prioridad -->
               <td class="px-4 py-4 text-center">
-                <span [class]="getPrioridadClass(reclamacion.prioridad)"
-                  class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm">
-                  <i [class]="getPrioridadIcon(reclamacion.prioridad)" class="mr-1"></i>
-                  {{reclamacion.prioridad}}
-                </span>
+                <div class="space-y-2">
+                  <!-- Badge principal de prioridad -->
+                  <span
+                    [class]="'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-xs ' + getPrioridadPorTiempoClass(reclamacion.fechaRegistro, reclamacion.estado)">
+                    <i [class]="getPrioridadPorTiempoIcon(reclamacion.fechaRegistro, reclamacion.estado)"></i>
+                    {{ getPrioridadPorTiempoTexto(reclamacion.fechaRegistro, reclamacion.estado) }}
+                  </span>
+
+                  <!-- Información adicional de tiempo -->
+                  <div class="text-xs text-gray-500">
+                    {{ getInformacionTiempo(reclamacion.fechaRegistro).mensaje }}
+                  </div>
+
+                  <!-- Barra de progreso visual opcional -->
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div class="h-1.5 rounded-full transition-all duration-300"
+                      [class]="getInformacionTiempo(reclamacion.fechaRegistro).dias > 15 ? 'bg-red-500' :
+                                 getInformacionTiempo(reclamacion.fechaRegistro).dias >= 10 ? 'bg-yellow-500' : 'bg-green-500'"
+                      [style.width.%]="getDiasWidth(getInformacionTiempo(reclamacion.fechaRegistro).dias)">
+                    </div>
+                  </div>
+                </div>
               </td>
 
               <!-- Campus -->
               <td class="px-4 py-4 text-center">
                 <div class="flex items-center justify-center space-x-1">
                   <i class="text-xs text-gray-500 pi pi-map-marker"></i>
-                  <span class="text-sm font-medium text-gray-700">{{reclamacion.campus}}</span>
+                  <span class="text-sm font-medium text-gray-700">{{ getCampusDisplayName(reclamacion.campus) }}</span>
                 </div>
               </td>
 
@@ -714,39 +734,32 @@
                   <button
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-emerald-600 hover:bg-emerald-200"
                     title="Ver detalles">
-                    <i class="text-sm pi pi-download"></i>
+                    <i class="text-[16px] pi pi-download"></i>
                   </button>
 
                   <button (click)="verDetalles(reclamacion)"
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-blue-600 hover:bg-blue-200"
                     title="Ver detalles">
-                    <i class="text-sm pi pi-eye"></i>
+                    <i class="text-[16px] pi pi-eye"></i>
                   </button>
 
                   <button (click)="editarEstado(reclamacion)"
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-rose-600 hover:bg-rose-200"
                     title="Cambiar estado">
-                    <i class="text-sm pi pi-check-circle"></i>
+                    <i class="text-[16px] pi pi-check-circle"></i>
                   </button>
 
                   <button (click)="asignarResponsable(reclamacion)"
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-purple-600 hover:bg-purple-200"
                     title="Asignar responsable">
-                    <i class="text-sm pi pi-user-plus"></i>
+                    <i class="text-[16px] pi pi-user-plus"></i>
                   </button>
 
                   <button type="button" (click)="openPopover($event, reclamacion)"
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-gray-800 hover:bg-gray-200"
                     title="Más opciones">
-                    <i class="text-sm pi pi-ellipsis-v"></i>
+                    <i class="text-[16px] pi pi-ellipsis-v"></i>
                   </button>
-
-                  <!-- Modal de Reporte -->
-                  <!-- <button (click)="generarReporte(reclamacion)"
-                    class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-amber-600 hover:bg-amber-200"
-                    title="Generar reporte">
-                    <i class="text-sm pi pi-file-pdf"></i>
-                  </button> -->
                 </div>
               </td>
             </tr>
