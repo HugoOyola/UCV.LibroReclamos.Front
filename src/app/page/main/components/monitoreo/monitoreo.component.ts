@@ -396,7 +396,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'A Tiempo', value: 'a-tiempo' },
     { label: 'Por Vencer', value: 'por-vencer' },
     { label: 'Vencido', value: 'vencido' },
-    { label: 'Atendido Fuera de Fecha', value: 'atendido-fuera-fecha' }
+    { label: 'Atendido Tarde', value: 'atendido-fuera-fecha' }
   ];
 
   campusOptionsTabla = [
