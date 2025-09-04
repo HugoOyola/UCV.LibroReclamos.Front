@@ -25,12 +25,13 @@ import { ReporteComponent } from './modales/reporte/reporte.component';
 interface ReclamacionStats {
   total: number;
   pendientes: number;
-  resueltas: number;
   enProceso: number;
-  aTiempo: number;
-  porVencer: number;
-  vencidos: number;
-  atendidosFueraFecha: number;
+  resueltas: number;
+  conformes: number;
+  noConformes: number;
+  vencidas: number;
+  invalidas: number;
+  atendidas: number;
 }
 
 interface ReclamacionCompleta {
@@ -367,7 +368,7 @@ export class MonitoreoComponent implements OnInit {
     { label: 'A Tiempo', value: 'a-tiempo' },
     { label: 'Por Vencer', value: 'por-vencer' },
     { label: 'Vencido', value: 'vencido' },
-    { label: 'Atendido Tarde', value: 'atendido-fuera-fecha' }
+    { label: 'Tardío', value: 'atendido-fuera-fecha' }
   ];
 
   campusOptions = [
@@ -711,32 +712,32 @@ export class MonitoreoComponent implements OnInit {
     return data;
   }
 
+  // En tu componente, modifica el getter stats:
   get stats(): ReclamacionStats {
     const data = this.filteredReclamaciones;
-    let aTiempo = 0;
-    let porVencer = 0;
-    let vencidos = 0;
-    let atendidosFueraFecha = 0;
 
-    data.forEach(rec => {
-      const prioridad = this.calcularPrioridadPorTiempo(rec.fechaRegistro, rec.estado);
-      switch (prioridad) {
-        case 'a-tiempo': aTiempo++; break;
-        case 'por-vencer': porVencer++; break;
-        case 'vencido': vencidos++; break;
-        case 'atendido-fuera-fecha': atendidosFueraFecha++; break;
-      }
-    });
+    // Contadores por estado
+    const pendientes = data.filter(r => r.estado.toLowerCase() === 'pendiente').length;
+    const enProceso = data.filter(r => r.estado.toLowerCase() === 'en-proceso').length;
+    const atendidas = data.filter(r => r.estado.toLowerCase() === 'atendido').length;
+    const conformes = data.filter(r => r.estado.toLowerCase() === 'conforme').length;
+    const noConformes = data.filter(r => r.estado.toLowerCase() === 'no-conforme').length;
+    const vencidas = data.filter(r => r.estado.toLowerCase() === 'vencido').length;
+    const invalidas = data.filter(r => r.estado.toLowerCase() === 'invalido').length;
+
+    // Resueltas = Atendidas + Conformes
+    const resueltas = atendidas + conformes;
 
     return {
       total: data.length,
-      pendientes: data.filter(r => r.estado.toLowerCase() === 'pendiente').length,
-      resueltas: data.filter(r => ['atendido', 'conforme'].includes(r.estado.toLowerCase())).length,
-      enProceso: data.filter(r => r.estado.toLowerCase() === 'en-proceso').length,
-      aTiempo,
-      porVencer,
-      vencidos,
-      atendidosFueraFecha
+      pendientes,
+      enProceso,
+      resueltas,
+      conformes,
+      noConformes,
+      vencidas,
+      invalidas,
+      atendidas
     };
   }
 

@@ -30,60 +30,101 @@
 
 <div class="w-full px-4 pt-6 pb-10 mx-auto">
   <!-- Tarjetas de Estadísticas (solo se muestran cuando hay búsqueda realizada) -->
-  <div *ngIf="showResults && searchPerformed" class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+  <div *ngIf="showResults && searchPerformed"
+    class="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
     <!-- Total Reclamaciones -->
     <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="mb-1 text-sm text-gray-500">Total Reclamaciones</p>
-          <h3 class="text-2xl font-bold text-gray-900">{{ stats.total }}</h3>
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-blue-100 rounded-lg">
+          <i class="text-lg text-blue-600 pi pi-file-edit"></i>
         </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
-          <i class="text-xl text-blue-600 pi pi-file-edit"></i>
-        </div>
+        <p class="mb-1 text-xs text-gray-500">Total</p>
+        <h3 class="text-xl font-bold text-gray-900">{{ stats.total }}</h3>
       </div>
     </div>
 
-    <!-- A Tiempo -->
+    <!-- Pendientes -->
     <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-green-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="mb-1 text-sm text-gray-500">A Tiempo</p>
-          <h3 class="text-2xl font-bold text-green-600">{{ stats.aTiempo }}</h3>
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-orange-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-orange-100 rounded-lg">
+          <i class="text-lg text-orange-600 pi pi-clock"></i>
         </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
-          <i class="text-xl text-green-600 pi pi-check-circle"></i>
-        </div>
+        <p class="mb-1 text-xs text-gray-500">Pendientes</p>
+        <h3 class="text-xl font-bold text-orange-600">{{ stats.pendientes }}</h3>
       </div>
     </div>
 
-    <!-- Por Vencer -->
+    <!-- En Proceso -->
     <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-yellow-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="mb-1 text-sm text-gray-500">Por Vencer</p>
-          <h3 class="text-2xl font-bold text-yellow-600">{{ stats.porVencer }}</h3>
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-blue-100 rounded-lg">
+          <i class="text-lg text-blue-600 pi pi-cog"></i>
         </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-xl">
-          <i class="text-xl text-yellow-600 pi pi-clock"></i>
-        </div>
+        <p class="mb-1 text-xs text-gray-500">En Proceso</p>
+        <h3 class="text-xl font-bold text-blue-600">{{ stats.enProceso }}</h3>
       </div>
     </div>
 
-    <!-- Vencidos -->
+    <!-- Atendidas -->
     <div
-      class="bg-white rounded-lg shadow-sm p-6 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-red-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="mb-1 text-sm text-gray-500">Vencidos</p>
-          <h3 class="text-2xl font-bold text-red-600">{{ stats.vencidos }}</h3>
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-indigo-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-indigo-100 rounded-lg">
+          <i class="text-lg text-indigo-600 pi pi-check"></i>
         </div>
-        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-xl">
-          <i class="text-xl text-red-600 pi pi-exclamation-triangle"></i>
+        <p class="mb-1 text-xs text-gray-500">Atendidas</p>
+        <h3 class="text-xl font-bold text-indigo-600">{{ stats.atendidas }}</h3>
+      </div>
+    </div>
+
+    <!-- Conformes -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-emerald-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 rounded-lg bg-emerald-100">
+          <i class="text-lg text-emerald-600 pi pi-thumbs-up"></i>
         </div>
+        <p class="mb-1 text-xs text-gray-500">Conformes</p>
+        <h3 class="text-xl font-bold text-emerald-600">{{ stats.conformes }}</h3>
+      </div>
+    </div>
+
+    <!-- No Conformes -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-red-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-red-100 rounded-lg">
+          <i class="text-lg text-red-600 pi pi-thumbs-down"></i>
+        </div>
+        <p class="mb-1 text-xs text-gray-500">No Conformes</p>
+        <h3 class="text-xl font-bold text-red-600">{{ stats.noConformes }}</h3>
+      </div>
+    </div>
+
+    <!-- Vencidas -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-red-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-red-100 rounded-lg">
+          <i class="text-lg text-red-600 pi pi-exclamation-triangle"></i>
+        </div>
+        <p class="mb-1 text-xs text-gray-500">Vencidas</p>
+        <h3 class="text-xl font-bold text-red-600">{{ stats.vencidas }}</h3>
+      </div>
+    </div>
+
+    <!-- Inválidas -->
+    <div
+      class="bg-white rounded-lg shadow-sm p-4 border-solid border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-gray-200">
+      <div class="flex flex-col items-center text-center">
+        <div class="flex items-center justify-center w-10 h-10 mb-2 bg-gray-100 rounded-lg">
+          <i class="text-lg text-gray-600 pi pi-ban"></i>
+        </div>
+        <p class="mb-1 text-xs text-gray-500">Inválidas</p>
+        <h3 class="text-xl font-bold text-gray-600">{{ stats.invalidas }}</h3>
       </div>
     </div>
   </div>
