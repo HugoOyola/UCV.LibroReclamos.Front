@@ -809,8 +809,8 @@
 <app-detalle [visible]="mostrarModalDetalles" [reclamacion]="reclamacionSeleccionada" (close)="cerrarModalDetalles()">
 </app-detalle>
 
-<app-estado [visible]="mostrarModalEstado" [reclamacion]="reclamacionSeleccionada" (close)="cerrarModalEstado()"
-  (confirm)="onEstadoConfirm($event)">
+<app-estado [visible]="mostrarModalEstado" [reclamacion]="reclamacionSeleccionada" [dialogWidth]="'44rem'"
+  [maximizable]="true" (close)="cerrarModalEstado()" (confirm)="onEstadoConfirm($event)">
 </app-estado>
 
 <app-responsable [visible]="mostrarModalResponsable" [reclamacion]="reclamacionSeleccionada"

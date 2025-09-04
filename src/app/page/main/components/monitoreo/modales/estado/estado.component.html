@@ -1,21 +1,39 @@
-<p-dialog [(visible)]="visible" [modal]="true" [style]="{width: '36rem'}" [draggable]="false" [resizable]="false"
-  header="Cambiar estado" (onHide)="onHide()">
-  <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="onHide()">
+<p-dialog [(visible)]="visible" [showHeader]="showHeader" [modal]="true" [draggable]="false" [resizable]="false"
+  [maximizable]="maximizable" [breakpoints]="breakpoints" [style]="{ width: dialogWidth }" header="Cambiar estado"
+  (onHide)="onHide()" styleClass="ucv-dialog">
 
+  <!-- Header personalizado (mismo estilo que el anterior) -->
+  <ng-template pTemplate="header">
+    <div class="ucv-header">
+      <div class="ucv-header__left">
+        <i class="pi pi-pencil"></i>
+        <span class="ucv-header__title">Cambiar estado</span>
+
+        <span *ngIf="reclamacion?.codigo" class="ucv-badge" title="Código">
+          Código: {{ reclamacion?.codigo }}
+        </span>
+      </div>
+      <div class="ucv-header__right"></div>
+    </div>
+  </ng-template>
+
+  <div class="pt-4 space-y-4" (keydown.esc)="onHide()">
     <!-- Información del servicio -->
-    <div class="mb-4">
-      <div class="flex items-start gap-2">
-        <label class="text-sm font-medium text-gray-700 min-w-fit">SERVICIO :</label>
-        <div class="flex-1 p-2 text-sm text-gray-800 border border-gray-200 rounded bg-gray-50">
-          {{reclamacion?.servicio || 'Convalidación de inglés'}}
-        </div>
+    <div class="p-3 mb-4 border border-l-4 border-purple-500 border-solid rounded bg-purple-50">
+      <div class="flex items-center mb-2">
+        <i class="mr-2 text-purple-600 pi pi-briefcase"></i>
+        <span class="font-semibold text-purple-800">SERVICIO:</span>
+      </div>
+
+      <div class="flex-1 p-2 text-sm text-gray-800 border border-gray-200 rounded bg-gray-50">
+        {{ reclamacion?.servicio || 'Convalidación de inglés' }}
       </div>
     </div>
 
     <!-- Fecha de registro -->
     <div class="mb-4">
-      <div class="flex items-start gap-2">
-        <label class="text-sm font-medium text-gray-700 min-w-fit">FECHA DE REGISTRO :</label>
+      <div class="flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 min-w-fit">FECHA DE REGISTRO:</label>
         <div class="flex-1">
           <p-datepicker [(ngModel)]="fechaRegistro" [showIcon]="true" dateFormat="dd/mm/yy"
             placeholder="Selecciona una fecha" class="w-full"
@@ -26,46 +44,43 @@
 
     <!-- Acción de respuesta -->
     <div class="mb-6">
-      <label class="block mb-3 text-sm font-medium text-gray-700">ACCIÓN DE RESPUESTA :</label>
+      <label class="block mb-3 text-sm font-medium text-gray-700">EDITOR DE TEXTO:</label>
 
-      <!-- Editor de texto -->
-      <div class="border border-gray-200 rounded-md">
-        <!-- Toolbar del editor -->
-        <div class="flex items-center justify-between px-3 py-2 border-b border-gray-200 bg-gray-50">
-          <span class="text-xs text-gray-600">Editor de Texto</span>
-          <button type="button" class="text-gray-500 transition-colors hover:text-red-600" title="Eliminar contenido"
-            (click)="limpiarComentario()">
-            <i class="text-md pi pi-trash"></i>
-          </button>
-        </div>
-
-        <!-- Área de texto -->
-        <textarea pTextarea [(ngModel)]="comentario" placeholder="Escribe aquí..."
-          class="w-full min-h-[120px] p-3 border-0 resize-none focus:outline-none focus:ring-0" rows="5"></textarea>
+      <!-- Barra superior del editor -->
+      <div class="flex items-center justify-between px-3 py-2 border border-b-0 border-gray-300 border-solid rounded-t bg-gray-50">
+        <span class="text-sm text-gray-600">ACCIÓN DE RESPUESTA:</span>
+        <button type="button" class="text-gray-500 transition-colors hover:text-red-600" title="Eliminar contenido"
+          (click)="limpiarComentario()">
+          <i class="text-lg pi pi-trash"></i>
+        </button>
       </div>
 
-      <!-- Vista previa -->
-      <div class="mt-2" *ngIf="comentario?.trim()">
-        <div class="mb-1 text-xs text-gray-600">Vista previa:</div>
-        <div class="p-2 text-sm text-gray-700 border rounded bg-gray-50">
-          {{comentario}}
-        </div>
-      </div>
+      <!-- PrimeNG Editor (Quill) -->
+      <p-editor [(ngModel)]="comentario" [style]="{ height: '220px' }" [placeholder]="'Escribe aquí...'"
+        styleClass="ucv-quill border border-gray-200 rounded-b" (keydown.enter)="$event.stopPropagation()">
+      </p-editor>
 
-      <!-- Mensaje cuando no hay contenido -->
-      <div class="mt-2" *ngIf="!comentario?.trim()">
-        <div class="mb-1 text-xs text-gray-600">Vista previa:</div>
-        <div class="text-xs italic text-gray-400">
-          No hay contenido para mostrar
-        </div>
+      <!-- Vista previa mejorada -->
+      <div class="mt-3">
+        <div class="mb-1 text-gray-600 text-md">Vista previa:</div>
+
+        <ng-container *ngIf="!isComentarioVacio(); else noPreview">
+          <!-- Vista previa con HTML renderizado -->
+          <div class="p-3 text-gray-700 bg-gray-100 border border-gray-300 border-solid rounded text-md preview-container">
+            <div class="ql-editor" [innerHTML]="getSafePreviewHtml()"></div>
+          </div>
+        </ng-container>
+
+        <ng-template #noPreview>
+          <div class="p-2 italic text-center text-gray-400 border border-gray-300 border-solid bg-gray-50 text-md">No hay contenido para mostrar</div>
+        </ng-template>
       </div>
     </div>
 
     <!-- Botones de acción -->
-    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+    <div class="flex justify-end gap-3 pt-4 border-0 border-t border-gray-300 border-solid">
       <p-button label="Confirmar" severity="primary" (onClick)="confirmIfValid()" />
       <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onHide()" />
     </div>
-
   </div>
 </p-dialog>

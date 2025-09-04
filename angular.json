@@ -29,6 +29,7 @@
 							"src/styles.scss",
 							"node_modules/ngx-trilce/styles/styles.scss",
 							"node_modules/primeicons/primeicons.css",
+							"node_modules/quill/dist/quill.snow.css",
 							"https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
 						],
 						"scripts": []

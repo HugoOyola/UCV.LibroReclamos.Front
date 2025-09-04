@@ -1,0 +1,72 @@
+/* === Quitar cualquier borde del contenedor del diálogo === */
+:host ::ng-deep .ucv-dialog.p-dialog {
+  border: 0 !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,.24); /* sombra global del modal */
+  border-radius: 12px; /* asegura esquinas suaves */
+  overflow: hidden;    /* evita que se “vean” líneas en los bordes */
+}
+
+/* Header del Dialog sin bordes ni separadores */
+:host ::ng-deep .ucv-dialog .p-dialog-header {
+  padding: 0; /* lo controlamos desde ucv-header */
+  background: #243659;
+  color: #fff;
+  border: 0 !important;                  /* <- quita borde inferior del header */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Header interno (quitamos el inset que parecía borde) */
+:host ::ng-deep .ucv-dialog .ucv-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: 0.875rem 1.25rem;
+  background: #243659;
+
+  /* elimina el “borde” visual del inset */
+  box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+}
+
+/* Título, badges e iconos (sin cambios funcionales) */
+:host ::ng-deep .ucv-dialog .ucv-header__left { display:flex; align-items:center; gap:.625rem; }
+:host ::ng-deep .ucv-dialog .ucv-header__left .pi { font-size:1.1rem; opacity:.95; }
+:host ::ng-deep .ucv-dialog .ucv-header__title { font-weight:700; font-size:1.05rem; letter-spacing:.2px; }
+:host ::ng-deep .ucv-dialog .ucv-header__right { display:flex; align-items:center; gap:.5rem; }
+:host ::ng-deep .ucv-dialog .ucv-badge,
+:host ::ng-deep .ucv-dialog .ucv-chip {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #e8f0ff;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+}
+:host ::ng-deep .ucv-dialog .ucv-chip { border-radius: 8px; font-size: .72rem; }
+
+/* Botón cerrar */
+:host ::ng-deep .ucv-dialog .p-dialog-header .p-dialog-header-icon {
+  color:#fff; border-radius:50%; transition:background .2s ease, opacity .2s ease; opacity:.9;
+}
+:host ::ng-deep .ucv-dialog .p-dialog-header .p-dialog-header-icon:hover {
+  background: rgba(255,255,255,0.12); opacity:1;
+}
+
+/* Contenido: sin bordes ni líneas de separación */
+:host ::ng-deep .ucv-dialog .p-dialog-content {
+  background: #fff;
+  border: 0 !important;         /* <- por si el tema agrega borde */
+  border-top: 0 !important;     /* <- quita separador entre header y content */
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Footer (si lo usas): sin borde superior */
+:host ::ng-deep .ucv-dialog .p-dialog-footer {
+  border-top: 0 !important;
+}
