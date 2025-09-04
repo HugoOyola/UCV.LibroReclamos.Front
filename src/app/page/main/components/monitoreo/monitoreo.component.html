@@ -485,8 +485,8 @@
                 <!-- Estado -->
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Estado</span>
-                  <p-select [options]="estadoOptions" size="small" optionLabel="label" optionValue="value"
-                    [(ngModel)]="selectedEstado" [showClear]="true" placeholder="Todos"
+                  <p-select [options]="estadoOptions" size="small" optionLabel="label" optionValue="value" [(ngModel)]="selectedEstado"
+                    [showClear]="true" placeholder="Todos" (onClear)="onSelectClear('estado')"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
@@ -495,7 +495,7 @@
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Nivel</span>
                   <p-select [options]="prioridadOptions" size="small" optionLabel="label" optionValue="value"
-                    [(ngModel)]="selectedPrioridad" [showClear]="true" placeholder="Todas"
+                    [(ngModel)]="selectedPrioridad" [showClear]="true" placeholder="Todas" (onClear)="onSelectClear('prioridad')"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
@@ -504,7 +504,7 @@
                 <label class="block">
                   <span class="block mb-1 text-xs font-medium text-gray-600">Campus</span>
                   <p-select [options]="campusOptionsTabla" size="small" optionLabel="label" optionValue="value"
-                    [(ngModel)]="selectedCampus" [showClear]="true" placeholder="Todos"
+                    [(ngModel)]="selectedCampus" [showClear]="true" placeholder="Todos" (onClear)="onSelectClear('campus')"
                     class="w-full border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                   </p-select>
                 </label>
@@ -676,7 +676,7 @@
                 <span [class]="getEstadoClass(reclamacion.estado)"
                   class="inline-flex items-center px-2.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm">
                   <span class="w-1.5 h-1.5 rounded-full mr-2" [class]="getEstadoDotClass(reclamacion.estado)"></span>
-                  {{reclamacion.estado}}
+                  {{formatearEstadoParaTabla(reclamacion.estado)}}
                 </span>
               </td>
 
