@@ -1,12 +1,5 @@
-<p-dialog
-  [(visible)]="visible"
-  [modal]="true"
-  [style]="{width: '36rem'}"
-  [draggable]="false"
-  [resizable]="false"
-  header="Cambiar estado"
-  (onHide)="onHide()"
->
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{width: '36rem'}" [draggable]="false" [resizable]="false"
+  header="Cambiar estado" (onHide)="onHide()">
   <div class="space-y-4" (keydown.enter)="confirmIfValid()" (keydown.esc)="onHide()">
 
     <!-- Información del servicio -->
@@ -24,35 +17,10 @@
       <div class="flex items-start gap-2">
         <label class="text-sm font-medium text-gray-700 min-w-fit">FECHA DE REGISTRO :</label>
         <div class="flex-1">
-          <p-datepicker
-            [(ngModel)]="fechaRegistro"
-            [showIcon]="true"
-            dateFormat="dd/mm/yy"
-            placeholder="Selecciona una fecha"
-            class="w-full"
-            inputStyleClass="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <p-datepicker [(ngModel)]="fechaRegistro" [showIcon]="true" dateFormat="dd/mm/yy"
+            placeholder="Selecciona una fecha" class="w-full"
+            inputStyleClass="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
-      </div>
-    </div>
-
-    <!-- Nuevo Estado -->
-    <div class="mb-4">
-      <label class="block mb-3 text-sm font-medium text-gray-700">NUEVO ESTADO :</label>
-      <div class="space-y-2">
-        <div *ngFor="let estado of estados" class="flex items-center">
-          <p-radiobutton
-            [(ngModel)]="nuevoEstado"
-            [value]="estado.valor"
-            [inputId]="estado.valor"
-          />
-          <label [for]="estado.valor" class="ml-2 text-sm text-gray-700 cursor-pointer">
-            {{estado.label}}
-          </label>
-        </div>
-      </div>
-      <div class="mt-1 text-xs text-red-500" *ngIf="mostrarErrorEstado">
-        Debe seleccionar un estado
       </div>
     </div>
 
@@ -65,24 +33,15 @@
         <!-- Toolbar del editor -->
         <div class="flex items-center justify-between px-3 py-2 border-b border-gray-200 bg-gray-50">
           <span class="text-xs text-gray-600">Editor de Texto</span>
-          <button
-            type="button"
-            class="text-gray-500 transition-colors hover:text-red-600"
-            title="Eliminar contenido"
-            (click)="limpiarComentario()"
-          >
-            <i class="text-xs pi pi-trash"></i>
+          <button type="button" class="text-gray-500 transition-colors hover:text-red-600" title="Eliminar contenido"
+            (click)="limpiarComentario()">
+            <i class="text-md pi pi-trash"></i>
           </button>
         </div>
 
         <!-- Área de texto -->
-        <textarea
-          pTextarea
-          [(ngModel)]="comentario"
-          placeholder="Escribe aquí..."
-          class="w-full min-h-[120px] p-3 border-0 resize-none focus:outline-none focus:ring-0"
-          rows="5"
-        ></textarea>
+        <textarea pTextarea [(ngModel)]="comentario" placeholder="Escribe aquí..."
+          class="w-full min-h-[120px] p-3 border-0 resize-none focus:outline-none focus:ring-0" rows="5"></textarea>
       </div>
 
       <!-- Vista previa -->
@@ -104,17 +63,8 @@
 
     <!-- Botones de acción -->
     <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-      <p-button
-        label="Confirmar"
-        severity="primary"
-        (onClick)="confirmIfValid()"
-      />
-      <p-button
-        label="Cancelar"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="onHide()"
-      />
+      <p-button label="Confirmar" severity="primary" (onClick)="confirmIfValid()" />
+      <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onHide()" />
     </div>
 
   </div>

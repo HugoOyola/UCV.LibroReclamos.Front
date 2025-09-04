@@ -953,7 +953,7 @@ export class MonitoreoComponent implements OnInit {
       case 'vencido':
         return 'Vencido';
       case 'atendido-fuera-fecha':
-        return 'Atendido Tarde';
+        return 'Tardío';
       default:
         return 'Sin Clasificar';
     }

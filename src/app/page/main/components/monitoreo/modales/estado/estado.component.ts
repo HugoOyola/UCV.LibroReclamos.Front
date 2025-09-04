@@ -2,16 +2,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { DatePickerModule } from 'primeng/datepicker';
-
-export interface EstadoOption {
-  valor: string;
-  label: string;
-  descripcion: string;
-}
 
 export interface ReclamacionRef {
   codigo: string;
@@ -26,7 +19,6 @@ export interface ReclamacionRef {
     FormsModule,
     CommonModule,
     DialogModule,
-    RadioButtonModule,
     ButtonModule,
     TextareaModule,
     DatePickerModule
@@ -37,18 +29,14 @@ export interface ReclamacionRef {
 export class EstadoComponent implements OnInit, OnChanges {
   @Input() visible = false;
   @Input() reclamacion: ReclamacionRef | null = null;
-  @Input() estados: EstadoOption[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() confirm = new EventEmitter<{
-    nuevoEstado: string;
     comentario: string;
     fechaRegistro: Date | null;
   }>();
 
-  nuevoEstado = '';
   comentario = '';
   fechaRegistro: Date | null = null;
-  mostrarErrorEstado = false;
 
   ngOnInit() {
     this.initializeForm();
@@ -58,16 +46,10 @@ export class EstadoComponent implements OnInit, OnChanges {
     if (changes['reclamacion'] && this.reclamacion) {
       this.initializeForm();
     }
-
-    if (changes['visible'] && this.visible) {
-      this.mostrarErrorEstado = false;
-    }
   }
 
   private initializeForm() {
-    this.nuevoEstado = '';
     this.comentario = '';
-    this.mostrarErrorEstado = false;
 
     // Convertir fecha de string a Date si es necesario
     if (this.reclamacion?.fechaRegistro) {
@@ -98,19 +80,11 @@ export class EstadoComponent implements OnInit, OnChanges {
   }
 
   confirmIfValid() {
-    this.mostrarErrorEstado = false;
-
-    if (!this.nuevoEstado) {
-      this.mostrarErrorEstado = true;
-      return;
-    }
-
     if (!this.fechaRegistro) {
       this.fechaRegistro = new Date();
     }
 
     this.confirm.emit({
-      nuevoEstado: this.nuevoEstado,
       comentario: this.comentario,
       fechaRegistro: this.fechaRegistro
     });
@@ -119,10 +93,8 @@ export class EstadoComponent implements OnInit, OnChanges {
   }
 
   private resetForm() {
-    this.nuevoEstado = '';
     this.comentario = '';
     this.fechaRegistro = null;
-    this.mostrarErrorEstado = false;
   }
 
   onHide() {

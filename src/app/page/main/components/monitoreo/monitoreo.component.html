@@ -578,11 +578,7 @@
 
       <!-- Tabla -->
       <div class="overflow-x-auto">
-        <p-table
-          [value]="filteredReclamaciones"
-          [paginator]="true"
-          [rows]="10"
-          [showCurrentPageReport]="true"
+        <p-table [value]="filteredReclamaciones" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
           currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
           [tableStyle]="{'min-width': '60rem'}">
 
@@ -813,8 +809,8 @@
 <app-detalle [visible]="mostrarModalDetalles" [reclamacion]="reclamacionSeleccionada" (close)="cerrarModalDetalles()">
 </app-detalle>
 
-<app-estado [visible]="mostrarModalEstado" [reclamacion]="reclamacionSeleccionada" [estados]="estadosDisponibles"
-  (close)="cerrarModalEstado()" (confirm)="onEstadoConfirm($event)">
+<app-estado [visible]="mostrarModalEstado" [reclamacion]="reclamacionSeleccionada" (close)="cerrarModalEstado()"
+  (confirm)="onEstadoConfirm($event)">
 </app-estado>
 
 <app-responsable [visible]="mostrarModalResponsable" [reclamacion]="reclamacionSeleccionada"
