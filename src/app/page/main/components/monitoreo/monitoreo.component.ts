@@ -107,7 +107,7 @@ export class MonitoreoComponent implements OnInit {
   searchForm: FormGroup;
   quickSearchForm: FormGroup;
   showResults = false;
-  searchPerformed = false; // Nueva variable para controlar las estadísticas
+  searchPerformed = false;
 
   // ============= DATOS Y FILTROS =============
   reclamaciones: ReclamacionCompleta[] = [];
@@ -129,7 +129,6 @@ export class MonitoreoComponent implements OnInit {
 
   // ============= DATOS MOCK =============
   private reclamacionesCompletas: ReclamacionCompleta[] = [
-    // CASO 1: A TIEMPO (Verde) - Registrado hoy
     {
       codigo: '22189',
       usuario: 'NUNEZ GUIZADO VIANCA MAHILI',
@@ -143,8 +142,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '04/09/2025 08:30:15',
       descripcion: 'Problema con la plataforma virtual, no puede acceder al aula virtual para entregar trabajos.'
     },
-
-    // CASO 2: A TIEMPO (Verde) - 2 días
     {
       codigo: '22188',
       usuario: 'VALDIVIA SALVADOR VALERIA NICOLE',
@@ -158,8 +155,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '02/09/2025 14:20:45',
       descripcion: 'Solicita revisión de calificación en el curso de matemática básica.'
     },
-
-    // CASO 3: A TIEMPO (Verde) - 4 días y ya atendido
     {
       codigo: '22187',
       usuario: 'CASTILLO ACUNA ETHEL SOLANGE',
@@ -173,8 +168,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '31/08/2025 10:15:30',
       descripcion: 'Reclamo sobre horarios de clase que se superponen entre cursos.'
     },
-
-    // CASO 4: POR VENCER (Amarillo) - 6 días
     {
       codigo: '22186',
       usuario: 'CASTRO GUTIERREZ EVELINY ELIDA',
@@ -188,8 +181,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '29/08/2025 16:45:22',
       descripcion: 'Queja sobre la atención en ventanilla de pagos, demora excesiva.'
     },
-
-    // CASO 5: POR VENCER (Amarillo) - 10 días
     {
       codigo: '22185',
       usuario: 'SOLIS CARDENAS KATHERIN YANINA',
@@ -203,8 +194,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '25/08/2025 09:30:18',
       descripcion: 'Problema con el sistema de matrícula online, no permite seleccionar cursos.'
     },
-
-    // CASO 6: POR VENCER (Amarillo) - 14 días pero ya atendido
     {
       codigo: '22184',
       usuario: 'RIVAS GAMBINI JOSE ALBERTO',
@@ -218,8 +207,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '21/08/2025 13:20:10',
       descripcion: 'Solicitud de duplicado de diploma, proceso completado satisfactoriamente.'
     },
-
-    // CASO 7: VENCIDO (Rojo) - 18 días sin atender
     {
       codigo: '22183',
       usuario: 'DAMIAN HUAMAN MARICARMEN',
@@ -233,8 +220,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '17/08/2025 11:45:30',
       descripcion: 'Queja sobre las condiciones de la biblioteca, falta de espacios para estudio.'
     },
-
-    // CASO 8: VENCIDO (Rojo) - 25 días sin atender
     {
       codigo: '22182',
       usuario: 'TORRES MENDEZ CARLOS ALBERTO',
@@ -248,8 +233,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '10/08/2025 15:30:45',
       descripcion: 'Problema con la inscripción de materias electivas sin resolver.'
     },
-
-    // CASO 9: ATENDIDO FUERA DE FECHA (Morado) - 20 días pero atendido
     {
       codigo: '22181',
       usuario: 'MENDOZA RIOS PATRICIA ELENA',
@@ -263,8 +246,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '15/08/2025 08:15:20',
       descripcion: 'Problema con certificado de estudios resuelto tardíamente.'
     },
-
-    // CASO 10: ATENDIDO FUERA DE FECHA (Morado) - 30 días pero conforme
     {
       codigo: '22180',
       usuario: 'GARCIA LOPEZ MIGUEL ANGEL',
@@ -278,8 +259,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '05/08/2025 12:45:15',
       descripcion: 'Reclamo sobre proceso de titulación resuelto satisfactoriamente.'
     },
-
-    // CASO 11: NO-CONFORME después de 22 días
     {
       codigo: '22179',
       usuario: 'FERNANDEZ SILVA ANA LUCIA',
@@ -293,8 +272,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '13/08/2025 16:20:30',
       descripcion: 'Queja sobre servicios administrativos, cliente no conforme con la solución.'
     },
-
-    // CASO 12: INVÁLIDO - caso especial
     {
       codigo: '22178',
       usuario: 'RODRIGUEZ PEREZ JUAN CARLOS',
@@ -308,8 +285,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '28/08/2025 09:15:45',
       descripcion: 'Reclamo considerado inválido por falta de documentación sustentaria.'
     },
-
-    // CASO 13: A TIEMPO (Verde) - 3 días, CONSULTA
     {
       codigo: '22177',
       usuario: 'HERRERA VEGA SOFIA ISABEL',
@@ -323,8 +298,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '01/09/2025 14:30:25',
       descripcion: 'Consulta sobre procedimientos de convalidación de cursos.'
     },
-
-    // CASO 14: POR VENCER (Amarillo) - 8 días
     {
       codigo: '22176',
       usuario: 'MORALES CRUZ DIEGO FERNANDO',
@@ -338,8 +311,6 @@ export class MonitoreoComponent implements OnInit {
       fechaRegistro: '27/08/2025 11:20:10',
       descripcion: 'Reclamo sobre calificaciones inconsistentes en evaluaciones.'
     },
-
-    // CASO 15: VENCIDO (Rojo) - 35 días
     {
       codigo: '22175',
       usuario: 'CAMPOS TORRES MARIA JOSE',
@@ -356,8 +327,6 @@ export class MonitoreoComponent implements OnInit {
   ];
 
   // ============= CATÁLOGOS Y CONFIGURACIONES =============
-
-  // Catálogo de estados disponibles para los desplegables y modales
   estadosDisponibles: EstadoOption[] = [
     { valor: 'pendiente', label: 'Pendiente', descripcion: 'Reclamación pendiente de revisión' },
     { valor: 'en-proceso', label: 'En Proceso', descripcion: 'Se está trabajando en la solución' },
@@ -368,7 +337,6 @@ export class MonitoreoComponent implements OnInit {
     { valor: 'invalido', label: 'Inválido', descripcion: 'Reclamación inválida' }
   ];
 
-  // Catálogo de responsables disponibles para asignación
   responsablesDisponibles: ResponsableOption[] = [
     { id: '1', nombre: 'Ana García Martínez', cargo: 'Coordinadora', departamento: 'Servicios Estudiantiles', casosActivos: 12 },
     { id: '2', nombre: 'Carlos Rodriguez López', cargo: 'Especialista', departamento: 'Gestión Académica', casosActivos: 8 },
@@ -376,14 +344,13 @@ export class MonitoreoComponent implements OnInit {
     { id: '4', nombre: 'Jorge Luis Mendoza', cargo: 'Analista Senior', departamento: 'Soporte Técnico', casosActivos: 15 }
   ];
 
-  // Catálogo de tipos de reporte disponibles
   tiposReporte: TipoReporte[] = [
     { valor: 'completo', label: 'Reporte Completo', descripcion: 'Incluye todos los detalles y historial', icono: 'pi pi-file-o' },
     { valor: 'resumen', label: 'Resumen Ejecutivo', descripcion: 'Información resumida para revisión rápida', icono: 'pi pi-list' },
     { valor: 'seguimiento', label: 'Seguimiento', descripcion: 'Historial de acciones y cambios', icono: 'pi pi-clock' }
   ];
 
-  // Opciones para el filtro de estado en la tabla
+  // Opciones para filtros
   estadoOptions = [
     { label: 'Todos', value: 'todos' },
     { label: 'Pendiente', value: 'pendiente' },
@@ -395,7 +362,6 @@ export class MonitoreoComponent implements OnInit {
     { label: 'Inválido', value: 'invalido' }
   ];
 
-  // Opciones para el filtro de prioridad por tiempo en la tabla
   prioridadOptions = [
     { label: 'Todas', value: 'todos' },
     { label: 'A Tiempo', value: 'a-tiempo' },
@@ -404,18 +370,6 @@ export class MonitoreoComponent implements OnInit {
     { label: 'Atendido Tarde', value: 'atendido-fuera-fecha' }
   ];
 
-  // Opciones de campus para filtros de tabla
-  campusOptionsTabla = [
-    { label: 'Todos los Campus', value: 'todos' },
-    { label: 'UCV LIMA NORTE', value: 'lima_norte' },
-    { label: 'UCV TRUJILLO', value: 'trujillo' },
-    { label: 'UCV CHICLAYO', value: 'chiclayo' },
-    { label: 'UCV PIURA', value: 'piura' },
-    { label: 'UCV CHEPEN', value: 'chepen' },
-    { label: 'UCV MOYOBAMBA', value: 'moyobamba' }
-  ];
-
-  // Opciones de campus para formularios de búsqueda
   campusOptions = [
     { label: 'Todos los Campus', value: 'todos' },
     { label: 'UCV LIMA NORTE', value: 'lima_norte' },
@@ -425,6 +379,8 @@ export class MonitoreoComponent implements OnInit {
     { label: 'UCV CHEPEN', value: 'chepen' },
     { label: 'UCV MOYOBAMBA', value: 'moyobamba' }
   ];
+
+  campusOptionsTabla = this.campusOptions;
 
   // ============= CONSTRUCTOR E INICIALIZACIÓN =============
   constructor(
@@ -456,34 +412,35 @@ export class MonitoreoComponent implements OnInit {
     });
   }
 
-  // Inicialización del componente con configuraciones por defecto
   ngOnInit(): void {
-    const today = new Date();
-    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-    this.searchForm.patchValue({ fechaRango: [thirtyDaysAgo, today] });
-
-    // Aquí puedes cargar los datos desde un servicio
+    this.initializeForm();
     this.cargarDatos();
   }
 
-  // ============= NAVEGACIÓN Y GESTIÓN DE TABS =============
+  // ============= INICIALIZACIÓN PRIVADA =============
+  private initializeForm(): void {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+    this.searchForm.patchValue({ fechaRango: [thirtyDaysAgo, today] });
+  }
 
-  // Cambia entre tabs de búsqueda avanzada y rápida
+  private cargarDatos(): void {
+    this.reclamaciones = [...this.reclamacionesCompletas];
+  }
+
+  // ============= NAVEGACIÓN Y GESTIÓN DE TABS =============
   setActiveTab(tab: 'advanced' | 'quick'): void {
     this.activeTab = tab;
     this.showResults = false;
     this.searchPerformed = false;
   }
 
-  // Navega de vuelta al dashboard principal
   volverAlInicio(): void {
     this.router.navigate(['/dashboard'])
       .catch(error => console.error('Error al navegar:', error));
   }
 
   // ============= GESTIÓN DE FILTROS DE FORMULARIO =============
-
-  // Maneja la selección de tipos de reclamación en el formulario
   onTipoReclamacionChange(tipo: string): void {
     if (tipo === 'todos') {
       this.searchForm.patchValue({
@@ -500,7 +457,6 @@ export class MonitoreoComponent implements OnInit {
     if (seleccionados.length === 0) this.searchForm.patchValue({ tipoTodos: true });
   }
 
-  // Maneja la selección de estados de proceso en el formulario
   onEstadoProcesoChange(estado: string): void {
     if (estado === 'todos') {
       this.searchForm.patchValue({
@@ -529,67 +485,141 @@ export class MonitoreoComponent implements OnInit {
   }
 
   // ============= OPERACIONES DE BÚSQUEDA =============
-
-  // Ejecuta búsqueda avanzada con filtros del formulario
   buscarReclamaciones(): void {
     const formValues = this.searchForm.value;
+    let resultados = [...this.reclamacionesCompletas];
 
-    // Ejemplo de filtros que puedes pasar al servicio:
-    const filtros = {
-      campus: formValues.campus !== 'todos' ? formValues.campus : null,
-      fechaRango: formValues.fechaRango || null,
-      tipos: this.obtenerTiposSeleccionados(),
-      estados: this.obtenerEstadosSeleccionados()
-    };
+    // Aplicar filtros
+    if (formValues.campus && formValues.campus !== 'todos') {
+      resultados = resultados.filter(rec =>
+        rec.campus.toLowerCase() === formValues.campus.toLowerCase()
+      );
+    }
 
-    // TODO: Llamar al servicio de reclamaciones
-    // this.reclamacionService.buscarReclamaciones(filtros).subscribe(data => {
-    //   this.reclamaciones = data;
-    // });
+    if (formValues.fechaRango && formValues.fechaRango.length === 2) {
+      const [fechaInicio, fechaFin] = formValues.fechaRango;
+      resultados = resultados.filter(rec => {
+        const fechaRec = this.parsearFecha(rec.fechaRegistro);
+        return fechaRec >= fechaInicio && fechaRec <= fechaFin;
+      });
+    }
 
+    if (!formValues.tipoTodos) {
+      const tiposSeleccionados = this.obtenerTiposSeleccionados();
+      if (tiposSeleccionados.length > 0) {
+        resultados = resultados.filter(rec =>
+          tiposSeleccionados.includes(rec.tipo.toUpperCase())
+        );
+      }
+    }
+
+    if (!formValues.estadoTodos) {
+      const estadosSeleccionados = this.obtenerEstadosSeleccionados();
+      if (estadosSeleccionados.length > 0) {
+        resultados = resultados.filter(rec =>
+          estadosSeleccionados.includes(rec.estado.toLowerCase())
+        );
+      }
+    }
+
+    this.procesarResultados(resultados);
+  }
+
+  buscarAhora(): void {
+    if (!this.quickSearchForm.valid) return;
+
+    const searchType = this.quickSearchForm.get('searchType')?.value;
+    const searchValue = this.quickSearchForm.get('searchValue')?.value?.trim();
+
+    if (!searchValue) {
+      this.mostrarMensaje('warn', 'Campo Requerido', 'Por favor ingrese un valor para buscar');
+      return;
+    }
+
+    let resultados = [...this.reclamacionesCompletas];
+
+    switch (searchType) {
+      case 'dni':
+        resultados = resultados.filter(rec => rec.dni.includes(searchValue));
+        break;
+      case 'codigo':
+        resultados = resultados.filter(rec =>
+          rec.codigo.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        break;
+      case 'nombre':
+        resultados = resultados.filter(rec =>
+          rec.usuario.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        break;
+      default:
+        resultados = [];
+    }
+
+    this.procesarResultados(resultados, searchValue);
+  }
+
+  // ============= MÉTODOS AUXILIARES DE BÚSQUEDA =============
+  private procesarResultados(resultados: ReclamacionCompleta[], searchValue?: string): void {
+    this.reclamaciones = resultados;
     this.searchPerformed = true;
     this.showResults = true;
-    this.calcularEstadisticas();
+
+    const mensaje = searchValue
+      ? `Se encontraron ${resultados.length} reclamaciones para "${searchValue}"`
+      : `Se encontraron ${resultados.length} reclamaciones que coinciden con los criterios`;
+
+    const severity = resultados.length > 0 ? 'success' : 'info';
+    const summary = resultados.length > 0 ? 'Búsqueda Exitosa' : 'Sin Resultados';
+
+    this.mostrarMensaje(severity, summary, mensaje);
   }
 
-  // Ejecuta búsqueda rápida con criterio específico
-  buscarAhora(): void {
-    if (this.quickSearchForm.valid) {
-      const searchType = this.quickSearchForm.get('searchType')?.value;
-      const searchValue = this.quickSearchForm.get('searchValue')?.value;
-
-      // TODO: Implementar búsqueda rápida
-      // this.reclamacionService.busquedaRapida(searchType, searchValue).subscribe(data => {
-      //   this.reclamaciones = data;
-      // });
-
-      this.searchPerformed = true;
-      this.showResults = true;
-      this.calcularEstadisticas();
-    }
+  private obtenerTiposSeleccionados(): string[] {
+    const formValues = this.searchForm.value;
+    const tipos: string[] = [];
+    if (formValues.tipoReclamo) tipos.push('RECLAMO');
+    if (formValues.tipoQueja) tipos.push('QUEJA');
+    if (formValues.tipoConsulta) tipos.push('CONSULTA');
+    return tipos;
   }
 
-  // Inicia una nueva búsqueda limpiando resultados anteriores
+  private obtenerEstadosSeleccionados(): string[] {
+    const formValues = this.searchForm.value;
+    const estados: string[] = [];
+    if (formValues.estadoPendiente) estados.push('pendiente');
+    if (formValues.estadoEnProceso) estados.push('en-proceso');
+    if (formValues.estadoAtendido) estados.push('atendido');
+    if (formValues.estadoConforme) estados.push('conforme');
+    if (formValues.estadoNoConforme) estados.push('no-conforme');
+    if (formValues.estadoVencido) estados.push('vencido');
+    if (formValues.estadoInvalido) estados.push('invalido');
+    return estados;
+  }
+
+  private mostrarMensaje(severity: string, summary: string, detail: string): void {
+    this.messageService.add({ severity, summary, detail });
+  }
+
+  // ============= OPERACIONES DE LIMPIEZA =============
   nuevaBusqueda(): void {
     this.showResults = false;
     this.searchPerformed = false;
     this.reclamaciones = [];
     this.limpiarFiltros();
+    this.mostrarMensaje('info', 'Nueva Búsqueda', 'Formularios de búsqueda reiniciados');
   }
 
-  // Limpia todos los filtros aplicados
   limpiar(): void {
     this.limpiarFiltros();
   }
 
-  // Resetea formularios y filtros a valores por defecto
   limpiarFiltros(): void {
     if (this.activeTab === 'advanced') {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+      this.initializeForm();
       this.searchForm.reset({
         campus: 'todos',
-        fechaRango: [thirtyDaysAgo, today],
+        fechaRango: this.searchForm.get('fechaRango')?.value,
         tipoTodos: true,
         tipoReclamo: false,
         tipoQueja: false,
@@ -607,113 +637,49 @@ export class MonitoreoComponent implements OnInit {
       this.quickSearchForm.reset({ searchType: 'dni', searchValue: '' });
     }
 
-    if (!this.showResults) {
-      this.searchPerformed = false;
-    }
-
     this.searchTerm = '';
     this.selectedEstado = 'todos';
     this.selectedPrioridad = 'todos';
     this.selectedCampus = 'todos';
   }
 
-  // Actualiza los datos desde el servidor
   actualizarDatos(): void {
     this.cargarDatos();
+    this.mostrarMensaje('success', 'Datos Actualizados', 'La información ha sido actualizada correctamente');
   }
 
-  // Limpia específicamente los filtros de la tabla de resultados
-  limpiarFiltrosTabla(): void {
-    this.searchTerm = '';
-    this.selectedEstado = 'todos';
-    this.selectedPrioridad = 'todos';
-    this.selectedCampus = 'todos';
-  }
-
-  // Maneja el evento cuando se limpia un select con la X
   onSelectClear(filtro: 'estado' | 'prioridad' | 'campus'): void {
     switch (filtro) {
-      case 'estado':
-        this.selectedEstado = 'todos';
-        break;
-      case 'prioridad':
-        this.selectedPrioridad = 'todos';
-        break;
-      case 'campus':
-        this.selectedCampus = 'todos';
-        break;
+      case 'estado': this.selectedEstado = 'todos'; break;
+      case 'prioridad': this.selectedPrioridad = 'todos'; break;
+      case 'campus': this.selectedCampus = 'todos'; break;
     }
-  }
-
-  // Carga datos iniciales (mock o desde servicio)
-  private cargarDatos(): void {
-    this.reclamaciones = [...this.reclamacionesCompletas];
-    // TODO: Implementar carga de datos desde servicio
-    // this.reclamacionService.obtenerReclamaciones().subscribe(data => {
-    //   this.reclamaciones = data;
-    // });
   }
 
   // ============= HELPERS PARA BÚSQUEDA RÁPIDA =============
-
-  // Retorna el placeholder apropiado según el tipo de búsqueda seleccionado
   getPlaceholder(): string {
-    const t = this.quickSearchForm.get('searchType')?.value;
-    if (t === 'dni') return 'Ej: 41630253';
-    if (t === 'codigo') return 'Ej: REC-2025-001';
-    if (t === 'nombre') return 'Ej: Juan Pérez';
-    return '';
+    const searchType = this.quickSearchForm.get('searchType')?.value;
+    const placeholders = {
+      'dni': 'Ej: 41630253',
+      'codigo': 'Ej: REC-2025-001',
+      'nombre': 'Ej: Juan Pérez'
+    };
+    return placeholders[searchType as keyof typeof placeholders] || '';
   }
 
-  // Retorna la etiqueta del campo de búsqueda según el tipo seleccionado
   getSearchLabel(): string {
-    const t = this.quickSearchForm.get('searchType')?.value;
-    if (t === 'dni') return 'DNI';
-    if (t === 'codigo') return 'Código';
-    if (t === 'nombre') return 'Nombre';
-    return '';
+    const searchType = this.quickSearchForm.get('searchType')?.value;
+    const labels = { 'dni': 'DNI', 'codigo': 'Código', 'nombre': 'Nombre' };
+    return labels[searchType as keyof typeof labels] || '';
   }
 
-  // Retorna el icono apropiado para el tipo de búsqueda
   getSearchIcon(searchType: string): string {
-    if (searchType === 'dni' || searchType === 'nombre') return 'pi pi-user';
+    if (['dni', 'nombre'].includes(searchType)) return 'pi pi-user';
     if (searchType === 'codigo') return 'pi pi-tag';
     return 'pi pi-search';
   }
 
-  // Extrae los tipos de reclamación seleccionados del formulario
-  private obtenerTiposSeleccionados(): string[] {
-    const formValues = this.searchForm.value;
-    if (formValues.tipoTodos) return [];
-
-    const tipos: string[] = [];
-    if (formValues.tipoReclamo) tipos.push('RECLAMO');
-    if (formValues.tipoQueja) tipos.push('QUEJA');
-    if (formValues.tipoConsulta) tipos.push('CONSULTA');
-
-    return tipos;
-  }
-
-  // Extrae los estados seleccionados del formulario
-  private obtenerEstadosSeleccionados(): string[] {
-    const formValues = this.searchForm.value;
-    if (formValues.estadoTodos) return [];
-
-    const estados: string[] = [];
-    if (formValues.estadoPendiente) estados.push('pendiente');
-    if (formValues.estadoEnProceso) estados.push('en-proceso');
-    if (formValues.estadoAtendido) estados.push('atendido');
-    if (formValues.estadoConforme) estados.push('conforme');
-    if (formValues.estadoNoConforme) estados.push('no-conforme');
-    if (formValues.estadoVencido) estados.push('vencido');
-    if (formValues.estadoInvalido) estados.push('invalido');
-
-    return estados;
-  }
-
   // ============= GETTERS Y PROPIEDADES CALCULADAS =============
-
-  // Retorna reclamaciones filtradas según los criterios aplicados
   get filteredReclamaciones(): ReclamacionCompleta[] {
     let data = [...this.reclamaciones];
 
@@ -745,10 +711,8 @@ export class MonitoreoComponent implements OnInit {
     return data;
   }
 
-  // Calcula estadísticas de las reclamaciones filtradas
   get stats(): ReclamacionStats {
     const data = this.filteredReclamaciones;
-
     let aTiempo = 0;
     let porVencer = 0;
     let vencidos = 0;
@@ -776,20 +740,10 @@ export class MonitoreoComponent implements OnInit {
     };
   }
 
-  // Recalcula las estadísticas después de una búsqueda
-  calcularEstadisticas(): void {
-    if (this.filteredReclamaciones && this.filteredReclamaciones.length > 0) {
-      // Las estadísticas se calculan automáticamente en el getter stats
-    }
-  }
-
   // ============= UTILIDADES DE FECHAS Y TIEMPO =============
-
-  // Calcula la prioridad de una reclamación basada en tiempo transcurrido
   calcularPrioridadPorTiempo(fechaRegistro: string, estado: string): string {
     const fechaReg = this.parsearFecha(fechaRegistro);
     const fechaActual = new Date();
-
     const diferenciaTiempo = fechaActual.getTime() - fechaReg.getTime();
     const diasTranscurridos = Math.floor(diferenciaTiempo / (1000 * 3600 * 24));
 
@@ -797,17 +751,16 @@ export class MonitoreoComponent implements OnInit {
     const estaAtendido = estadosAtendidos.includes(estado.toLowerCase());
 
     if (estaAtendido && diasTranscurridos >= 15) {
-      return 'atendido-fuera-fecha'; // Morado - Atendido después de los 15 días
+      return 'atendido-fuera-fecha';
     } else if (!estaAtendido && diasTranscurridos >= 15) {
-      return 'vencido'; // Rojo - Vencido (más de 15 días sin atender)
+      return 'vencido';
     } else if (diasTranscurridos >= 5) {
-      return 'por-vencer'; // Amarillo - Por vencer (entre 5-14 días)
+      return 'por-vencer';
     } else {
-      return 'a-tiempo'; // Verde - A tiempo (0-4 días)
+      return 'a-tiempo';
     }
   }
 
-  // Convierte string de fecha a objeto Date (formato dd/MM/yyyy HH:mm:ss)
   private parsearFecha(fechaTexto: string): Date {
     const [fecha, hora] = fechaTexto.split(' ');
     const [dia, mes, año] = fecha.split('/');
@@ -815,7 +768,7 @@ export class MonitoreoComponent implements OnInit {
 
     return new Date(
       parseInt(año),
-      parseInt(mes) - 1, // Los meses en JS van de 0-11
+      parseInt(mes) - 1,
       parseInt(dia),
       parseInt(horas),
       parseInt(minutos),
@@ -823,11 +776,9 @@ export class MonitoreoComponent implements OnInit {
     );
   }
 
-  // Obtiene información detallada del tiempo transcurrido
   getInformacionTiempo(fechaRegistro: string): { dias: number; mensaje: string } {
     const fechaReg = this.parsearFecha(fechaRegistro);
     const fechaActual = new Date();
-
     const diferenciaTiempo = fechaActual.getTime() - fechaReg.getTime();
     const diasTranscurridos = Math.floor(diferenciaTiempo / (1000 * 3600 * 24));
 
@@ -850,40 +801,28 @@ export class MonitoreoComponent implements OnInit {
     return { dias: diasTranscurridos, mensaje };
   }
 
-  // Calcula el ancho de la barra de progreso basado en días transcurridos
   getDiasWidth(dias: number): number {
     return Math.min((dias / 15) * 100, 100);
   }
 
   // ============= FUNCIONES DE ESTILOS Y CLASES CSS =============
-
-  // Retorna clases CSS para el estado de la reclamación
   getEstadoClass(estado: string): string {
     const estadoNormalizado = estado.toLowerCase();
-    switch (estadoNormalizado) {
-      case 'en-proceso':
-        return 'text-[#5B6AD6] bg-[#EEF0FF] ring-1 ring-[#5B6AD638]';
-      case 'conforme':
-        return 'text-[#1AAE9F] bg-[#E8FBF8] ring-1 ring-[#1AAE9F38]';
-      case 'no-conforme':
-        return 'text-[#C01C5A] bg-[#FDEAF1] ring-1 ring-[#C01C5A38]';
-      case 'pendiente':
-        return 'text-[#A05A00] bg-[#FFF4E8] ring-1 ring-[#A05A0038]';
-      case 'atendido':
-        return 'text-[#1C7ED6] bg-[#EAF4FF] ring-1 ring-[#1C7ED638]';
-      case 'vencido':
-        return 'text-[#7A1F1F] bg-[#FBEAEA] ring-1 ring-[#7A1F1F38]';
-      case 'invalido':
-        return 'text-[#5E5E6D] bg-[#F1F2F6] ring-1 ring-[#5E5E6D38]';
-      default:
-        return 'text-[#5E5E6D] bg-[#F1F2F6] ring-1 ring-[#5E5E6D38]';
-    }
+    const clases = {
+      'en-proceso': 'text-[#5B6AD6] bg-[#EEF0FF] ring-1 ring-[#5B6AD638]',
+      'conforme': 'text-[#1AAE9F] bg-[#E8FBF8] ring-1 ring-[#1AAE9F38]',
+      'no-conforme': 'text-[#C01C5A] bg-[#FDEAF1] ring-1 ring-[#C01C5A38]',
+      'pendiente': 'text-[#A05A00] bg-[#FFF4E8] ring-1 ring-[#A05A0038]',
+      'atendido': 'text-[#1C7ED6] bg-[#EAF4FF] ring-1 ring-[#1C7ED638]',
+      'vencido': 'text-[#7A1F1F] bg-[#FBEAEA] ring-1 ring-[#7A1F1F38]',
+      'invalido': 'text-[#5E5E6D] bg-[#F1F2F6] ring-1 ring-[#5E5E6D38]'
+    };
+    return clases[estadoNormalizado as keyof typeof clases] || 'text-[#5E5E6D] bg-[#F1F2F6] ring-1 ring-[#5E5E6D38]';
   }
 
-  // Retorna clases CSS para el punto indicador del estado
   getEstadoDotClass(estado: string): string {
     const estadoNormalizado = estado.toLowerCase();
-    const clases: Record<string, string> = {
+    const clases = {
       'pendiente': 'bg-[#F0AA65]',
       'en-proceso': 'bg-[#5B6AD6]',
       'atendido': 'bg-[#1C7ED6]',
@@ -892,147 +831,76 @@ export class MonitoreoComponent implements OnInit {
       'vencido': 'bg-[#7A1F1F]',
       'invalido': 'bg-[#9AA0B1]'
     };
-
-    return clases[estadoNormalizado] || 'bg-[#9AA0B1]';
+    return clases[estadoNormalizado as keyof typeof clases] || 'bg-[#9AA0B1]';
   }
 
-  // Retorna clases CSS para la prioridad de la reclamación
-  getPrioridadClass(prioridad: string): string {
-    switch (prioridad.toLowerCase()) {
-      case 'alta':
-        return 'text-red-700 bg-red-100';
-      case 'media':
-        return 'text-yellow-700 bg-yellow-100';
-      case 'baja':
-        return 'text-green-700 bg-green-100';
-      default:
-        return 'text-gray-700 bg-gray-100';
-    }
-  }
-
-  // Retorna icono apropiado para la prioridad
-  getPrioridadIcon(prioridad: string): string {
-    switch (prioridad.toLowerCase()) {
-      case 'alta':
-        return 'pi pi-exclamation-triangle text-red-600';
-      case 'media':
-        return 'pi pi-exclamation-circle text-yellow-600';
-      case 'baja':
-        return 'pi pi-minus-circle text-green-600';
-      default:
-        return 'pi pi-info text-gray-600';
-    }
-  }
-
-  // Retorna clases CSS para prioridad calculada por tiempo
   getPrioridadPorTiempoClass(fechaRegistro: string, estado: string): string {
     const prioridad = this.calcularPrioridadPorTiempo(fechaRegistro, estado);
-
-    switch (prioridad) {
-      case 'a-tiempo':
-        return 'text-green-700 bg-green-100 border border-green-300';
-      case 'por-vencer':
-        return 'text-yellow-700 bg-yellow-100 border border-yellow-300';
-      case 'vencido':
-        return 'text-red-700 bg-red-100 border border-red-300';
-      case 'atendido-fuera-fecha':
-        return 'text-purple-700 bg-purple-100 border border-purple-300';
-      default:
-        return 'text-gray-700 bg-gray-100 border border-gray-300';
-    }
+    const clases = {
+      'a-tiempo': 'text-green-700 bg-green-100 border border-green-300',
+      'por-vencer': 'text-yellow-700 bg-yellow-100 border border-yellow-300',
+      'vencido': 'text-red-700 bg-red-100 border border-red-300',
+      'atendido-fuera-fecha': 'text-purple-700 bg-purple-100 border border-purple-300'
+    };
+    return clases[prioridad as keyof typeof clases] || 'text-gray-700 bg-gray-100 border border-gray-300';
   }
 
-  // Retorna icono para prioridad por tiempo
   getPrioridadPorTiempoIcon(fechaRegistro: string, estado: string): string {
     const prioridad = this.calcularPrioridadPorTiempo(fechaRegistro, estado);
-
-    switch (prioridad) {
-      case 'a-tiempo':
-        return 'pi pi-check-circle text-green-600';
-      case 'por-vencer':
-        return 'pi pi-clock text-yellow-600';
-      case 'vencido':
-        return 'pi pi-exclamation-triangle text-red-600';
-      case 'atendido-fuera-fecha':
-        return 'pi pi-calendar-times text-purple-600';
-      default:
-        return 'pi pi-info text-gray-600';
-    }
+    const iconos = {
+      'a-tiempo': 'pi pi-check-circle text-green-600',
+      'por-vencer': 'pi pi-clock text-yellow-600',
+      'vencido': 'pi pi-exclamation-triangle text-red-600',
+      'atendido-fuera-fecha': 'pi pi-calendar-times text-purple-600'
+    };
+    return iconos[prioridad as keyof typeof iconos] || 'pi pi-info text-gray-600';
   }
 
-  // Retorna texto descriptivo para prioridad por tiempo
   getPrioridadPorTiempoTexto(fechaRegistro: string, estado: string): string {
     const prioridad = this.calcularPrioridadPorTiempo(fechaRegistro, estado);
-
-    switch (prioridad) {
-      case 'a-tiempo':
-        return 'A Tiempo';
-      case 'por-vencer':
-        return 'Por Vencer';
-      case 'vencido':
-        return 'Vencido';
-      case 'atendido-fuera-fecha':
-        return 'Tardío';
-      default:
-        return 'Sin Clasificar';
-    }
+    const textos = {
+      'a-tiempo': 'A Tiempo',
+      'por-vencer': 'Por Vencer',
+      'vencido': 'Vencido',
+      'atendido-fuera-fecha': 'Tardío'
+    };
+    return textos[prioridad as keyof typeof textos] || 'Sin Clasificar';
   }
 
   // ============= FUNCIONES DE USUARIO Y AVATARES =============
-
-  // Retorna icono apropiado según el nivel de usuario
   getUserIcon(nivel: string): string {
-    switch (nivel) {
-      case 'Alumno':
-        return 'pi pi-user';
-      case 'Egresado':
-        return 'pi pi-graduation-cap';
-      case 'Apoderado':
-        return 'pi pi-users';
-      case 'Externo':
-        return 'pi pi-globe';
-      default:
-        return 'pi pi-user';
-    }
+    const iconos = {
+      'Alumno': 'pi pi-user',
+      'Egresado': 'pi pi-graduation-cap',
+      'Apoderado': 'pi pi-users',
+      'Externo': 'pi pi-globe'
+    };
+    return iconos[nivel as keyof typeof iconos] || 'pi pi-user';
   }
 
-  // Retorna clases CSS para avatar del usuario
   getUserAvatarClass(nivel: string): string {
-    switch (nivel) {
-      case 'Alumno':
-        return 'bg-gradient-to-br from-blue-400 to-blue-600';
-      case 'Egresado':
-        return 'bg-gradient-to-br from-green-400 to-green-600';
-      case 'Apoderado':
-        return 'bg-gradient-to-br from-purple-400 to-purple-600';
-      case 'Externo':
-        return 'bg-gradient-to-br from-orange-400 to-orange-600';
-      default:
-        return 'bg-gradient-to-br from-gray-400 to-gray-600';
-    }
+    const clases = {
+      'Alumno': 'bg-gradient-to-br from-blue-400 to-blue-600',
+      'Egresado': 'bg-gradient-to-br from-green-400 to-green-600',
+      'Apoderado': 'bg-gradient-to-br from-purple-400 to-purple-600',
+      'Externo': 'bg-gradient-to-br from-orange-400 to-orange-600'
+    };
+    return clases[nivel as keyof typeof clases] || 'bg-gradient-to-br from-gray-400 to-gray-600';
   }
 
-  // Retorna clases CSS para badge del nivel de usuario
   getUserBadgeClass(nivel: string): string {
-    switch (nivel) {
-      case 'Alumno':
-        return 'bg-blue-100 text-blue-700 border-blue-300';
-      case 'Egresado':
-        return 'bg-green-100 text-green-700 border-green-300';
-      case 'Apoderado':
-        return 'bg-purple-100 text-purple-700 border-purple-300';
-      case 'Externo':
-        return 'bg-orange-100 text-orange-700 border-orange-300';
-      default:
-        return 'bg-gray-100 text-gray-700 border-gray-300';
-    }
+    const clases = {
+      'Alumno': 'bg-blue-100 text-blue-700 border-blue-300',
+      'Egresado': 'bg-green-100 text-green-700 border-green-300',
+      'Apoderado': 'bg-purple-100 text-purple-700 border-purple-300',
+      'Externo': 'bg-orange-100 text-orange-700 border-orange-300'
+    };
+    return clases[nivel as keyof typeof clases] || 'bg-gray-100 text-gray-700 border-gray-300';
   }
 
   // ============= FUNCIONES DE FORMATEO Y DISPLAY =============
-
-  // Convierte valores internos de campus a nombres para mostrar
   getCampusDisplayName(campusValue: string): string {
-    const campusMap: { [key: string]: string } = {
+    const campusMap = {
       'lima_norte': 'LIMA NORTE',
       'trujillo': 'TRUJILLO',
       'chiclayo': 'CHICLAYO',
@@ -1042,173 +910,110 @@ export class MonitoreoComponent implements OnInit {
       'lima_este': 'LIMA ESTE',
       'tarapoto': 'TARAPOTO'
     };
-
-    return campusMap[campusValue.toLowerCase()] || campusValue.toUpperCase();
+    return campusMap[campusValue.toLowerCase() as keyof typeof campusMap] || campusValue.toUpperCase();
   }
 
-  // Formatea estado para mostrar en tabla con capitalización correcta
   formatearEstadoParaTabla(estado: string): string {
-    const estadoNormalizado = estado.toLowerCase();
-
-    switch (estadoNormalizado) {
-      case 'pendiente':
-        return 'Pendiente';
-      case 'en-proceso':
-        return 'En Proceso';
-      case 'atendido':
-        return 'Atendido';
-      case 'conforme':
-        return 'Conforme';
-      case 'no-conforme':
-        return 'No Conforme';
-      case 'vencido':
-        return 'Vencido';
-      case 'invalido':
-        return 'Inválido';
-      default:
-        return estado.charAt(0).toUpperCase() + estado.slice(1);
-    }
+    const estados = {
+      'pendiente': 'Pendiente',
+      'en-proceso': 'En Proceso',
+      'atendido': 'Atendido',
+      'conforme': 'Conforme',
+      'no-conforme': 'No Conforme',
+      'vencido': 'Vencido',
+      'invalido': 'Inválido'
+    };
+    return estados[estado.toLowerCase() as keyof typeof estados] || estado.charAt(0).toUpperCase() + estado.slice(1);
   }
 
-  // Formatea prioridad para mostrar en chips y otros elementos
   formatearPrioridadParaDisplay(prioridad: string): string {
-    switch (prioridad.toLowerCase()) {
-      case 'a-tiempo':
-        return 'A Tiempo';
-      case 'por-vencer':
-        return 'Por Vencer';
-      case 'vencido':
-        return 'Vencido';
-      case 'atendido-fuera-fecha':
-        return 'Atendido Tarde';
-      case 'todos':
-        return 'Todas';
-      default:
-        return prioridad.charAt(0).toUpperCase() + prioridad.slice(1);
-    }
+    const prioridades = {
+      'a-tiempo': 'A Tiempo',
+      'por-vencer': 'Por Vencer',
+      'vencido': 'Vencido',
+      'atendido-fuera-fecha': 'Atendido Tarde',
+      'todos': 'Todas'
+    };
+    return prioridades[prioridad.toLowerCase() as keyof typeof prioridades] ||
+      prioridad.charAt(0).toUpperCase() + prioridad.slice(1);
   }
 
   // ============= GESTIÓN DE MODALES =============
-
-  // Abre modal de detalles para una reclamación específica
   verDetalles(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
     this.mostrarModalDetalles = true;
   }
 
-  // Abre modal para editar estado de reclamación
   editarEstado(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
     this.mostrarModalEstado = true;
   }
 
-  // Abre modal para asignar responsable a reclamación
   asignarResponsable(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
     this.mostrarModalResponsable = true;
   }
 
-  // Abre modal para generar reporte de reclamación
   generarReporte(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
     this.mostrarModalReporte = true;
   }
 
-  // Cierra modal de detalles y limpia selección
   cerrarModalDetalles(): void {
     this.mostrarModalDetalles = false;
     this.reclamacionSeleccionada = null;
   }
 
-  // Cierra modal de edición de estado
   cerrarModalEstado(): void {
     this.mostrarModalEstado = false;
   }
 
-  // Cierra modal de asignación de responsable
   cerrarModalResponsable(): void {
     this.mostrarModalResponsable = false;
   }
 
-  // Cierra modal de generación de reportes
   cerrarModalReporte(): void {
     this.mostrarModalReporte = false;
   }
 
   // ============= EVENTOS DE CONFIRMACIÓN DE MODALES =============
-
-  // Procesa confirmación de cambio de estado
   onEstadoConfirm(event: any): void {
     if (event && this.reclamacionSeleccionada) {
       this.reclamacionSeleccionada.estado = event.nuevoEstado;
       this.cerrarModalEstado();
-
-      // TODO: Llamar al servicio para actualizar estado
-      // this.reclamacionService.actualizarEstado(this.reclamacionSeleccionada.codigo, event.nuevoEstado)
-      //   .subscribe(() => {
-      //     this.messageService.add({severity:'success', summary:'Éxito', detail:'Estado actualizado correctamente'});
-      //   });
+      this.mostrarMensaje('success', 'Éxito', 'Estado actualizado correctamente');
     }
   }
 
-  // Procesa confirmación de generación de reporte
   onReporteConfirm(event: any): void {
     if (event && this.reclamacionSeleccionada) {
       // TODO: Implementar generación de reporte
-      // this.reporteService.generarReporte(this.reclamacionSeleccionada.codigo, event.tipoReporte)
-      //   .subscribe(blob => {
-      //     // Descargar archivo
-      //   });
+      this.mostrarMensaje('success', 'Reporte', 'Generando reporte...');
     }
     this.cerrarModalReporte();
   }
 
-  // Procesa confirmación de asignación de responsable
   onAsignacionConfirm(event: any): void {
     if (event && this.reclamacionSeleccionada) {
       this.reclamacionSeleccionada.responsable = event.responsableId;
-
-      // TODO: Llamar al servicio para asignar responsable
-      // this.reclamacionService.asignarResponsable(this.reclamacionSeleccionada.codigo, event.responsableId)
-      //   .subscribe(() => {
-      //     this.messageService.add({severity:'success', summary:'Éxito', detail:'Responsable asignado correctamente'});
-      //   });
+      this.mostrarMensaje('success', 'Éxito', 'Responsable asignado correctamente');
     }
     this.cerrarModalResponsable();
   }
 
   // ============= GESTIÓN DE POPOVER =============
-
-  // Abre popover para cambios rápidos de estatus
   openPopover(event: Event, reclamo: any): void {
     this.selectedReclamo = reclamo;
     this.tempEstatus = reclamo?.estatus ?? null;
     this.op.toggle(event);
   }
 
-  // Establece estatus desde el popover
   setEstatus(valor: 'Conforme' | 'Inválido' | 'No-Conforme'): void {
     this.tempEstatus = valor;
     if (this.selectedReclamo) {
       this.selectedReclamo.estatus = valor;
-
-      // TODO: Llamar al servicio para actualizar estatus
-      // this.reclamacionService.actualizarEstatus(this.selectedReclamo.codigo, valor)
-      //   .subscribe(() => {
-      //     this.messageService.add({severity:'success', summary:'Éxito', detail:'Estatus actualizado correctamente'});
-      //   });
-
+      this.mostrarMensaje('success', 'Éxito', 'Estatus actualizado correctamente');
       this.op.hide();
     }
-  }
-
-  // ============= UTILIDADES DE REINICIO =============
-
-  // Reinicia completamente la vista a estado inicial
-  reiniciarVista(): void {
-    this.showResults = false;
-    this.searchPerformed = false;
-    this.reclamaciones = [];
-    this.limpiarFiltros();
   }
 }
