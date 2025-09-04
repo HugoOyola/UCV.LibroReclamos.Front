@@ -23,7 +23,6 @@ export interface ReclamacionCompleta {
   descripcion?: string;
   categoria?: string;
   subcategoria?: string;
-  // Campos adicionales para el modal
   telefono?: string;
   direccion?: string;
   padreApoderado?: string;
@@ -35,6 +34,7 @@ export interface ReclamacionCompleta {
 
 @Component({
   selector: 'app-detalle',
+  standalone: true,               // ✅ necesario si usas `imports`
   imports: [
     CommonModule,
     FormsModule,
@@ -54,9 +54,20 @@ export class DetalleComponent {
   @Output() close = new EventEmitter<void>();
   @Output() correoEnviado = new EventEmitter<ReclamacionCompleta>();
 
+  // === Presentación ===
+  @Input() dialogWidth: string = '56rem';        // controla ancho desde el padre
+  @Input() showHeader: boolean = true;           // ver/ocultar header
+  @Input() maximizable: boolean = true;          // botón maximizar
+  @Input() breakpoints: Record<string, string> = {
+    '1400px': '60rem',
+    '1200px': '70vw',
+    '960px':  '85vw',
+    '640px':  '95vw'
+  };
+
   enviandoCorreo = false;
 
-  // Opciones para los selects
+  // Opciones
   campusOptions = [
     { label: 'UCV CAMPUS TRUJILLO', value: 'UCV CAMPUS TRUJILLO' },
     { label: 'UCV CAMPUS LIMA', value: 'UCV CAMPUS LIMA' },
@@ -81,7 +92,7 @@ export class DetalleComponent {
     { label: 'Dirección de Carrera', value: 'Dirección de Carrera' }
   ];
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService) {}
 
   async enviarCorreo() {
     if (!this.reclamacion) {
@@ -96,18 +107,13 @@ export class DetalleComponent {
     this.enviandoCorreo = true;
 
     try {
-      // Simular envío de correo (aquí integrarías con tu servicio de email)
       await this.simularEnvioCorreo();
-
       this.messageService.add({
         severity: 'success',
         summary: 'Correo Enviado',
         detail: `Se ha enviado la notificación de la reclamación ${this.reclamacion.codigo} al correo ${this.reclamacion.correo}`
       });
-
-      // Emitir evento para notificar al componente padre
       this.correoEnviado.emit(this.reclamacion);
-
     } catch (error) {
       console.error('Error al enviar correo:', error);
       this.messageService.add({
@@ -123,21 +129,14 @@ export class DetalleComponent {
   private simularEnvioCorreo(): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Simular éxito/error aleatorio para demo
-        const success = Math.random() > 0.1; // 90% de éxito
-        if (success) {
-          resolve();
-        } else {
-          reject(new Error('Error simulado'));
-        }
+        const success = Math.random() > 0.1;
+        success ? resolve() : reject(new Error('Error simulado'));
       }, 2000);
     });
   }
 
-  // Método para integrar con servicio real de correo
   private async enviarCorreoReal() {
     if (!this.reclamacion) return;
-
     const emailData = {
       to: this.reclamacion.correo,
       subject: `Reclamación ${this.reclamacion.codigo} - Notificación`,
@@ -152,8 +151,6 @@ export class DetalleComponent {
         campus: this.reclamacion.campus
       }
     };
-
-    // Aquí harías la llamada a tu servicio de email
     // return this.emailService.enviarCorreo(emailData);
   }
 }
