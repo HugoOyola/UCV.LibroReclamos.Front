@@ -1,10 +1,10 @@
 <p-dialog [(visible)]="visible" [showHeader]="showHeader" [modal]="true" [draggable]="false" [resizable]="false"
-  [maximizable]="maximizable" [breakpoints]="breakpoints" [style]="{ width: dialogWidth }" header="Seguimiento de Reclamación"
-  (onHide)="onHide()" styleClass="ucv-dialog">
+  [maximizable]="maximizable" [breakpoints]="breakpoints" [style]="{ width: dialogWidth }"
+  header="Seguimiento de Reclamación" (onHide)="onHide()" styleClass="ucv-dialog" [contentStyle]="{padding: 0}">
 
   <!-- Header personalizado -->
   <ng-template pTemplate="header">
-    <div class="ucv-header">
+    <div class="ucv-header" role="banner" aria-label="Cabecera de seguimiento">
       <div class="ucv-header__left">
         <i class="pi pi-history"></i>
         <span class="ucv-header__title">Seguimiento de Reclamación</span>
@@ -26,7 +26,6 @@
   <div class="dialog-container">
     <!-- Contenido scrolleable -->
     <div class="dialog-content">
-
       <!-- Información de la reclamación -->
       <div class="reclamacion-info mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +68,8 @@
               </div>
               <div class="info-row">
                 <span class="label">Estado: </span>
-                <span [class]="getEstadoBadgeClass(reclamacion?.estado || '')">{{ getEstadoLabel(reclamacion?.estado || '') }}</span>
+                <span [class]="getEstadoBadgeClass(reclamacion?.estado || '')">{{ getEstadoLabel(reclamacion?.estado ||
+                  '') }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Campus: </span>
@@ -95,56 +95,96 @@
         </div>
       </div>
 
-      <!-- Timeline de seguimiento -->
+      <!-- ====== Controles / Resumen del Timeline ====== -->
+      <div class="info-card mb-6">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-sm font-semibold text-slate-700">Resumen:</span>
+            <p-tag *ngFor="let chip of resumenTipos" [severity]="chip.severity"
+              [value]="chip.label + ' · ' + chip.count" [rounded]="true"></p-tag>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <p-select [(ngModel)]="filtroTipo" [options]="tipoEventoOptionsFiltro" optionLabel="label"
+              optionValue="value" placeholder="Filtrar por tipo" styleClass="min-w-[220px]"
+              (onChange)="aplicarFiltro()"></p-select>
+            <p-button size="small" label="Limpiar" icon="pi pi-times" (onClick)="limpiarFiltro()" [outlined]="true" />
+            <p-button size="small" label="Ordenar" icon="pi pi-sort-amount-down" (onClick)="toggleOrden()"
+              [outlined]="true" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== Timeline con PrimeNG (estructura oficial: opposite + content) ====== -->
       <div class="seguimiento-timeline">
         <h3 class="section-title mb-4">
           <i class="pi pi-clock text-orange-600"></i>
           Historial de Seguimiento
         </h3>
 
-        <div class="timeline-container">
-          <div *ngFor="let evento of timelineEventos; let last = last"
-            class="timeline-item" [ngClass]="evento.tipo" [class.last]="last">
+        <div *ngIf="eventosFiltrados.length > 0; else noEventosTpl" aria-label="Línea de tiempo de eventos">
+          <p-timeline
+            [value]="eventosFiltrados"
+            layout="vertical"
+            [align]="'alternate'"
+            class="w-full"
+          >
+            <!-- LADO OPUESTO: Fecha (como en el ejemplo de PrimeNG) -->
+            <ng-template pTemplate="opposite" let-evento>
+              <small class="block text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                {{ formatearFechaEvento(evento.fecha) }}
+              </small>
+            </ng-template>
 
-            <!-- Contenido del evento -->
-            <div class="timeline-content">
-              <div class="event-header">
-                <h4 class="event-title">{{ evento.titulo }}</h4>
-                <span class="event-date">{{ formatearFechaEvento(evento.fecha) }}</span>
-              </div>
+            <!-- CONTENIDO: Tarjeta del evento -->
+            <ng-template pTemplate="content" let-evento>
+              <div class="rounded-lg border border-solid border-slate-200 bg-slate-50 p-3 md:p-4 mb-2 shadow-sm">
+                <div class="flex items-center gap-2 mb-1">
+                  <p-tag
+                    [value]="getTipoMeta(evento.tipo).label"
+                    [severity]="getTipoMeta(evento.tipo).tagSeverity"
+                    [rounded]="true"
+                    styleClass="text-xs"
+                  ></p-tag>
+                  <h4 class="m-0 text-sm font-semibold text-slate-800">
+                    {{ evento.titulo }}
+                  </h4>
+                </div>
 
-              <p class="event-description">{{ evento.descripcion }}</p>
+                <p class="mt-1 text-sm leading-relaxed text-slate-700">
+                  {{ evento.descripcion }}
+                </p>
 
-              <div *ngIf="evento.responsable" class="event-meta">
-                <span class="responsible">
-                  <i class="pi pi-user"></i>
-                  {{ evento.responsable }}
-                </span>
-              </div>
+                <div *ngIf="evento.responsable" class="mt-2 border-t border-slate-200 pt-2">
+                  <span class="inline-flex items-center gap-2 text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded">
+                    <i class="pi pi-user text-slate-400 text-xs"></i>
+                    {{ evento.responsable }}
+                  </span>
+                </div>
 
-              <div *ngIf="evento.adjuntos && evento.adjuntos.length > 0" class="event-attachments">
-                <span class="attachments-label">
-                  <i class="pi pi-paperclip"></i>
-                  Adjuntos:
-                </span>
-                <div class="attachments-list">
-                  <span *ngFor="let adjunto of evento.adjuntos" class="attachment-item">
-                    <i class="pi pi-file"></i>
-                    {{ adjunto }}
+                <div *ngIf="evento.adjuntos?.length" class="mt-2 flex flex-wrap gap-2">
+                  <span class="text-xs text-slate-500 flex items-center gap-1">
+                    <i class="pi pi-paperclip text-slate-400 text-xs"></i> Adjuntos:
+                  </span>
+                  <span
+                    *ngFor="let adj of evento.adjuntos"
+                    class="inline-flex items-center gap-1 text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-100"
+                  >
+                    <i class="pi pi-file text-xs"></i>{{ adj }}
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
+            </ng-template>
+          </p-timeline>
         </div>
 
-        <!-- Mensaje cuando no hay eventos -->
-        <div *ngIf="timelineEventos.length === 0" class="no-events">
-          <div class="text-center py-8">
-            <i class="pi pi-clock text-4xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500">No hay eventos de seguimiento registrados para esta reclamación.</p>
+        <ng-template #noEventosTpl>
+          <div class="no-events">
+            <div class="text-center py-8">
+              <i class="pi pi-clock text-4xl text-gray-300 mb-4"></i>
+              <p class="text-gray-500">No hay eventos de seguimiento registrados para esta reclamación.</p>
+            </div>
           </div>
-        </div>
+        </ng-template>
       </div>
 
       <!-- Agregar nuevo evento -->
@@ -159,16 +199,14 @@
             <!-- Tipo de evento -->
             <div>
               <label class="block mb-2 text-sm font-medium text-gray-700">Tipo de Evento</label>
-              <p-select [(ngModel)]="nuevoEvento.tipo" [options]="tipoEventoOptions"
-                optionLabel="label" optionValue="value" placeholder="Seleccionar tipo"
-                class="w-full" />
+              <p-select [(ngModel)]="nuevoEvento.tipo" [options]="tipoEventoOptions" optionLabel="label"
+                optionValue="value" placeholder="Seleccionar tipo" class="w-full" />
             </div>
 
             <!-- Descripción -->
             <div>
               <label class="block mb-2 text-sm font-medium text-gray-700">Descripción</label>
-              <textarea [(ngModel)]="nuevoEvento.descripcion"
-                placeholder="Describe el evento o acción realizada..."
+              <textarea [(ngModel)]="nuevoEvento.descripcion" placeholder="Describe el evento o acción realizada..."
                 class="w-full p-3 text-sm border border-solid border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows="3"></textarea>
             </div>
@@ -176,15 +214,14 @@
             <!-- Responsable -->
             <div>
               <label class="block mb-2 text-sm font-medium text-gray-700">Responsable</label>
-              <input type="text" [(ngModel)]="nuevoEvento.responsable"
-                placeholder="Nombre del responsable"
+              <input type="text" [(ngModel)]="nuevoEvento.responsable" placeholder="Nombre del responsable"
                 class="w-full p-2 text-sm border border-solid border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
 
             <!-- Botones -->
             <div class="flex gap-3 pt-4 pb-6">
-              <p-button label="Agregar Evento" severity="primary" icon="pi pi-plus"
-                (onClick)="agregarEvento()" [disabled]="!esEventoValido()" />
+              <p-button label="Agregar Evento" severity="primary" icon="pi pi-plus" (onClick)="agregarEvento()"
+                [disabled]="!esEventoValido()" />
               <p-button label="Limpiar" severity="secondary" [outlined]="true" icon="pi pi-times"
                 (onClick)="limpiarNuevoEvento()" />
             </div>
@@ -198,12 +235,11 @@
       <div class="flex justify-between items-center">
         <div class="text-sm text-gray-600">
           <i class="pi pi-info-circle mr-1"></i>
-          {{ timelineEventos.length }} eventos registrados
+          {{ eventosFiltrados.length }} eventos mostrados
         </div>
         <div class="flex gap-3">
-          <p-button label="Generar Reporte" severity="secondary" [outlined]="true"
-            icon="pi pi-file-pdf" (onClick)="generarReporte()"
-            [disabled]="timelineEventos.length === 0" />
+          <p-button label="Generar Reporte" severity="secondary" [outlined]="true" icon="pi pi-file-pdf"
+            (onClick)="generarReporte()" [disabled]="timelineEventos.length === 0" />
           <p-button label="Cerrar" severity="primary" (onClick)="onHide()" />
         </div>
       </div>

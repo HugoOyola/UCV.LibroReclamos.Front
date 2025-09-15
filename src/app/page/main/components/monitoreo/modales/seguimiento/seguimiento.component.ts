@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges, computed, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { TimelineModule } from 'primeng/timeline';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { DividerModule } from 'primeng/divider';
 
 export interface ReclamacionCompleta {
   codigo: string;
@@ -33,7 +37,7 @@ export interface ReclamacionCompleta {
 
 export interface EventoSeguimiento {
   id: string;
-  fecha: string;
+  fecha: string; // ISO o dd/MM/yyyy HH:mm:ss (manejamos ambos)
   tipo: 'registro' | 'asignacion' | 'respuesta' | 'resolucion' | 'contacto' | 'escalamiento' | 'cierre';
   titulo: string;
   descripcion: string;
@@ -52,6 +56,13 @@ interface SelectOption {
   value: string;
 }
 
+type TipoMeta = {
+  label: string;
+  icon: string;
+  markerBg: string;    // clases Tailwind para el fondo del marcador
+  tagSeverity: 'success' | 'info' | 'warn' | 'danger' | 'contrast' | undefined;
+};
+
 @Component({
   selector: 'app-seguimiento',
   standalone: true,
@@ -61,7 +72,11 @@ interface SelectOption {
     DialogModule,
     ButtonModule,
     SelectModule,
-    ToastModule
+    ToastModule,
+    TimelineModule,
+    TagModule,
+    TooltipModule,
+    DividerModule
   ],
   templateUrl: './seguimiento.component.html',
   styleUrl: './seguimiento.component.scss',
@@ -86,11 +101,10 @@ export class SeguimientoComponent implements OnInit, OnChanges {
 
   // === Datos ===
   timelineEventos: EventoSeguimiento[] = [];
-  nuevoEvento: NuevoEvento = {
-    tipo: '',
-    descripcion: '',
-    responsable: ''
-  };
+  // Copia filtrada/ordenada que se muestra en UI
+  eventosFiltrados: EventoSeguimiento[] = [];
+
+  nuevoEvento: NuevoEvento = { tipo: '', descripcion: '', responsable: '' };
 
   // === Opciones ===
   tipoEventoOptions: SelectOption[] = [
@@ -101,6 +115,42 @@ export class SeguimientoComponent implements OnInit, OnChanges {
     { label: 'Escalamiento', value: 'escalamiento' },
     { label: 'Cierre de Caso', value: 'cierre' }
   ];
+
+  // Filtro/orden
+  filtroTipo: string | null = null;
+  ordenAsc = true;
+
+  // Opciones para el filtro (incluye "Todos")
+  tipoEventoOptionsFiltro: SelectOption[] = [
+    { label: 'Todos los tipos', value: null as unknown as string },
+    { label: 'Registro', value: 'registro' },
+    ...this.tipoEventoOptions
+  ];
+
+  // Meta por tipo (colores/íconos/etiquetas)
+  private tipoMeta: Record<EventoSeguimiento['tipo'], TipoMeta> = {
+    registro:     { label: 'Registro',     icon: 'pi pi-plus',         markerBg: 'bg-blue-600',    tagSeverity: 'info' },
+    asignacion:   { label: 'Asignación',   icon: 'pi pi-user',         markerBg: 'bg-purple-600',  tagSeverity: 'contrast' },
+    contacto:     { label: 'Contacto',     icon: 'pi pi-phone',        markerBg: 'bg-emerald-600', tagSeverity: 'success' },
+    respuesta:    { label: 'Respuesta',    icon: 'pi pi-send',         markerBg: 'bg-amber-600',   tagSeverity: 'warn' },
+    resolucion:   { label: 'Resolución',   icon: 'pi pi-check-circle', markerBg: 'bg-indigo-600',  tagSeverity: 'success' },
+    escalamiento: { label: 'Escalamiento', icon: 'pi pi-arrow-up',     markerBg: 'bg-rose-600',    tagSeverity: 'danger' },
+    cierre:       { label: 'Cierre',       icon: 'pi pi-lock',         markerBg: 'bg-slate-600',   tagSeverity: undefined }
+  };
+
+  // Resumen por tipo (chips superiores)
+  get resumenTipos() {
+    const counts: Record<string, number> = {};
+    for (const ev of this.timelineEventos) counts[ev.tipo] = (counts[ev.tipo] || 0) + 1;
+    const order: EventoSeguimiento['tipo'][] = ['registro','asignacion','contacto','respuesta','resolucion','escalamiento','cierre'];
+    return order
+      .filter(t => counts[t])
+      .map(t => ({
+        label: this.tipoMeta[t].label,
+        severity: this.tipoMeta[t].tagSeverity,
+        count: counts[t]
+      }));
+  }
 
   constructor(private messageService: MessageService) {}
 
@@ -117,26 +167,24 @@ export class SeguimientoComponent implements OnInit, OnChanges {
   // === Carga de datos ===
   private cargarEventosSeguimiento() {
     if (!this.reclamacion) return;
-
-    // Generar eventos mock basados en el código de reclamación
     this.timelineEventos = this.generarEventosMock(this.reclamacion);
+    this.aplicarFiltro(true);
   }
 
   private generarEventosMock(reclamacion: ReclamacionCompleta): EventoSeguimiento[] {
     const eventos: EventoSeguimiento[] = [];
     const fechaRegistro = this.parsearFecha(reclamacion.fechaRegistro);
 
-    // Evento inicial - registro
+    // Registro
     eventos.push({
       id: '1',
       fecha: reclamacion.fechaRegistro,
       tipo: 'registro',
       titulo: 'Reclamación Registrada',
-      descripcion: `Se registró la ${reclamacion.tipo.toLowerCase()} en el sistema. Usuario: ${reclamacion.usuario}`,
+      descripcion: `Se registró la ${reclamacion.tipo?.toLowerCase?.()} en el sistema. Usuario: ${reclamacion.usuario}`,
       responsable: 'Sistema Automático'
     });
 
-    // Eventos adicionales basados en el estado
     const diasDespues = this.calcularDiasTranscurridos(reclamacion.fechaRegistro);
 
     if (diasDespues >= 1) {
@@ -188,14 +236,39 @@ export class SeguimientoComponent implements OnInit, OnChanges {
     return eventos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
   }
 
+  // === Helpers de UI ===
+  getTipoMeta(tipo: EventoSeguimiento['tipo']): TipoMeta {
+    return this.tipoMeta[tipo] || { label: 'Evento', icon: 'pi pi-circle', markerBg: 'bg-slate-400', tagSeverity: undefined };
+  }
+
+  // Filtrar + Ordenar
+  aplicarFiltro(skipSort = false) {
+    const base = this.filtroTipo ? this.timelineEventos.filter(e => e.tipo === this.filtroTipo) : this.timelineEventos.slice();
+    this.eventosFiltrados = skipSort ? base : this.ordenar(base, this.ordenAsc);
+  }
+
+  limpiarFiltro() {
+    this.filtroTipo = null;
+    this.aplicarFiltro();
+  }
+
+  toggleOrden() {
+    this.ordenAsc = !this.ordenAsc;
+    this.aplicarFiltro();
+  }
+
+  private ordenar(arr: EventoSeguimiento[], asc = true) {
+    return arr.sort((a, b) => {
+      const ta = new Date(a.fecha).getTime();
+      const tb = new Date(b.fecha).getTime();
+      return asc ? ta - tb : tb - ta;
+    });
+  }
+
   // === Gestión de nuevos eventos ===
   agregarEvento() {
     if (!this.esEventoValido()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Datos Incompletos',
-        detail: 'Por favor complete todos los campos requeridos'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Datos Incompletos', detail: 'Por favor complete todos los campos requeridos' });
       return;
     }
 
@@ -209,30 +282,21 @@ export class SeguimientoComponent implements OnInit, OnChanges {
     };
 
     this.timelineEventos.push(nuevoEventoSeguimiento);
-    this.timelineEventos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    this.timelineEventos = this.ordenar(this.timelineEventos, true);
+    this.aplicarFiltro();
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Evento Agregado',
-      detail: 'El evento de seguimiento ha sido registrado correctamente'
-    });
+    this.messageService.add({ severity: 'success', summary: 'Evento Agregado', detail: 'El evento de seguimiento ha sido registrado correctamente' });
 
     this.eventoAgregado.emit(nuevoEventoSeguimiento);
     this.limpiarNuevoEvento();
   }
 
   esEventoValido(): boolean {
-    return !!(this.nuevoEvento.tipo &&
-              this.nuevoEvento.descripcion?.trim() &&
-              this.nuevoEvento.responsable?.trim());
+    return !!(this.nuevoEvento.tipo && this.nuevoEvento.descripcion?.trim() && this.nuevoEvento.responsable?.trim());
   }
 
   limpiarNuevoEvento() {
-    this.nuevoEvento = {
-      tipo: '',
-      descripcion: '',
-      responsable: ''
-    };
+    this.nuevoEvento = { tipo: '', descripcion: '', responsable: '' };
   }
 
   private getTituloEvento(tipo: string): string {
@@ -264,84 +328,29 @@ export class SeguimientoComponent implements OnInit, OnChanges {
   getTipoBadgeClass(tipo: string): string {
     const baseClass = 'px-2 py-1 text-xs font-medium rounded-full badge ';
     switch (tipo) {
-      case 'RECLAMO':
-        return baseClass + 'bg-red-100 text-red-800';
-      case 'QUEJA':
-        return baseClass + 'bg-orange-100 text-orange-800';
-      case 'CONSULTA':
-        return baseClass + 'bg-blue-100 text-blue-800';
-      default:
-        return baseClass + 'bg-gray-100 text-gray-800';
+      case 'RECLAMO':  return baseClass + 'bg-red-100 text-red-800';
+      case 'QUEJA':    return baseClass + 'bg-orange-100 text-orange-800';
+      case 'CONSULTA': return baseClass + 'bg-blue-100 text-blue-800';
+      default:         return baseClass + 'bg-gray-100 text-gray-800';
     }
   }
 
   getEstadoBadgeClass(estado: string): string {
     const baseClass = 'px-2 py-1 text-xs font-medium rounded-full badge ';
     switch (estado) {
-      case 'pendiente':
-        return baseClass + 'bg-yellow-100 text-yellow-800';
-      case 'en-proceso':
-        return baseClass + 'bg-blue-100 text-blue-800';
-      case 'atendido':
-        return baseClass + 'bg-green-100 text-green-800';
-      case 'conforme':
-        return baseClass + 'bg-emerald-100 text-emerald-800';
-      case 'no-conforme':
-        return baseClass + 'bg-red-100 text-red-800';
-      case 'vencido':
-        return baseClass + 'bg-gray-100 text-gray-800';
-      case 'invalido':
-        return baseClass + 'bg-slate-100 text-slate-800';
-      default:
-        return baseClass + 'bg-gray-100 text-gray-800';
+      case 'pendiente':   return baseClass + 'bg-yellow-100 text-yellow-800';
+      case 'en-proceso':  return baseClass + 'bg-blue-100 text-blue-800';
+      case 'atendido':    return baseClass + 'bg-green-100 text-green-800';
+      case 'conforme':    return baseClass + 'bg-emerald-100 text-emerald-800';
+      case 'no-conforme': return baseClass + 'bg-red-100 text-red-800';
+      case 'vencido':     return baseClass + 'bg-gray-100 text-gray-800';
+      case 'invalido':    return baseClass + 'bg-slate-100 text-slate-800';
+      default:            return baseClass + 'bg-gray-100 text-gray-800';
     }
   }
 
   getCampusLabel(campus: string): string {
     return campus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  }
-
-  getEventoIconClass(tipo: string): string {
-    const baseClass = 'timeline-dot ';
-    switch (tipo) {
-      case 'registro':
-        return baseClass + 'bg-blue-500';
-      case 'asignacion':
-        return baseClass + 'bg-purple-500';
-      case 'contacto':
-        return baseClass + 'bg-green-500';
-      case 'respuesta':
-        return baseClass + 'bg-orange-500';
-      case 'resolucion':
-        return baseClass + 'bg-indigo-500';
-      case 'escalamiento':
-        return baseClass + 'bg-red-500';
-      case 'cierre':
-        return baseClass + 'bg-gray-500';
-      default:
-        return baseClass + 'bg-gray-400';
-    }
-  }
-
-  getEventoIcon(tipo: string): string {
-    switch (tipo) {
-      case 'registro':
-        return 'pi pi-plus';
-      case 'asignacion':
-        return 'pi pi-user';
-      case 'contacto':
-        return 'pi pi-phone';
-      case 'respuesta':
-        return 'pi pi-send';
-      case 'resolucion':
-        return 'pi pi-check-circle';
-      case 'escalamiento':
-        return 'pi pi-arrow-up';
-      case 'cierre':
-        return 'pi pi-lock';
-      default:
-        return 'pi pi-circle';
-    }
   }
 
   // === Utilidades de fecha ===
@@ -351,12 +360,7 @@ export class SeguimientoComponent implements OnInit, OnChanges {
       const [datePart, timePart] = fecha.split(' ');
       const [day, month, year] = datePart.split('/');
       const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }) + (timePart ? ` ${timePart.substring(0, 5)}` : '');
+      return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + (timePart ? ` ${timePart.substring(0, 5)}` : '');
     } catch {
       return fecha;
     }
@@ -365,27 +369,20 @@ export class SeguimientoComponent implements OnInit, OnChanges {
   formatearFechaEvento(fecha: string): string {
     try {
       const date = new Date(fecha);
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     } catch {
       return this.formatearFecha(fecha);
     }
   }
 
   private parsearFecha(fechaTexto: string): Date {
-    const [fecha, hora] = fechaTexto.split(' ');
-    const [dia, mes, año] = fecha.split('/');
+    const [fecha, hora] = (fechaTexto || '').split(' ');
+    const [dia, mes, año] = (fecha || '').split('/');
     const [horas, minutos, segundos] = (hora || '00:00:00').split(':');
-
     return new Date(
-      parseInt(año),
-      parseInt(mes) - 1,
-      parseInt(dia),
+      parseInt(año || '0'),
+      parseInt(mes || '1') - 1,
+      parseInt(dia || '1'),
       parseInt(horas || '0'),
       parseInt(minutos || '0'),
       parseInt(segundos || '0')
@@ -413,14 +410,13 @@ export class SeguimientoComponent implements OnInit, OnChanges {
       detail: 'El reporte de seguimiento se está preparando...'
     });
 
-    // Simular generación de reporte
     setTimeout(() => {
       this.messageService.add({
         severity: 'success',
         summary: 'Reporte Generado',
         detail: `Reporte de seguimiento para ${this.reclamacion?.codigo} generado correctamente`
       });
-    }, 2000);
+    }, 1200);
   }
 
   onHide() {
