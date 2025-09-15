@@ -789,10 +789,10 @@
                     <i class="text-[16px] pi pi-check-circle"></i>
                   </button>
 
-                  <button (click)="asignarResponsable(reclamacion)"
+                  <button (click)="verSeguimiento(reclamacion)"
                     class="flex items-center justify-center w-8 h-8 text-gray-600 rounded-lg hover:text-purple-600 hover:bg-purple-200"
-                    title="Asignar responsable">
-                    <i class="text-[16px] pi pi-user-plus"></i>
+                    title="Historial del Reclamo">
+                    <i class="text-[16px] pi pi-history"></i>
                   </button>
 
                   <button type="button" (click)="openPopover($event, reclamacion)"
@@ -857,9 +857,9 @@
   [maximizable]="true" (close)="cerrarModalEstado()" (confirm)="onEstadoConfirm($event)">
 </app-estado>
 
-<app-responsable [visible]="mostrarModalResponsable" [reclamacion]="reclamacionSeleccionada"
-  [responsables]="responsablesDisponibles" (close)="cerrarModalResponsable()" (confirm)="onAsignacionConfirm($event)">
-</app-responsable>
+<app-seguimiento [visible]="mostrarModalSeguimiento" [reclamacion]="reclamacionSeleccionada" [dialogWidth]="'60rem'"
+  [maximizable]="true" (close)="cerrarModalSeguimiento()" (eventoAgregado)="onEventoAgregado($event)">
+</app-seguimiento>
 
 <app-reporte [visible]="mostrarModalReporte" [reclamacion]="reclamacionSeleccionada" [tipos]="tiposReporte"
   (close)="cerrarModalReporte()" (confirm)="onReporteConfirm($event)">
@@ -867,21 +867,21 @@
 
 <p-popover #op appendTo="body" [baseZIndex]="10000" styleClass="estatus-popover">
   <ng-template #content>
-    <div class="w-64">
+    <div class="w-36 flex flex-col gap-2">
       <!-- Conforme -->
-      <button type="button" class="item-popover" (click)="setEstatus('Conforme')">
+      <button type="button" class="item-popover flex gap-2 items-center" (click)="setEstatus('Conforme')">
         <p-radiobutton name="estatus" [value]="'Conforme'" [(ngModel)]="tempEstatus" inputId="estatus-conforme" />
         <label for="estatus-conforme" class="label-popover">Conforme</label>
       </button>
 
       <!-- Inválido -->
-      <button type="button" class="item-popover" (click)="setEstatus('Inválido')">
+      <button type="button" class="item-popover flex gap-2 items-center" (click)="setEstatus('Inválido')">
         <p-radiobutton name="estatus" [value]="'Inválido'" [(ngModel)]="tempEstatus" inputId="estatus-invalido" />
         <label for="estatus-invalido" class="label-popover">Inválido</label>
       </button>
 
       <!-- No-Conforme -->
-      <button type="button" class="item-popover" (click)="setEstatus('No-Conforme')">
+      <button type="button" class="item-popover flex gap-2 items-center" (click)="setEstatus('No-Conforme')">
         <p-radiobutton name="estatus" [value]="'No-Conforme'" [(ngModel)]="tempEstatus" inputId="estatus-noconforme" />
         <label for="estatus-noconforme" class="label-popover">No-Conforme</label>
       </button>

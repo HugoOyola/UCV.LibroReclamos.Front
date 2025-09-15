@@ -18,7 +18,7 @@ import { Popover } from 'primeng/popover';
 
 import { DetalleComponent } from './modales/detalle/detalle.component';
 import { EstadoComponent } from './modales/estado/estado.component';
-import { ResponsableComponent } from './modales/responsable/responsable.component';
+import { SeguimientoComponent } from './modales/seguimiento/seguimiento.component';
 import { ReporteComponent } from './modales/reporte/reporte.component';
 
 // ============= INTERFACES =============
@@ -90,7 +90,7 @@ interface TipoReporte {
     ConfirmDialogModule,
     DetalleComponent,
     EstadoComponent,
-    ResponsableComponent,
+    SeguimientoComponent,
     ReporteComponent,
     PopoverModule
   ],
@@ -120,7 +120,7 @@ export class MonitoreoComponent implements OnInit {
   // ============= MODALES =============
   mostrarModalDetalles = false;
   mostrarModalEstado = false;
-  mostrarModalResponsable = false;
+  mostrarModalSeguimiento = false;
   mostrarModalReporte = false;
   reclamacionSeleccionada: ReclamacionCompleta | null = null;
 
@@ -950,9 +950,9 @@ export class MonitoreoComponent implements OnInit {
     this.mostrarModalEstado = true;
   }
 
-  asignarResponsable(r: ReclamacionCompleta): void {
+  verSeguimiento(r: ReclamacionCompleta): void {
     this.reclamacionSeleccionada = r;
-    this.mostrarModalResponsable = true;
+    this.mostrarModalSeguimiento = true;
   }
 
   generarReporte(r: ReclamacionCompleta): void {
@@ -969,8 +969,9 @@ export class MonitoreoComponent implements OnInit {
     this.mostrarModalEstado = false;
   }
 
-  cerrarModalResponsable(): void {
-    this.mostrarModalResponsable = false;
+  cerrarModalSeguimiento(): void {
+    this.mostrarModalSeguimiento = false;
+    this.reclamacionSeleccionada = null;
   }
 
   cerrarModalReporte(): void {
@@ -986,20 +987,17 @@ export class MonitoreoComponent implements OnInit {
     }
   }
 
+  onEventoAgregado(evento: any): void {
+    this.mostrarMensaje('success', 'Evento Registrado',
+      'El evento de seguimiento ha sido agregado correctamente');
+  }
+
   onReporteConfirm(event: any): void {
     if (event && this.reclamacionSeleccionada) {
       // TODO: Implementar generación de reporte
       this.mostrarMensaje('success', 'Reporte', 'Generando reporte...');
     }
     this.cerrarModalReporte();
-  }
-
-  onAsignacionConfirm(event: any): void {
-    if (event && this.reclamacionSeleccionada) {
-      this.reclamacionSeleccionada.responsable = event.responsableId;
-      this.mostrarMensaje('success', 'Éxito', 'Responsable asignado correctamente');
-    }
-    this.cerrarModalResponsable();
   }
 
   // ============= GESTIÓN DE POPOVER =============

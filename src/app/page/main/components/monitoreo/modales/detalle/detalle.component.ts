@@ -34,7 +34,7 @@ export interface ReclamacionCompleta {
 
 @Component({
   selector: 'app-detalle',
-  standalone: true,               // ✅ necesario si usas `imports`
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
